@@ -1,0 +1,151 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    @apply text-gray-80;
+  margin: 0;
+}
+
+h1 {
+  font-size: 40px;
+}
+
+h2 {
+  font-size: 36px;
+}
+
+h3 {
+  font-size: 30px;
+}
+
+h4 {
+  font-size: 22px;
+}
+
+h5 {
+  font-size: 20px;
+}
+
+h6 {
+  font-size: 18px;
+}
+
+/* H1 Variations */
+.h1-med {
+  font-size: 40px;
+  font-weight: 500;
+}
+
+.h1-semi {
+  font-size: 40px;
+  font-weight: 600;
+}
+
+.h1-bold {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+/* H2 Variations */
+.h2-med {
+  font-size: 36px;
+  font-weight: 500;
+}
+
+.h2-semi {
+  font-size: 36px;
+  font-weight: 600;
+}
+
+.h2-bold {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+/* H3 Variations */
+.h3-med {
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.h3-semi {
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.h3-bold {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+/* H4 Variations */
+.h4-med {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.h4-semi {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.h4-bold {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* H5 Variations */
+.h5-med {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.h5-semi {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.h5-bold {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* H6 Variations */
+.h6-med {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.h6-semi {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.h6-bold {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+p,
+.p1,
+.p2,
+.p3 {
+  @apply text-16 text-gray-80 m-0;
+}
+
+.p2 {
+  font-size: 14px;
+}
+
+.p3 {
+  font-size: 12px;
+}
+
+b {
+  font-size: inherit;
+  color: inherit;
+  font-weight: 700;
+}
+/*# sourceMappingURL=Text.css.map */
