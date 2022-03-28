@@ -1,9 +1,10 @@
 import { Col, Row } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { dashboardStats } from "../../../constants/stats";
 import { orderColumns } from "../../../constants/tableColumns";
 import DashboardChart from "../../../core/Dashboard/DashboardChart";
 import UserCard from "../../../core/Dashboard/UserCard";
+import NewUserForm from "../../../core/Forms/NewUserForm";
 import HeadAndContent from "../../../core/HeadAndContent";
 import StatsCard from "../../../core/StatsCard";
 import CustomTable from "../../../core/Table/Table";
@@ -19,6 +20,10 @@ const DashboardStats = (
   </Row>
 );
 const DashboardContainer = () => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const onCreate=()=>{
+    
+  }
   return (
     <>
       <HeadAndContent heading="Dashboard">
@@ -32,6 +37,8 @@ const DashboardContainer = () => {
                 number: "03462880800",
                 address: "saleem north karachi",
               }}
+              btnHandler={()=>setIsModalVisible(true)}
+
             />
           </Col>
           <Col xl={18}>
@@ -43,6 +50,12 @@ const DashboardContainer = () => {
         </Row>
         <CustomTable column={orderColumns} data={data} />
       </HeadAndContent>
+      <NewUserForm
+        visible={isModalVisible}
+        onCreate={onCreate}
+        onCancel={() => 
+          setIsModalVisible(false)}
+      />
     </>
   );
 };

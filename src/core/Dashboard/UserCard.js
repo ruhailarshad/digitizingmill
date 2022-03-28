@@ -7,7 +7,7 @@ import {GrMail} from 'react-icons/gr'
 import {IoMdCall} from 'react-icons/io'
 import {BsFillHouseDoorFill} from 'react-icons/bs'
 import { useMediaQuery } from "react-responsive";
-const UserCard = ({ data }) => {
+const UserCard = ({ data,btnHandler }) => {
   const isMobile = useMediaQuery({ query: '(max-width: 756px)' })
   return (
     <Card styles="px-20 py-30 bg-white flex flex-col items-center space-y-30">
@@ -40,7 +40,7 @@ const UserCard = ({ data }) => {
             {data.address}
           </Text>
           </div>
-          <Button type="primary" block className="rounded-10" danger size="medium">
+          <Button type="primary" block className="rounded-10" danger size="medium" onClick={btnHandler}>
             Edit Details
           </Button>
       </div>
