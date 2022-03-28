@@ -17,66 +17,140 @@ const getColor = (record) => {
     return "#707070";
   }
 };
-export const orderColumns = [
-  {
-    title: "Order Id",
-    dataIndex: "order_id",
-    sorter: (a, b) => a.order_id - b.order_id,
-    responsive: ['lg'],
-  },
-  {
-    title: "Order Date",
-    dataIndex: "order_date",
-    responsive: ['lg'],
-  },
-  {
-    title: "Customer Name",
-    dataIndex: "customer_name",
-    responsive: ['lg'],
-  },
-  {
-    title: "Design Name",
-    dataIndex: "design_name",
-    responsive: ['lg'],
-  },
-  {
-    title: "Size/Type",
-    dataIndex: "size_type",
-    responsive: ['lg'],
-  },
-  {
-    title: "Amount",
-    dataIndex: "amount",
-    responsive: ['lg'],
-  },
-  {
-    title: "Payment Status",
-    dataIndex: "payment_status",
-    responsive: ['lg'],
-    render: (record) => {
-      const color = getColor(record);
-      return (
-        <Tag className="rounded-[10px]" color={color}>
-          {record.toUpperCase()}
-        </Tag>
-      );
+export const editableOrderColumns = (editHandler) => {
+  return [
+    {
+      title: "Order Id",
+      dataIndex: "order_id",
+      sorter: (a, b) => a.order_id - b.order_id,
+      responsive: ["lg"],
     },
-  },
-  {
-    title: "Order Status",
-    dataIndex: "order_status",
-    responsive: ['lg'],
-    render: (record) => {
-      const color = getColor(record);
-      return (
-        <Tag className="rounded-[10px]" color={color}>
-          {record.toUpperCase()}
-        </Tag>
-      );
+    {
+      title: "Order Date",
+      dataIndex: "order_date",
+      responsive: ["lg"],
     },
-  },
-];
-export const companyColumns = ( editing, save, cancel, edit ) => {
+    {
+      title: "Customer Name",
+      dataIndex: "customer_name",
+      responsive: ["lg"],
+    },
+    {
+      title: "Design Name",
+      dataIndex: "design_name",
+      responsive: ["lg"],
+    },
+    {
+      title: "Size/Type",
+      dataIndex: "size_type",
+      responsive: ["lg"],
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      responsive: ["lg"],
+    },
+    {
+      title: "Payment Status",
+      dataIndex: "payment_status",
+      responsive: ["lg"],
+      render: (record) => {
+        const color = getColor(record);
+        return (
+          <Tag className="rounded-[10px]" color={color}>
+            {record.toUpperCase()}
+          </Tag>
+        );
+      },
+    },
+
+    {
+      title: "Order Status",
+      dataIndex: "order_status",
+      responsive: ["lg"],
+      render: (record) => {
+        const color = getColor(record);
+        return (
+          <Tag className="rounded-[10px]" color={color}>
+            {record.toUpperCase()}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "x",
+      render: (record) => (
+        <div onClick={() => editHandler(record)}>
+          <AiFillEdit size={22} color={"#9999"} />
+        </div>
+      ),
+    },
+  ];
+};
+export const orderColumns= [
+    {
+      title: "Order Id",
+      dataIndex: "order_id",
+      sorter: (a, b) => a.order_id - b.order_id,
+      responsive: ["lg"],
+    },
+    {
+      title: "Order Date",
+      dataIndex: "order_date",
+      responsive: ["lg"],
+    },
+    {
+      title: "Customer Name",
+      dataIndex: "customer_name",
+      responsive: ["lg"],
+    },
+    {
+      title: "Design Name",
+      dataIndex: "design_name",
+      responsive: ["lg"],
+    },
+    {
+      title: "Size/Type",
+      dataIndex: "size_type",
+      responsive: ["lg"],
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      responsive: ["lg"],
+    },
+    {
+      title: "Payment Status",
+      dataIndex: "payment_status",
+      responsive: ["lg"],
+      render: (record) => {
+        const color = getColor(record);
+        return (
+          <Tag className="rounded-[10px]" color={color}>
+            {record.toUpperCase()}
+          </Tag>
+        );
+      },
+    },
+
+    {
+      title: "Order Status",
+      dataIndex: "order_status",
+      responsive: ["lg"],
+      render: (record) => {
+        const color = getColor(record);
+        return (
+          <Tag className="rounded-[10px]" color={color}>
+            {record.toUpperCase()}
+          </Tag>
+        );
+      },
+    },
+   
+  ];
+export const companyColumns = (editing, save, cancel, edit) => {
   return [
     {
       title: "Company Id",
@@ -101,7 +175,6 @@ export const companyColumns = ( editing, save, cancel, edit ) => {
       title: "Email Address",
       dataIndex: "email_adress",
       editable: true,
-
     },
     {
       title: "Sales Agent",
@@ -158,32 +231,73 @@ export const companyColumns = ( editing, save, cancel, edit ) => {
     },
   ];
 };
-export const companyColumnsNonEditable =  [
-    {
-      title: "Company Id",
-      dataIndex: "company_id",
-      sorter: (a, b) => a.company_id - b.company_id,
-    },
-    {
-      title: "Registration Date",
-      dataIndex: "registration_date",
-    },
-    {
-      title: "Company Name",
-      dataIndex: "company_name",
-    },
-    {
-      title: "Contact No",
-      dataIndex: "contact_no",
-    },
-    {
-      title: "Email Address",
-      dataIndex: "email_adress",
 
+export const companyColumnsNonEditable = [
+  {
+    title: "Company Id",
+    dataIndex: "company_id",
+    sorter: (a, b) => a.company_id - b.company_id,
+  },
+  {
+    title: "Registration Date",
+    dataIndex: "registration_date",
+  },
+  {
+    title: "Company Name",
+    dataIndex: "company_name",
+  },
+  {
+    title: "Contact No",
+    dataIndex: "contact_no",
+  },
+  {
+    title: "Email Address",
+    dataIndex: "email_adress",
+  },
+  {
+    title: "Sales Agent",
+    dataIndex: "sales_agent",
+  },
+];
+export const DigitizerOrderColumns = [
+  {
+    title: "Order Id",
+    dataIndex: "order_id",
+    sorter: (a, b) => a.order_id - b.order_id,
+    responsive: ["lg"],
+  },
+  {
+    title: "Order Date",
+    dataIndex: "order_date",
+    responsive: ["lg"],
+  },
+  {
+    title: "Customer Name",
+    dataIndex: "customer_name",
+    responsive: ["lg"],
+  },
+  {
+    title: "Design Name",
+    dataIndex: "design_name",
+    responsive: ["lg"],
+  },
+  {
+    title: "Size/Type",
+    dataIndex: "size_type",
+    responsive: ["lg"],
+  },
+
+  {
+    title: "Order Status",
+    dataIndex: "order_status",
+    responsive: ["lg"],
+    render: (record) => {
+      const color = getColor(record);
+      return (
+        <Tag className="rounded-[10px]" color={color}>
+          {record.toUpperCase()}
+        </Tag>
+      );
     },
-    {
-      title: "Sales Agent",
-      dataIndex: "sales_agent",
-    },
-    
-  ];
+  },
+];

@@ -11,12 +11,13 @@ import { data } from "../OrderDetails/utils";
 const DashboardStats = (
   <Row align="center" gutter={[10, 10]}>
     {dashboardStats(267, 5, 5, 5).map((item, i) => (
-      <Col xxl={6} xl={8} lg={12} md={24}>
-        <StatsCard key={i} data={item} />
+      <Col xxl={6} xl={8} lg={12} md={24} key={i}>
+        <StatsCard  data={item} />
       </Col>
     ))}
   </Row>
 );
+
 const DashboardContainer = () => {
   return (
     <>

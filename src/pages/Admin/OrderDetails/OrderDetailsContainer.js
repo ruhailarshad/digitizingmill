@@ -1,7 +1,7 @@
 import { Col, Row } from "antd";
 import React, { useState } from "react";
 import { orderDetailStats } from "../../../constants/stats";
-import { orderColumns } from "../../../constants/tableColumns";
+import { editableOrderColumns, orderColumns } from "../../../constants/tableColumns";
 import { CustomTable } from "../../../core";
 import NewOrderForm from "../../../core/Forms/NewOrderForm";
 import HeadAndContent from "../../../core/HeadAndContent";
@@ -10,13 +10,18 @@ import { data} from "./utils";
 
 const OrderDetailsContainer = () => {
     const [visible, setVisible] = useState(false)
-  const orderStats =  (<Row gutter={[30,30]}>
+  const orderStats =  (<Row gutter={[10,10]}>
   {orderDetailStats(267,5,5,22,5).map((item, i) => (
-    <Col xxl={4} xl={6} lg={12} md={24}>
-      <StatsCard key={i} data={item} />
+    <Col xxl={4} xl={6} lg={12} md={24} key={i}>
+      <StatsCard  data={item} />
     </Col>
   ))}
 </Row>)
+const editHandler=(record)=>{
+  setVisible(true)
+console.log(record)
+}
+const column=editableOrderColumns(editHandler)
   return (
       <>
     <HeadAndContent
@@ -24,7 +29,7 @@ const OrderDetailsContainer = () => {
       btn={{ name: "Add New Order", buttonHandler:  ()=>setVisible(true)  }}
     >
       {orderStats}
-      <CustomTable column={orderColumns} data={data}/>
+      <CustomTable column={column} data={data}/>
     </HeadAndContent>
     <NewOrderForm visible={visible} onCancel={()=>setVisible(false)}/>
     </>

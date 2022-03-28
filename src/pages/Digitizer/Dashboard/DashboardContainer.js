@@ -27,7 +27,7 @@ const DashboardContainer = () => {
             <UserCard
               data={{
                 name: "Ruhail Arshad",
-                role: "Sales Agent",
+                role: "Digitizer",
                 email: "monismazher@gmail.com",
                 number: "03462880800",
                 address: "saleem north karachi",

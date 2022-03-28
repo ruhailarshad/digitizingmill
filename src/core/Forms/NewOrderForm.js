@@ -2,6 +2,7 @@ import React from "react";
 import {
   Button,
   Col,
+  DatePicker,
   Form,
   Input,
   Modal,
@@ -58,7 +59,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                     },
                   ]}
                 >
-                  <Input size="large" />
+                  <DatePicker className="w-[100%]" size="large" />
                 </Form.Item>
               </Col>
               <Col xl={12} lg={12} md={12} xs={24}>
@@ -141,7 +142,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
               <Col xl={8} lg={8} md={24} xs={24}>
                 <Form.Item
                   name="digitizer"
-                  label="Order Instruction"
+                  label="Digitizer"
                   rules={[
                     {
                       required: true,

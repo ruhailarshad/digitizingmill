@@ -11,6 +11,7 @@ import {
 } from "../pages/Admin/UserDetails";
 import { DigitizerPanelConfig } from "../pages/Digitizer";
 import { DigitizerDashboardConfig } from "../pages/Digitizer/Dashboard";
+import { DigitizerOrderDetailsConfig } from "../pages/Digitizer/OrderDetails";
 import { LoginFormConfig } from "../pages/Login";
 import { SalesAgentPanelConfig } from "../pages/SalesAgent";
 import { SalesCompanyDetailsConfig } from "../pages/SalesAgent/CompanyDetails";
@@ -85,7 +86,7 @@ const routes = (isLoggedIn) => [
       },
       {
         path: RouteNames.digitizerOrderDetail,
-        element: <DigitizerDashboardConfig />,
+        element: <DigitizerOrderDetailsConfig />,
       },
     
     ],
