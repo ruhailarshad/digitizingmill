@@ -1,10 +1,28 @@
-import { Button, Col, Form, Input, Row } from "antd";
+import { Button, Col, Form, Input, Row, Spin } from "antd";
 import React from "react";
 import "./login.css";
 import Logo from "../../assets/finallogodm.png";
+import { useNavigate } from 'react-router-dom';
+import RouteNames from "../../routes/RouteNames";
+
+import { useGetAccessToken } from "./mutations";
+import { getRedirectLinkForLogin } from "../../constants/getLoginRedirectionRoute";
+import { accessTokenKey } from "../../constants/localStorageKeys";
 const LoginForm = () => {
+
+  const navigate = useNavigate();
+
+  const onSuccess = ({ data }) => {
+    const { data: { accessToken, role } } = data;
+    localStorage.setItem(accessTokenKey, accessToken);
+    navigate(getRedirectLinkForLogin(role));
+  }
+
+  const {mutate, isLoading} = useGetAccessToken(onSuccess);
+
   const onFinish = (values) => {
     console.log(values);
+    mutate(values);
   };
   return (
     <Row className="h-[100vh]">
@@ -26,7 +44,7 @@ const LoginForm = () => {
           >
             <Form.Item
               label="Username"
-              name="username"
+              name="email"
               rules={[
                 {
                   required: true,
@@ -55,8 +73,8 @@ const LoginForm = () => {
                 span: 24,
               }}
             >
-              <Button block type="primary"  danger htmlType="submit">
-                Submit
+              <Button disabled={isLoading} block type="primary"  danger htmlType="submit">
+                {isLoading ? <Spin tip="loading" /> : 'Submit'}
               </Button>
             </Form.Item>
           </Form>

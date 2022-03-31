@@ -14,9 +14,11 @@
 //   );
 // }
 import {useRoutes} from 'react-router-dom'
-import routes from './PrivateRoute'
+import routes from './PrivateRoute';
+import { accessTokenKey } from '../constants/localStorageKeys';
 
 const Routes = () => {
+  const isLoggedIn = localStorage.getItem(accessTokenKey);
   const authRoutes = useRoutes(routes(true))
   return authRoutes
 }

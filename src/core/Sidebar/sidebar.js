@@ -5,6 +5,9 @@ import Logo from "../../assets/finallogodm.png";
 import { Content } from "antd/lib/layout/layout";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
+import { useNavigate } from "react-router-dom";
+import RouteNames from "../../routes/RouteNames";
+import { accessTokenKey } from "../../constants/localStorageKeys";
 const { Sider } = Layout;
 
 const SideNav = ({ data, Body,indexRoute }) => {
@@ -14,7 +17,15 @@ const SideNav = ({ data, Body,indexRoute }) => {
 
 
   const [current, setCurrent] = useState(indexRoute);
-console.log(current,"initial")
+  console.log(current,"initial");
+
+  const navigate = useNavigate();
+
+  const onLogout = () => {
+    localStorage.removeItem(accessTokenKey);
+    navigate(RouteNames.login);
+  }
+
   useEffect(() => {
     if (location) {
       const loc = location.pathname.split("/");
@@ -57,7 +68,7 @@ console.log(current,"initial")
               </Menu.Item>
             ))}
           </Menu>
-          <Button type="primary" className="mt-40" block  danger size="large">
+          <Button onClick={onLogout} type="primary" className="mt-40" block  danger size="large">
             Logout
           </Button>
 

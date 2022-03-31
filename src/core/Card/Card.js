@@ -1,5 +1,5 @@
 
-const Card = ({shadow, styles = '', children, ...rest}: any) => {
+const Card = ({shadow, styles = '', children, ...rest}) => {
   
     const cardProps = () => {
       if (shadow) return 'shadow-2'
