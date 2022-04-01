@@ -4,7 +4,7 @@ import { notification } from "antd";
 const errorMessageParser = (error) => {
     console.log('error', error);
     const {message, errorObject} = error.data;
-    const description = Object.keys(errorObject).length > 0 ?  JSON.stringify(errorObject) : 'There was error while making the request!!';
+    const description = Object.keys(errorObject || {}).length > 0 ?  JSON.stringify(errorObject) : 'There was error while making the request!!';
     return {description, message};
 }
 

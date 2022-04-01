@@ -3,7 +3,7 @@ import NewUserForm from "../../../core/Forms/NewUserForm";
 import NewUserAdd from "../Common/NewUserAdd";
 import { useUserData } from './request';
 import { openErrorNotification } from '../../../alerts/commonAlert';
-import { debounce } from 'lodash';
+
 
 const SalesAgentContainer = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -12,7 +12,7 @@ const SalesAgentContainer = () => {
     openErrorNotification(error.response);
   }
   const { isLoading, data } = useUserData({
-    queryParams: {user: searchTerm},
+    queryParams: {name: searchTerm, role: 'sales-agent'},
     onError,
   });
 
@@ -35,6 +35,7 @@ const SalesAgentContainer = () => {
         name="Sales Agent"
         data={usersData}
         btnHandler={() => setIsModalVisible(true)}
+        onSearchChange={(data) => setSearchTerm(data)}
       />
     </div>
   );
