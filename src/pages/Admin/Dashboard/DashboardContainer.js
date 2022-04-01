@@ -22,9 +22,9 @@ const DashboardStats = (
 
 const DashboardContainer = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-const onCreate=()=>{
-  
-}
+  const onCreate=()=>{
+    
+  }
   return (
     <>
       <HeadAndContent heading="Dashboard">

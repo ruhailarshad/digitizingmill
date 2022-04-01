@@ -4,6 +4,7 @@ import "./login.css";
 import Logo from "../../assets/finallogodm.png";
 import { useNavigate } from 'react-router-dom';
 import RouteNames from "../../routes/RouteNames";
+import { openErrorNotification } from "../../alerts/commonAlert";
 
 import { useGetAccessToken } from "./mutations";
 import { getRedirectLinkForLogin } from "../../constants/getLoginRedirectionRoute";
@@ -18,7 +19,13 @@ const LoginForm = () => {
     navigate(getRedirectLinkForLogin(role));
   }
 
-  const {mutate, isLoading} = useGetAccessToken(onSuccess);
+  const onError = (err) => {
+    openErrorNotification(err.response, () => {
+      // do something here
+    })
+  }
+
+  const {mutate, isLoading} = useGetAccessToken(onSuccess, onError);
 
   const onFinish = (values) => {
     console.log(values);

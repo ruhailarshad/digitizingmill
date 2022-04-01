@@ -37,6 +37,7 @@ const NewUserForm = ({ visible, onCreate, onCancel }) => {
         form
           .validateFields()
           .then((values) => {
+            console.log('values', values);
             form.resetFields();
             onCreate(values);
           })
