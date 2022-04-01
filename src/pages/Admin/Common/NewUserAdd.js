@@ -4,8 +4,11 @@ import { Container, Text } from "../../../core";
 import HeadAndContent from "../../../core/HeadAndContent";
 import UserCard from "./UserCard";
 const { Search } = Input;
-const NewUserAdd = ({ name, data, btnHandler }) => {
+const NewUserAdd = ({ name, data, isLoading,  btnHandler, onSearchChange = () => {} }) => {
  
+  console.log('data', data);
+  console.log('isLoading', isLoading);
+
   return (
     <>
       <HeadAndContent
@@ -19,26 +22,15 @@ const NewUserAdd = ({ name, data, btnHandler }) => {
           allowClear
           style={{ width: 200 }}
         />
-        <Row className="mt-30" gutter={[20, 20]}>
-          <Col span={6} xs={24} md={8} lg={6}>
-            <UserCard name="ruhail" />
-          </Col>
-          <Col span={6} xs={24} md={8} lg={6}>
-            <UserCard name="sameer" />
-          </Col>
-          <Col span={6} xs={24} md={8} lg={6}>
-            <UserCard name="monis" />
-          </Col>
-          <Col span={6} xs={24} md={8} lg={6}>
-            <UserCard name="saleem" />
-          </Col>
-          <Col span={6} xs={24} md={8} lg={6}>
-            <UserCard name="kaleem" />
-          </Col>
-          <Col span={6} xs={24} md={8} lg={6}>
-            <UserCard name="ruhail" />
-          </Col>
-        </Row>
+        {
+          isLoading ? 'Add loader here' : data?.map(user => (
+            <Row className="mt-30" gutter={[20, 20]}>
+              <Col span={6} xs={24} md={8} lg={6}>
+                <UserCard name="ruhail" />
+              </Col>
+            </Row>
+          )) 
+        }
       </HeadAndContent>
     </>
   );

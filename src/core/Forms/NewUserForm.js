@@ -68,8 +68,8 @@ const NewUserForm = ({ visible, onCreate, onCancel }) => {
             >
               <ImgCrop rotate>
                 <Upload
-                onChange={onChange}
-                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  action="/upload.do"
+                  onChange={onChange}
                   listType="picture-card"
                   onPreview={onPreview}
                 >

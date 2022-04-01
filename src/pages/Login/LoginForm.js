@@ -14,8 +14,9 @@ const LoginForm = () => {
   const navigate = useNavigate();
 
   const onSuccess = ({ data }) => {
-    const { data: { accessToken, role } } = data;
-    localStorage.setItem(accessTokenKey, accessToken);
+    console.log('data', data);
+    const { data: { authToken, role } } = data;
+    localStorage.setItem(accessTokenKey, authToken);
     navigate(getRedirectLinkForLogin(role));
   }
 
