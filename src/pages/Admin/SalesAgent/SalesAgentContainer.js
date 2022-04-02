@@ -11,6 +11,7 @@ const SalesAgentContainer = () => {
   const onError = (error) => {
     openErrorNotification(error.response);
   }
+  console.log(searchTerm,"searchTerm")
   const { isLoading, data } = useUserData({
     queryParams: {name: searchTerm, role: 'sales-agent'},
     onError,
@@ -35,7 +36,7 @@ const SalesAgentContainer = () => {
         name="Sales Agent"
         data={usersData}
         btnHandler={() => setIsModalVisible(true)}
-        onSearchChange={(data) => setSearchTerm(data)}
+        onSearchChange={(value) => setSearchTerm(value)}
       />
     </div>
   );

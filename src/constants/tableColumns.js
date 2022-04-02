@@ -1,6 +1,6 @@
 import { Tag } from "antd";
 import { MdDelete } from "react-icons/md";
-import { AiFillEdit, AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
+import { AiFillEdit, AiOutlineCheck, AiOutlineClose,AiFillEye } from "react-icons/ai";
 import { Modal } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Popconfirm } from "antd";
@@ -150,11 +150,11 @@ export const orderColumns= [
     },
    
   ];
-export const companyColumns = (editing, save, cancel, edit) => {
+export const companyColumns = (editing, save, cancel, edit,viewHandler) => {
   return [
     {
       title: "Company Id",
-      dataIndex: "company_id",
+      dataIndex: "companyId",
       sorter: (a, b) => a.company_id - b.company_id,
     },
     {
@@ -163,17 +163,17 @@ export const companyColumns = (editing, save, cancel, edit) => {
     },
     {
       title: "Company Name",
-      dataIndex: "company_name",
+      dataIndex: "companyName",
       editable: true,
     },
     {
       title: "Contact No",
-      dataIndex: "contact_no",
+      dataIndex: "phone",
       editable: true,
     },
     {
       title: "Email Address",
-      dataIndex: "email_adress",
+      dataIndex: "emailAddress",
       editable: true,
     },
     {
@@ -228,6 +228,16 @@ export const companyColumns = (editing, save, cancel, edit) => {
           </div>
         ) : null;
       },
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "x",
+      render: (record) => (
+        <div onClick={() => viewHandler(record)}>
+          <AiFillEye size={22} color={"#9999"} />
+        </div>
+      ),
     },
   ];
 };

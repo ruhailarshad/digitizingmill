@@ -3,8 +3,12 @@ import { Button, Col, Form, Input, InputNumber, Modal, Row, Select } from "antd"
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { openErrorNotification } from "../../alerts/commonAlert";
 import { usePostCompanyDetails } from "../../hooks/usePostCompanyDetails";
+import { useGetCompanyById } from "../../hooks/useGetCompanyById";
 
-const NewCompanyForm = ({ visible, onCancel,api }) => {
+const NewCompanyForm = ({ visible, onCancel,data }) => {
+  // const token = localStorage.getItem(accessTokenKey);
+
+  console.log(data,"data")
   const [form] = Form.useForm();
   const onSuccess = ({ data }) => {
     form.resetFields()
@@ -13,13 +17,8 @@ const NewCompanyForm = ({ visible, onCancel,api }) => {
     })
   }
 
-  const onError = (err) => {
-    openErrorNotification(err.response, () => {
-      // do something here
-    })
-  }
-
-  const {mutate, isLoading} = usePostCompanyDetails(onSuccess, onError);
+  const {mutate, isLoading} = usePostCompanyDetails(onSuccess);
+  const {data:companyDataByID} = useGetCompanyById( );
 const onCreate=(values)=>{
 mutate(values)
 }
@@ -47,9 +46,7 @@ mutate(values)
         layout="vertical"
         name="form_in_modal"
         initialValues={
-          {
-            // modifier: "public",
-          }
+          data
         }
       >
         <Row gutter={[20, 20]}>
@@ -80,6 +77,9 @@ mutate(values)
                   required: true,
                   message: "Company Name is Required",
                 },
+                {
+                  min: 5, message: 'Company Name must be minimum 3 characters.'
+                }
               ]}
             >
               <Input size="large" />
@@ -129,13 +129,13 @@ mutate(values)
                   <Input size="large" />
                 </Form.Item>
               </Col>
-          <Col xl={8} lg={24} md={24} xs={24}>
+          <Col xl={10} lg={24} md={24} xs={24}>
             <Form.List name="sizes">
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name, ...restField }) => (
                     <Row justify="center" align="middle" gutter={5}>
-                      <Col xl={9} lg={9} md={9} xs={9}>
+                      <Col span={9}>
                         <Form.Item
                           {...restField}
                           name={[name, "size"]}
@@ -144,16 +144,16 @@ mutate(values)
                           <Input size="large" />
                         </Form.Item>
                       </Col>
-                      <Col xl={9} lg={9} md={9} xs={9}>
+                      <Col span={9}>
                         <Form.Item
                           {...restField}
                           name={[name, "prize"]}
                           label="Price"
                         >
-                          <InputNumber size="large" />
+                          <InputNumber className="w-[100%]" size="large" />
                         </Form.Item>
                       </Col>
-                      <Col xl={5} lg={5} md={5} xs={5}>
+                      <Col span={5}>
                         <Form.Item
                           {...restField}
                           name={[name, "currency"]}

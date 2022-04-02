@@ -1,17 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Col, Input, Row } from "antd";
-import React, { useCallback } from "react";
-import { Container, Text } from "../../../core";
+import { Col, Input, Row } from "antd";
+import React from "react";
 import HeadAndContent from "../../../core/HeadAndContent";
 import UserCard from "./UserCard";
-import { debounce } from 'lodash';
 const { Search } = Input;
 
-const NewUserAdd = ({ name, data, isLoading,  btnHandler, onSearchChange = () => {} }) => {
+const NewUserAdd = ({ name, data, isLoading,  btnHandler,onSearchChange}) => {
 
-  const setSearchTermForUser = useCallback((data) => {
-    onSearchChange(data); 
-  }, []);
+ 
 
   const renderUsersList = (data) => {
 
@@ -45,7 +41,7 @@ const NewUserAdd = ({ name, data, isLoading,  btnHandler, onSearchChange = () =>
           size="large"
           allowClear
           style={{ width: 200 }}
-          onSearch={setSearchTermForUser}
+          onSearch={onSearchChange}
         />
         {
           isLoading ? 'Add loader here' : renderUsersList(data)

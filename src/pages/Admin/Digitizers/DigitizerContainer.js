@@ -32,7 +32,7 @@ const SalesAgentContainer = () => {
           setIsModalVisible(false)}
       />
       <NewUserAdd
-        onSearchChange={(data) => setSearchTerm(data)}
+        onSearchChange={(value) => setSearchTerm(value)}
         data={usersData}
         isLoading={isLoading}
         name="Digitizer"

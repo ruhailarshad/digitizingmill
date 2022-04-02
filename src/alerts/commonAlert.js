@@ -10,7 +10,7 @@ const errorMessageParser = (error) => {
 
 export const openErrorNotification = (error, onClose) => {
     const {message, description} = errorMessageParser(error);
-    notification.open({
+    notification.error({
         message,
         description,
         onClose: onClose,

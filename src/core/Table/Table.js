@@ -5,7 +5,7 @@ import EditableCell from "./utils";
 import "./Table.css";
 const { RangePicker } = DatePicker;
 
-const CustomTable = ({ column, data,selection=false }) => {
+const CustomTable = ({ column, data=[],selection=false,loading=false }) => {
     const [form] = Form.useForm();
     const [formData, setFormData] = useState([])
     useEffect(() => {
@@ -67,6 +67,7 @@ const CustomTable = ({ column, data,selection=false }) => {
             cell: EditableCell,
           },
         }}
+        loading={loading}
         rowSelection={checkRowSelection()}
         columns={column}
         dataSource={formData}

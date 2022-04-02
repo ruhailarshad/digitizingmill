@@ -1,4 +1,5 @@
 import axios from "axios";
+import { openErrorNotification } from "../alerts/commonAlert";
 import { accessTokenKey } from "../constants/localStorageKeys";
 
 const instance = axios.create({
@@ -20,4 +21,12 @@ const instance = axios.create({
         return Promise.reject(error);
     }
 );
+instance.interceptors.response.use(function (response) {
+  // Any status code that lie within the range of 2xx cause this function to trigger
+  // Do something with response data
+  return response.data.data;
+}, function (error) {
+  openErrorNotification(error.response);
+  return Promise.reject(error);
+});
 export default instance;
