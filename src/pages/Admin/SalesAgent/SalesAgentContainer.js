@@ -19,7 +19,7 @@ const SalesAgentContainer = () => {
   const usersData = data?.data;
   
   const onCreate = (values) => {
-      console.log(values)
+      console.log(values,"onCreate")
     setIsModalVisible(false);
   };
   return (

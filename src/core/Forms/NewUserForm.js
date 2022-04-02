@@ -23,7 +23,11 @@ const NewUserForm = ({ visible, onCreate, onCancel }) => {
     }
     return isJpgOrPng && isLt2M;
   }
-
+  const dummyRequest = ({ file, onSuccess }) => {
+    setTimeout(() => {
+      onSuccess("ok");
+    }, 0);
+  };
   const [form] = Form.useForm();
   return (
     <Modal
@@ -68,8 +72,8 @@ const NewUserForm = ({ visible, onCreate, onCancel }) => {
             >
               <ImgCrop rotate>
                 <Upload
-                  action="/upload.do"
-                  onChange={onChange}
+                onChange={onChange}
+                customRequest={dummyRequest}
                   listType="picture-card"
                   onPreview={onPreview}
                 >
@@ -170,7 +174,7 @@ const NewUserForm = ({ visible, onCreate, onCancel }) => {
               getValueFromEvent={normFile}
             >
               <Upload onPreview={onPreview}
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                 customRequest={dummyRequest}
                 listType="picture" name="logo" maxCount={2} >
                 <Button danger size="medium" icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>

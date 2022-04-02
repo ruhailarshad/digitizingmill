@@ -1,10 +1,28 @@
 import React from "react";
-import { Button, Col, Form, Input, Modal, Row, Select } from "antd";
+import { Button, Col, Form, Input, InputNumber, Modal, Row, Select } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { openErrorNotification } from "../../alerts/commonAlert";
+import { usePostCompanyDetails } from "../../hooks/usePostCompanyDetails";
 
-const NewCompanyForm = ({ visible, onCancel, onCreate }) => {
+const NewCompanyForm = ({ visible, onCancel,api }) => {
   const [form] = Form.useForm();
+  const onSuccess = ({ data }) => {
+    form.resetFields()
+    openErrorNotification("Company Added", () => {
+      // do something here
+    })
+  }
 
+  const onError = (err) => {
+    openErrorNotification(err.response, () => {
+      // do something here
+    })
+  }
+
+  const {mutate, isLoading} = usePostCompanyDetails(onSuccess, onError);
+const onCreate=(values)=>{
+mutate(values)
+}
   return (
     <Modal
       visible={visible}
@@ -17,7 +35,6 @@ const NewCompanyForm = ({ visible, onCancel, onCreate }) => {
         form
           .validateFields()
           .then((values) => {
-            form.resetFields();
             onCreate(values);
           })
           .catch((info) => {
@@ -38,9 +55,13 @@ const NewCompanyForm = ({ visible, onCancel, onCreate }) => {
         <Row gutter={[20, 20]}>
           <Col xl={12} lg={12} md={12} xs={24}>
             <Form.Item
-              name="email"
+              name="emailAddress"
               label="Email Address"
               rules={[
+                {
+                  type: 'email',
+                  message: 'The input is not valid E-mail!',
+                },
                 {
                   required: true,
                   message: "Email Address is Required",
@@ -52,12 +73,12 @@ const NewCompanyForm = ({ visible, onCancel, onCreate }) => {
           </Col>
           <Col xl={12} lg={12} md={12} xs={24}>
             <Form.Item
-              name="company_name"
-              label="Company  Name"
+              name="companyName"
+              label="Company Name"
               rules={[
                 {
                   required: true,
-                  message: "Compant Name No is Required",
+                  message: "Company Name is Required",
                 },
               ]}
             >
@@ -67,7 +88,7 @@ const NewCompanyForm = ({ visible, onCancel, onCreate }) => {
          
           <Col xl={12} lg={12} md={12} xs={24}>
             <Form.Item
-              name="company_instruction"
+              name="companyInstruction"
               label="Comapny Instruction"
               rules={[
                 {
@@ -83,7 +104,7 @@ const NewCompanyForm = ({ visible, onCancel, onCreate }) => {
           <Col xl={12} lg={12} md={12} xs={24}>
             <Form.Item
               name="phone"
-              label="Phone"
+              label="Phone No"
               rules={[
                 {
                   required: true,
@@ -96,7 +117,7 @@ const NewCompanyForm = ({ visible, onCancel, onCreate }) => {
           </Col>
           <Col xl={24}  lg={24} md={24}  xs={24}>
                 <Form.Item
-                  name="Customer Name"
+                  name="address"
                   label="Address"
                   rules={[
                     {
@@ -109,7 +130,7 @@ const NewCompanyForm = ({ visible, onCancel, onCreate }) => {
                 </Form.Item>
               </Col>
           <Col xl={8} lg={24} md={24} xs={24}>
-            <Form.List name="users">
+            <Form.List name="sizes">
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name, ...restField }) => (
@@ -126,10 +147,10 @@ const NewCompanyForm = ({ visible, onCancel, onCreate }) => {
                       <Col xl={9} lg={9} md={9} xs={9}>
                         <Form.Item
                           {...restField}
-                          name={[name, "price"]}
+                          name={[name, "prize"]}
                           label="Price"
                         >
-                          <Input size="large" />
+                          <InputNumber size="large" />
                         </Form.Item>
                       </Col>
                       <Col xl={5} lg={5} md={5} xs={5}>
@@ -139,11 +160,10 @@ const NewCompanyForm = ({ visible, onCancel, onCreate }) => {
                           label="Currency"
                         >
                           <Select size="large">
-                            <Select.Option value="jack">Jack</Select.Option>
-                            <Select.Option value="lucy">Lucy</Select.Option>
-                            <Select.Option value="Yiminghe">
-                              yiminghe
-                            </Select.Option>
+                            <Select.Option value="USD">USD</Select.Option>
+                            <Select.Option value="Euro">Euro</Select.Option>
+                            <Select.Option value="CAD">CAD</Select.Option>
+                           
                           </Select>
                         </Form.Item>
                       </Col>
