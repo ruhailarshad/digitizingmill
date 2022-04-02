@@ -5,7 +5,7 @@ import HeadAndContent from "../../../core/HeadAndContent";
 import UserCard from "./UserCard";
 const { Search } = Input;
 
-const NewUserAdd = ({ name, data, isLoading,  btnHandler,onSearchChange}) => {
+const NewUserAdd = ({ name, data, isLoading,  btnHandler, onSearchChange}) => {
 
  
 
@@ -17,7 +17,7 @@ const NewUserAdd = ({ name, data, isLoading,  btnHandler,onSearchChange}) => {
     
     const users = data?.map(user => (
       <Col span={6} xs={24} md={8} lg={6}>
-          <UserCard name={user.name} />
+          <UserCard userId={user.userId} name={user.name} />
         </Col>
     ));
 

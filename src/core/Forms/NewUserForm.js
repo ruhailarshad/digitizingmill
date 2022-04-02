@@ -3,7 +3,18 @@ import { UploadOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import ImgCrop from 'antd-img-crop'
 import { normFile, onPreview } from "./utils";
-const NewUserForm = ({ visible, onCreate, onCancel }) => {
+
+import { usePostUser } from "../../pages/Admin/request";
+
+const NewUserForm = ({ visible, onCreate, onCancel, refetchUsers, toggleModal, userRole = '' }) => {
+
+  const onSuccess = () => {
+    toggleModal();
+    refetchUsers();
+  }
+  // Sales Agent User create Request
+  const {isLoading: isCreatingUser, mutate} = usePostUser({ onSuccess });
+
   const [fileList, setFileList] = useState([
   
   ]);
@@ -45,8 +56,20 @@ const NewUserForm = ({ visible, onCreate, onCancel }) => {
             form.resetFields();
             onCreate(values);
           })
-          .catch((info) => {
-            console.log("Validate Failed:", info);
+          .catch(({ values }) => {
+            const uploadArray = values.upload;
+            delete values.upload;
+            delete values.profile;
+            const profilePic = uploadArray[0].originFileObj;
+            const cnicBackPic = uploadArray[0].originFileObj;
+            const cnicFrontPic = uploadArray[0].originFileObj;
+
+            const uploadData = {...values, role: userRole, profilePic, cnicBackPic, cnicFrontPic};
+
+            mutate(uploadData);
+
+            console.log('upload data', uploadData);
+            console.log("Validate Failed:", values);
           });
       }}
     >
@@ -72,10 +95,10 @@ const NewUserForm = ({ visible, onCreate, onCancel }) => {
             >
               <ImgCrop rotate>
                 <Upload
-                onChange={onChange}
-                customRequest={dummyRequest}
+                  customRequest={dummyRequest}
                   listType="picture-card"
                   onPreview={onPreview}
+                  maxCount={1}
                 >
                 {fileList.length < 1 && '+ Upload'}
                 </Upload>
@@ -98,7 +121,7 @@ const NewUserForm = ({ visible, onCreate, onCancel }) => {
           </Col>
           <Col xl={12} md={24} xs={24}>
             <Form.Item
-              name="contact"
+              name="contactNo"
               label="Contact No"
               rules={[
                 {
@@ -154,16 +177,16 @@ const NewUserForm = ({ visible, onCreate, onCancel }) => {
           </Col>
           <Col xl={12} md={24} xs={24}>
             <Form.Item
-              name="cnic"
+              name="cnicNo"
               label="CNIC No"
               rules={[
                 {
-                  required: true,
-                  message: "Please input the title of collection!",
+                  required: {match: /\d{5}-\d{4}-\d{3}-\d{1}/},
+                  message: "CNIC Number should be formatted like, XXXXX-XXXX-XXX-X",
                 },
               ]}
             >
-              <Input type="password" size="large" />
+              <Input type="text" size="large" />
             </Form.Item>
           </Col>
           <Col xl={12} md={24} xs={24}>
