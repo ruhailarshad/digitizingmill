@@ -150,12 +150,12 @@ export const orderColumns= [
     },
    
   ];
-export const companyColumns = (editing, save, cancel, edit,viewHandler) => {
+export const companyColumns = (editing, save, cancel, edit,viewHandler,deleteHandler) => {
   return [
     {
       title: "Company Id",
       dataIndex: "companyId",
-      sorter: (a, b) => a.company_id - b.company_id,
+      sorter: (a, b) => a.companyId - b.companyId,
     },
     {
       title: "Registration Date",
@@ -164,17 +164,14 @@ export const companyColumns = (editing, save, cancel, edit,viewHandler) => {
     {
       title: "Company Name",
       dataIndex: "companyName",
-      editable: true,
     },
     {
       title: "Contact No",
       dataIndex: "phone",
-      editable: true,
     },
     {
       title: "Email Address",
       dataIndex: "emailAddress",
-      editable: true,
     },
     {
       title: "Sales Agent",
@@ -189,12 +186,12 @@ export const companyColumns = (editing, save, cancel, edit,viewHandler) => {
           Modal.confirm({
             title: "Confirm",
             icon: <ExclamationCircleOutlined />,
-            content: "Do you want to delete these items?",
+            content: "Do you want to delete this items?",
 
             okText: "Yes",
             okType: "danger",
             cancelText: "No",
-            // onOk: () => delete(record.id),
+            onOk: () => deleteHandler(record.companyId),
           });
         };
         const editable = editing(record);
@@ -207,7 +204,7 @@ export const companyColumns = (editing, save, cancel, edit,viewHandler) => {
             {editable ? (
               <span>
                 <div
-                  onClick={() => save(record.id)}
+                  onClick={() => save(record.companyId)}
                   style={{
                     marginRight: 8,
                   }}

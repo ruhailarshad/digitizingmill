@@ -5,6 +5,7 @@ import { companyColumns } from "../../../constants/tableColumns";
 import { CustomTable } from "../../../core";
 import NewCompanyForm from "../../../core/Forms/NewCompanyForm";
 import HeadAndContent from "../../../core/HeadAndContent";
+import { useDeleteCompany } from "../../../hooks/useDeleteCompany";
 import { useGetAllCompany } from "../../../hooks/useGetAllCompany";
 const tableData = [
   {
@@ -20,11 +21,15 @@ const CompanyDetailsContainer = () => {
   const [editingKey, setEditingKey] = useState("");
   const [data, setData] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [editModal, setEditModal] = useState(false);
   const [form] = Form.useForm();
- 
+ console.log(data,"data")
   const { data: AllCompany ,isLoading:isAllCompanyLoading} = useGetAllCompany();
+  const { mutate } = useDeleteCompany();
+
   console.log(AllCompany,"all")
   const edit = (record) => {
+    console.log(record,"record")
     form.setFieldsValue({
       company_name: "",
       contact_no: "",
@@ -32,23 +37,23 @@ const CompanyDetailsContainer = () => {
       sales_agent: "",
       ...record,
     });
-    setEditingKey(record.key);
+    setEditingKey(record.companyId);
   };
-  const isEditing = (record) => record.key === editingKey;
+  const isEditing = (record) => record.companyId === editingKey;
 
   const cancel = () => {
     setEditingKey("");
   };
   const viewHandler = (values) => {
-    setVisible(true);
+    setEditModal(true);
     setData(values);
   };
-  const save = async (key) => {
+  const save = async (companyId) => {
     try {
       // eslint-disable-next-line no-undef
       const row = await form.validateFields();
       const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
+      const index = newData.findIndex((item) => companyId === item.companyId);
 
       if (index > -1) {
         const item = newData[index];
@@ -64,7 +69,10 @@ const CompanyDetailsContainer = () => {
       console.log("Validate Failed:", errInfo);
     }
   };
-  const columns = companyColumns(isEditing, save, cancel, edit, viewHandler);
+  const deleteHandler=(id)=>{
+    mutate(id)
+  }
+  const columns = companyColumns(isEditing, save, cancel, edit, viewHandler,deleteHandler);
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {
       return col;
@@ -81,6 +89,7 @@ const CompanyDetailsContainer = () => {
       }),
     };
   });
+ 
   return (
     <>
       <HeadAndContent
@@ -91,9 +100,15 @@ const CompanyDetailsContainer = () => {
           loading={isAllCompanyLoading}
           data={AllCompany?.companies} />
       </HeadAndContent>
+      {editModal && (
+        <NewCompanyForm
+          id={data.companyId }
+          visible={editModal}
+          onCancel={() => setEditModal(false)}
+        />
+      )}
       {visible && (
         <NewCompanyForm
-          data={AllCompany}
           visible={visible}
           onCancel={() => setVisible(false)}
         />
