@@ -121,7 +121,7 @@ const NewCompanyForm = ({ visible, onCancel, id }) => {
                   },
                 ]}
               >
-                <InputNumber type="number" size="large" />
+                <Input type="text" size="large" />
               </Form.Item>
             </Col>
 

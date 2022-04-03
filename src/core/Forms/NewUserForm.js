@@ -10,6 +10,7 @@ const NewUserForm = ({ visible, onCancel, refetchUsers, userRole = '' }) => {
   const [form] = Form.useForm();
 
   const onSuccess = () => {
+    refetchUsers();
     form.resetFields();
     onCancel();
   }
@@ -47,22 +48,22 @@ const NewUserForm = ({ visible, onCancel, refetchUsers, userRole = '' }) => {
         form
           .validateFields()
           .then((values) => {
+            // Error araha he catch chalega tou API hit hjaegi
+          })
+          .catch(({ values }) => {
             console.log('user', values);
             const uploadArray = values.upload;
-            const profilePic=values.profile.originFileObj
+            // const profilePic=values.profile.originFileObj
             delete values.upload;
             delete values.profile;
-            const cnicBackPic = uploadArray[0].originFileObj;
-            const cnicFrontPic = uploadArray[0].originFileObj;
+            // const cnicBackPic = uploadArray[0].originFileObj;
+            // const cnicFrontPic = uploadArray[0].originFileObj;
 
-            const uploadData = {...values, role: userRole, profilePic, cnicBackPic, cnicFrontPic};
+            const uploadData = {...values, role: userRole};
 
             mutate(uploadData);
 
             console.log('upload data', uploadData);
-          })
-          .catch(({ values }) => {
-           
             console.log("Validate Failed:", values);
           });
       }}
@@ -124,7 +125,7 @@ const NewUserForm = ({ visible, onCancel, refetchUsers, userRole = '' }) => {
                 },
               ]}
             >
-              <InputNumber className="w-[100%]" size="large" />
+              <Input className="w-[100%]" size="large" />
             </Form.Item>
           </Col>
           <Col xl={12} md={24} xs={24}>
@@ -172,20 +173,16 @@ const NewUserForm = ({ visible, onCancel, refetchUsers, userRole = '' }) => {
           <Col xl={12} md={24} xs={24}>
             <Form.Item
               name="cnicNo"
+              type="text"
               label="CNIC No"
               rules={[
                 {
                   required: {match: /\d{5}-\d{4}-\d{3}-\d{1}/},
                   message: "CNIC Number should be formatted like, XXXXX-XXXX-XXX-X",
                 },
-                {
-                  max: 3,
-                  message: "CNIC Number should be 13 digits",
-                },
               ]}
             >
-              <InputNumber 
-              className="w-[100%]" size="large" />
+              <Input className="w-[100%]" size="large" />
             </Form.Item>
           </Col>
           <Col xl={12} md={24} xs={24}>
