@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, message, Modal, Row, Upload } from "antd";
+import { Button, Col, Form, Input, InputNumber, message, Modal, Row, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import ImgCrop from 'antd-img-crop'
@@ -6,22 +6,18 @@ import { normFile, onPreview } from "./utils";
 
 import { usePostUser } from "../../pages/Admin/request";
 
-const NewUserForm = ({ visible, onCreate, onCancel, refetchUsers, toggleModal, userRole = '' }) => {
+const NewUserForm = ({ visible, onCancel, refetchUsers, userRole = '' }) => {
+  const [form] = Form.useForm();
 
   const onSuccess = () => {
-    toggleModal();
-    refetchUsers();
+    form.resetFields();
+    onCancel();
   }
   // Sales Agent User create Request
   const {isLoading: isCreatingUser, mutate} = usePostUser({ onSuccess });
 
-  const [fileList, setFileList] = useState([
-  
-  ]);
 
-  const onChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
-  };
+
   
   function beforeUpload(file) {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
@@ -39,7 +35,6 @@ const NewUserForm = ({ visible, onCreate, onCancel, refetchUsers, toggleModal, u
       onSuccess("ok");
     }, 0);
   };
-  const [form] = Form.useForm();
   return (
     <Modal
       visible={visible}
@@ -52,15 +47,11 @@ const NewUserForm = ({ visible, onCreate, onCancel, refetchUsers, toggleModal, u
         form
           .validateFields()
           .then((values) => {
-            console.log('values', values);
-            form.resetFields();
-            onCreate(values);
-          })
-          .catch(({ values }) => {
+            console.log('user', values);
             const uploadArray = values.upload;
+            const profilePic=values.profile.originFileObj
             delete values.upload;
             delete values.profile;
-            const profilePic = uploadArray[0].originFileObj;
             const cnicBackPic = uploadArray[0].originFileObj;
             const cnicFrontPic = uploadArray[0].originFileObj;
 
@@ -69,6 +60,9 @@ const NewUserForm = ({ visible, onCreate, onCancel, refetchUsers, toggleModal, u
             mutate(uploadData);
 
             console.log('upload data', uploadData);
+          })
+          .catch(({ values }) => {
+           
             console.log("Validate Failed:", values);
           });
       }}
@@ -84,6 +78,7 @@ const NewUserForm = ({ visible, onCreate, onCancel, refetchUsers, toggleModal, u
         <Row gutter={20}>
           <Col span={24} >
             <Form.Item
+           
               name="profile"
               label="Profile Picture"
               rules={[
@@ -92,16 +87,15 @@ const NewUserForm = ({ visible, onCreate, onCancel, refetchUsers, toggleModal, u
                   message: "",
                 },
               ]}
+              valuePropName="file"
+            
             >
               <ImgCrop rotate>
-                <Upload
-                  customRequest={dummyRequest}
-                  listType="picture-card"
-                  onPreview={onPreview}
-                  maxCount={1}
-                >
-                {fileList.length < 1 && '+ Upload'}
-                </Upload>
+              <Upload onPreview={onPreview}
+                 customRequest={dummyRequest}
+                listType="picture-card" maxCount={1} onChange={(e)=>form.setFieldsValue({profile:e.file})}>
+                Upload
+              </Upload>
               </ImgCrop>
             </Form.Item>
           </Col>
@@ -130,7 +124,7 @@ const NewUserForm = ({ visible, onCreate, onCancel, refetchUsers, toggleModal, u
                 },
               ]}
             >
-              <Input size="large" />
+              <InputNumber className="w-[100%]" size="large" />
             </Form.Item>
           </Col>
           <Col xl={12} md={24} xs={24}>
@@ -184,21 +178,26 @@ const NewUserForm = ({ visible, onCreate, onCancel, refetchUsers, toggleModal, u
                   required: {match: /\d{5}-\d{4}-\d{3}-\d{1}/},
                   message: "CNIC Number should be formatted like, XXXXX-XXXX-XXX-X",
                 },
+                {
+                  max: 3,
+                  message: "CNIC Number should be 13 digits",
+                },
               ]}
             >
-              <Input type="text" size="large" />
+              <InputNumber 
+              className="w-[100%]" size="large" />
             </Form.Item>
           </Col>
           <Col xl={12} md={24} xs={24}>
             <Form.Item
               name="upload"
-              label="Upload"
+              label="CNIC"
               valuePropName="fileList"
               getValueFromEvent={normFile}
             >
               <Upload onPreview={onPreview}
                  customRequest={dummyRequest}
-                listType="picture" name="logo" maxCount={2} >
+                listType="picture" name="cnic" maxCount={2} >
                 <Button danger size="medium" icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>
             </Form.Item>

@@ -9,7 +9,11 @@ import HeadAndContent from "../../../core/HeadAndContent";
 import StatsCard from "../../../core/StatsCard";
 import CustomTable from "../../../core/Table/Table";
 import NewUserAdd from "../Common/NewUserAdd";
+import jwt_decode from "jwt-decode"
 import { data } from "../OrderDetails/utils";
+
+const token=localStorage.getItem('access_token')
+const {data:userData} = jwt_decode(token);
 const DashboardStats = (
   <Row align="center" gutter={[10, 10]}>
     {dashboardStats(267, 5, 5, 5).map((item, i) => (
@@ -19,7 +23,6 @@ const DashboardStats = (
     ))}
   </Row>
 );
-
 const DashboardContainer = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const onCreate=()=>{
@@ -32,11 +35,11 @@ const DashboardContainer = () => {
           <Col xl={6} lg={10} >
             <UserCard
               data={{
-                name: "Ruhail Arshad",
-                role: "Admin",
-                email: "ruhailarshad@gmail.com",
-                number: "03462880800",
-                address: "saleem north karachi",
+                name: userData.name,
+                role: userData.role,
+                email: userData.email,
+                number: userData.contactNo,
+                address: userData.address,
               }}
               btnHandler={()=>setIsModalVisible(true)}
             />
