@@ -32,16 +32,17 @@ export const usePostUser = ({onSuccess = () => {}, onError = () => {}}) => {
 }
 
 
-const fetchUserById = async (id) => {
-    return instance.get(`/api/user/${id}`);
+const fetchUserById = async (id, role) => {
+    return instance.get(`/api/user/${id}/role/${role}`);
 }
 
 export const useUserById = ({
     id,
+    role,
     onSucess = () => {},
     onError = () => {}
 }) => {
-    return useQuery(['api/user',id], () => fetchUserById(id), {
+    return useQuery(['api/user',id, role], () => fetchUserById(id, role), {
         onSucess,
         onError
     });

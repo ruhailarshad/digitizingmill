@@ -73,8 +73,7 @@ const UserDetails = ({ data = { src: "" } ,stats}) => {
             </Col>
           ))}
         </Row>
-      );
-      
+      );   
 
   return (
     <div className="p-40">
@@ -100,6 +99,7 @@ const UserDetails = ({ data = { src: "" } ,stats}) => {
                     className="rounded-[20px] mt-10"
                     danger
                     size="large"
+                    //TODO: Ruhail will integrate the user call here
                   >
                     Edit Details
                   </Button>
@@ -127,7 +127,7 @@ const UserDetails = ({ data = { src: "" } ,stats}) => {
                         </Col>
                         <Col>
                           <Text type="h5" styles="text-gray-30 h5-med">
-                            {data.number}
+                            {data.contactNo}
                           </Text>
                         </Col>
                       </Row>

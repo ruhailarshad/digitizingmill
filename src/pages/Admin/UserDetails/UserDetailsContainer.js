@@ -1,18 +1,37 @@
 import React from "react";
 import { detailsStats } from "../../../constants/stats";
 import UserDetails from "../Common/UserDetails";
+import { useParams } from "react-router-dom";
+import { useUserById } from "../request";
 
 const UserDetailsContainer = () => {
+  const { id } = useParams();
+  const {data, isLoading} = useUserById({
+    id,
+    role: 'sales-agent'
+  });
+  
+  const getCurrencyWiseStats = (currencyName) => {
+    if(data?.userStats[currencyName]) {
+      return data.userStats[currencyName].sales;
+    }
+    return 0;
+  }
+
+  const getSalesByCAD = getCurrencyWiseStats('CAD');
+  const getSalesByUSD = getCurrencyWiseStats('USD');
+  const getSalesByEuro = getCurrencyWiseStats('Euro');
+  const getCompanies = data?.totalCompanies || 0;
+
   return (
     <UserDetails
-      data={{
-        name: "Ruhail Arshad",
-        role: "Admin",
-        email: "ruhailarshad@gmail.com",
-        number: "03462880800",
-        address: "saleem north karachi",
-      }}
-      stats={detailsStats(256, 6, 6, 6)}
+      data={data?.userData ?  {
+        ...data.userData[0]
+      } :{ }}
+      userCompanies={data?.userCompanies?.companies}
+      userSales={data?.userOrders}
+      isLoading={isLoading}
+      stats={detailsStats(getCompanies, getSalesByUSD, getSalesByCAD, getSalesByEuro)}
     />
   );
 };
