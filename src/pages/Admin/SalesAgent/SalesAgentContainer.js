@@ -19,17 +19,13 @@ const SalesAgentContainer = () => {
 
   const usersData = data;
   
-  const onCreate = (values) => {
-    setIsModalVisible(false);
-  };
+ 
   return (
     <div>
       <NewUserForm
         visible={isModalVisible}
-        onCreate={onCreate}
         onCancel={() => 
           setIsModalVisible(false)}
-        toggleModal={() => setIsModalVisible(prev => !prev)}
         refetchUsers={refetch}
         userRole='sales-agent'
       />
