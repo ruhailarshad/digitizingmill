@@ -25,7 +25,7 @@ const CompanyDetailsContainer = () => {
   const [form] = Form.useForm();
  console.log(data,"data")
   const { data: AllCompany ,isLoading:isAllCompanyLoading} = useGetAllCompany();
-  const { mutate } = useDeleteCompany();
+  const { mutate:deleteCompany } = useDeleteCompany();
 
   console.log(AllCompany,"all")
   const edit = (record) => {
@@ -70,7 +70,7 @@ const CompanyDetailsContainer = () => {
     }
   };
   const deleteHandler=(id)=>{
-    mutate(id)
+    deleteCompany(id)
   }
   const columns = companyColumns(isEditing, save, cancel, edit, viewHandler,deleteHandler);
   const mergedColumns = columns.map((col) => {

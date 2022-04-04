@@ -5,44 +5,53 @@ import {
   Form,
   Input,
   InputNumber,
+  message,
   Modal,
   Row,
   Select,
 } from "antd";
-import jwt_decode from "jwt-decode"
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { usePostCompanyDetails } from "../../hooks/usePostCompanyDetails";
 import { useGetCompanyById } from "../../hooks/useGetCompanyById";
 import { LoadingOutlined } from "@ant-design/icons";
-import { QueryClient } from "react-query";
+import { useQueryClient } from "react-query";
+import { getUserData } from "../../services/utils";
+import { useUpdateCompany } from "../../hooks/useUpdateCompany";
+
+
 const NewCompanyForm = ({ visible, onCancel, id }) => {
   // const token = localStorage.getItem(accessTokenKey);
-
+const queryClient=useQueryClient()
   const [form] = Form.useForm();
-  const onSuccess = () => {
+
+  const onCompanyAddSuccess = () => {
     form.resetFields();
     onCancel();
-    QueryClient.invalidateQueries("company-admin-query");
+    queryClient.invalidateQueries("company-add-query");
+    message.success('Company Added Successfully');
+  };
+  const onCompanyUpdateSuccess = () => {
+    onCancel();
+    queryClient.invalidateQueries("company-add-query");
+    message.success('Company Updated Successfully');
   };
   const onGetByIdSuccess = (data) => {
-    console.log(data, "onSuccess");
     form.setFieldsValue({
       ...data?.company,
       sizes: data?.company.design_sizes,
     });
   };
-  
-  const { mutate, isLoading } = usePostCompanyDetails(onSuccess);
+  const {mutate:updateCompany}=useUpdateCompany(onCompanyUpdateSuccess)
+  const { mutate:companyAddMutate } = usePostCompanyDetails(onCompanyAddSuccess);
   const { isLoading: isCompanyByIDLoading } = useGetCompanyById(
     id,
     onGetByIdSuccess
   );
   const onCreate = (values) => {
-    const token=localStorage.getItem('access_token')
-    var decoded = jwt_decode(token);
-    console.log(decoded,"decode")
+ const decoded=getUserData()
     const newValues={...values,userId:decoded.data.userId}
-    mutate(newValues);
+    !id ? companyAddMutate(newValues) :
+    updateCompany({...newValues,companyId:id})
   };
   return (
     <Modal

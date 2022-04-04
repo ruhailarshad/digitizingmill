@@ -1,5 +1,6 @@
 import { Col, Row } from "antd";
 import React, { useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import { dashboardStats } from "../../../constants/stats";
 import { orderColumns } from "../../../constants/tableColumns";
 import DashboardChart from "../../../core/Dashboard/DashboardChart";
@@ -8,6 +9,7 @@ import NewUserForm from "../../../core/Forms/NewUserForm";
 import HeadAndContent from "../../../core/HeadAndContent";
 import StatsCard from "../../../core/StatsCard";
 import CustomTable from "../../../core/Table/Table";
+import { useGetUserById } from "../../../hooks/User/useGetUserById";
 import { data } from "../../Admin/OrderDetails/utils";
 
 const DashboardStats = (
@@ -21,9 +23,12 @@ const DashboardStats = (
 );
 const DashboardContainer = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const onCreate=()=>{
-    
-  }
+  const { tokenData }=useOutletContext()
+  console.log(tokenData)
+  const { data:userData, isLoading } = useGetUserById({
+    id:tokenData.userId,
+    role:'sales-agent',
+  });
   return (
     <>
       <HeadAndContent heading="Dashboard">
@@ -31,11 +36,11 @@ const DashboardContainer = () => {
           <Col xl={6}>
             <UserCard
               data={{
-                name: "Ruhail Arshad",
-                role: "Sales Agent",
-                email: "monismazher@gmail.com",
-                number: "03462880800",
-                address: "saleem north karachi",
+                name: userData?.userData[0]?.name,
+                role: userData?.userData[0]?.role,
+                email: userData?.userData[0]?.email,
+                number: userData?.userData[0]?.contactNo,
+                address: userData?.userData[0]?.address,
               }}
               btnHandler={()=>setIsModalVisible(true)}
             />
@@ -50,12 +55,14 @@ const DashboardContainer = () => {
         </Row>
         <CustomTable column={orderColumns} data={data} />
       </HeadAndContent>
-      <NewUserForm
+      {isModalVisible &&  <NewUserForm
         visible={isModalVisible}
-        onCreate={onCreate}
+        data={userData?.userData[0]}
+        userRole={tokenData.role}
+        id={tokenData.userId}
         onCancel={() => 
           setIsModalVisible(false)}
-      />s
+      />}
     </>
   );
 };

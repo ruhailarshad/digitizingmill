@@ -5,5 +5,5 @@ const fetchAllCompany = () => {
 }
 
 export const useGetAllCompany = (   ) => {
-    return useQuery('company-admin-query',fetchAllCompany)
+    return useQuery('company-add-query',fetchAllCompany)
 }

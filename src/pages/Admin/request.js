@@ -2,6 +2,7 @@ import { useMutation, useQuery } from 'react-query';
 
 import instance from '../../services/AxiosConfig';
 import qs from 'qs';
+import { data } from 'autoprefixer';
 
 const fetchUsers = async (queryString) => {
     return instance.get(`/api/user${queryString}`);
@@ -31,19 +32,3 @@ export const usePostUser = ({onSuccess = () => {}, onError = () => {}}) => {
     })
 }
 
-
-const fetchUserById = async (id, role) => {
-    return instance.get(`/api/user/${id}/role/${role}`);
-}
-
-export const useUserById = ({
-    id,
-    role,
-    onSucess = () => {},
-    onError = () => {}
-}) => {
-    return useQuery(['api/user',id, role], () => fetchUserById(id, role), {
-        onSucess,
-        onError
-    });
-}

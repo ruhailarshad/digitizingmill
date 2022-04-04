@@ -25,7 +25,7 @@ const DigitizerContainer = () => {
   };
   return (
     <div>
-      <NewUserForm
+    {isModalVisible &&  <NewUserForm
         visible={isModalVisible}
         onCreate={onCreate}
         onCancel={() => 
@@ -33,7 +33,7 @@ const DigitizerContainer = () => {
         userRole='digitizer'
         refetchUsers={refetch}
         toggleModal={() => setIsModalVisible(false)}
-      />
+      />}
       <NewUserAdd
         onSearchChange={(value) => setSearchTerm(value)}
         data={usersData}

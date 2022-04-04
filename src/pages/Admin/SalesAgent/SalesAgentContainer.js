@@ -12,23 +12,22 @@ const SalesAgentContainer = () => {
     openErrorNotification(error.response);
   }
   console.log(searchTerm,"searchTerm")
-  const { isLoading, data, refetch } = useUserData({
+  const { isLoading, data:usersData } = useUserData({
     queryParams: {name: searchTerm, role: 'sales-agent'},
     onError,
   });
 
-  const usersData = data;
   
  
   return (
     <div>
-      <NewUserForm
+     {isModalVisible && <NewUserForm
         visible={isModalVisible}
         onCancel={() => 
           setIsModalVisible(false)}
-        refetchUsers={refetch}
         userRole='sales-agent'
       />
+        }
       <NewUserAdd
         isLoading={isLoading}
         name="Sales Agent"

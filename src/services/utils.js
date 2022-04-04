@@ -1,5 +1,6 @@
-export const parseJwt=(token)=> {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    console.log(JSON.parse((btoa(base64))))
+import jwt_decode from "jwt-decode"
+
+export const getUserData=()=> {
+    const token=localStorage.getItem('access_token')
+    return jwt_decode(token);
   };

@@ -14,7 +14,6 @@ const CustomTable = ({ column, data=[],selection=false,loading=false }) => {
       }
    
     }, [data])
-    console.log(formData)
   const rowHandler = {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(

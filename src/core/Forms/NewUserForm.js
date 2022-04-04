@@ -1,36 +1,56 @@
-import { Button, Col, Form, Input, InputNumber, message, Modal, Row, Upload } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Modal,
+  Row,
+  Upload,
+} from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import { useState } from "react";
-import ImgCrop from 'antd-img-crop'
+import ImgCrop from "antd-img-crop";
 import { normFile, onPreview } from "./utils";
+import { LoadingOutlined } from "@ant-design/icons";
+import { useEffect } from "react";
+import { usePostUser } from "../../hooks/User/usePostUser";
+import { useUpdateUser } from "../../hooks/User/useUpdateUser";
+import { useQueryClient } from "react-query";
 
-import { usePostUser } from "../../pages/Admin/request";
-
-const NewUserForm = ({ visible, onCancel, refetchUsers, userRole = '' }) => {
+const NewUserForm = ({
+  visible,
+  onCancel,
+  userRole = "",
+  data,
+  isLoading
+  ,id
+}) => {
+  const queryClient=useQueryClient()
   const [form] = Form.useForm();
+  useEffect(() => {
+    if (data) {
+      form.setFieldsValue(data);
+    }
+    console.log(data)
+  }, [data, form]);
 
   const onSuccess = () => {
-    refetchUsers();
     form.resetFields();
     onCancel();
-  }
+    queryClient.invalidateQueries('user-byid')
+    message.success('User Added Successfully')
+  };
+  const onUserUpdateSuccess = () => {
+    onCancel();
+    queryClient.invalidateQueries('user-byid')
+    message.success('User Updated Successfully')
+  };
+
   // Sales Agent User create Request
-  const {isLoading: isCreatingUser, mutate} = usePostUser({ onSuccess });
+  const { isLoading: isCreatingUser, mutate:addUser } = usePostUser(onSuccess);
+  const { isLoading: isAddingUser, mutate:updateUser } = useUpdateUser(onUserUpdateSuccess);
 
-
-
-  
-  function beforeUpload(file) {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error("Image must smaller than 2MB!");
-    }
-    return isJpgOrPng && isLt2M;
-  }
   const dummyRequest = ({ file, onSuccess }) => {
     setTimeout(() => {
       onSuccess("ok");
@@ -39,8 +59,8 @@ const NewUserForm = ({ visible, onCancel, refetchUsers, userRole = '' }) => {
   return (
     <Modal
       visible={visible}
-      title="Create a new collection"
-      okText="Create"
+      title={data ? "Update User Profile" : "Create New User"}
+      okText={data ? "Update" : "Create"}
       cancelText="Cancel"
       onCancel={onCancel}
       width={800}
@@ -51,7 +71,7 @@ const NewUserForm = ({ visible, onCancel, refetchUsers, userRole = '' }) => {
             // Error araha he catch chalega tou API hit hjaegi
           })
           .catch(({ values }) => {
-            console.log('user', values);
+            console.log("user", values);
             const uploadArray = values.upload;
             // const profilePic=values.profile.originFileObj
             delete values.upload;
@@ -59,148 +79,160 @@ const NewUserForm = ({ visible, onCancel, refetchUsers, userRole = '' }) => {
             // const cnicBackPic = uploadArray[0].originFileObj;
             // const cnicFrontPic = uploadArray[0].originFileObj;
 
-            const uploadData = {...values, role: userRole};
+            const uploadData = { ...values, role: userRole };
 
-            mutate(uploadData);
+            !data ? addUser(uploadData) : updateUser({...uploadData,userId:id});
 
-            console.log('upload data', uploadData);
             console.log("Validate Failed:", values);
           });
       }}
     >
-      <Form
-        form={form}
-        layout="vertical"
-        name="form_in_modal"
-        initialValues={{
-          modifier: "public",
-        }}
-      >
-        <Row gutter={20}>
-          <Col span={24} >
-            <Form.Item
-           
-              name="profile"
-              label="Profile Picture"
-              rules={[
-                {
-                  required: true,
-                  message: "",
-                },
-              ]}
-              valuePropName="file"
-            
-            >
-              <ImgCrop rotate>
-              <Upload onPreview={onPreview}
-                 customRequest={dummyRequest}
-                listType="picture-card" maxCount={1} onChange={(e)=>form.setFieldsValue({profile:e.file})}>
-                Upload
-              </Upload>
-              </ImgCrop>
-            </Form.Item>
-          </Col>
-          <Col xl={12} md={24} xs={24}>
-            <Form.Item
-              name="name"
-              label="Name"
-              rules={[
-                {
-                  required: true,
-                  message: "Name is required",
-                },
-              ]}
-            >
-              <Input size="large" />
-            </Form.Item>
-          </Col>
-          <Col xl={12} md={24} xs={24}>
-            <Form.Item
-              name="contactNo"
-              label="Contact No"
-              rules={[
-                {
-                  required: true,
-                  message: "Contact No is Required",
-                },
-              ]}
-            >
-              <Input className="w-[100%]" size="large" />
-            </Form.Item>
-          </Col>
-          <Col xl={12} md={24} xs={24}>
-            <Form.Item
-              name="address"
-              label="Address"
-              rules={[
-                {
-                  required: true,
-                  message: "Address is Required",
-                },
-              ]}
-            >
-              <Input size="large" />
-            </Form.Item>
-          </Col>
-          <Col xl={12} md={24} xs={24}>
-            <Form.Item
-              name="email"
-              label="Email"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input the title of collection!",
-                },
-              ]}
-            >
-              <Input size="large" />
-            </Form.Item>
-          </Col>
-          <Col xl={12} md={24} xs={24}>
-            <Form.Item
-              name="password"
-              label="Password"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input the title of collection!",
-                },
-              ]}
-            >
-              <Input type="password" size="large" />
-            </Form.Item>
-          </Col>
-          <Col xl={12} md={24} xs={24}>
-            <Form.Item
-              name="cnicNo"
-              type="text"
-              label="CNIC No"
-              rules={[
-                {
-                  required: {match: /\d{5}-\d{4}-\d{3}-\d{1}/},
-                  message: "CNIC Number should be formatted like, XXXXX-XXXX-XXX-X",
-                },
-              ]}
-            >
-              <Input className="w-[100%]" size="large" />
-            </Form.Item>
-          </Col>
-          <Col xl={12} md={24} xs={24}>
-            <Form.Item
-              name="upload"
-              label="CNIC"
-              valuePropName="fileList"
-              getValueFromEvent={normFile}
-            >
-              <Upload onPreview={onPreview}
-                 customRequest={dummyRequest}
-                listType="picture" name="cnic" maxCount={2} >
-                <Button danger size="medium" icon={<UploadOutlined />}>Click to upload</Button>
-              </Upload>
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form>
+      {isLoading ? (
+        <LoadingOutlined style={{ fontSize: 24 }} spin />
+      ) : (
+        <Form
+          form={form}
+          layout="vertical"
+          name="form_in_modal"
+          initialValues={{
+            modifier: "public",
+          }}
+        >
+          <Row gutter={20}>
+            <Col span={24}>
+              <Form.Item
+                name="profile"
+                label="Profile Picture"
+                rules={[
+                  {
+                    required: true,
+                    message: "",
+                  },
+                ]}
+                valuePropName="file"
+              >
+                <ImgCrop rotate>
+                  <Upload
+                    onPreview={onPreview}
+                    customRequest={dummyRequest}
+                    listType="picture-card"
+                    maxCount={1}
+                    onChange={(e) => form.setFieldsValue({ profile: e.file })}
+                  >
+                    Upload
+                  </Upload>
+                </ImgCrop>
+              </Form.Item>
+            </Col>
+            <Col xl={12} md={24} xs={24}>
+              <Form.Item
+                name="name"
+                label="Name"
+                rules={[
+                  {
+                    required: true,
+                    message: "Name is required",
+                  },
+                ]}
+              >
+                <Input size="large" />
+              </Form.Item>
+            </Col>
+            <Col xl={12} md={24} xs={24}>
+              <Form.Item
+                name="contactNo"
+                label="Contact No"
+                rules={[
+                  {
+                    required: true,
+                    message: "Contact No is Required",
+                  },
+                ]}
+              >
+                <Input className="w-[100%]" size="large" />
+              </Form.Item>
+            </Col>
+            <Col xl={12} md={24} xs={24}>
+              <Form.Item
+                name="address"
+                label="Address"
+                rules={[
+                  {
+                    required: true,
+                    message: "Address is Required",
+                  },
+                ]}
+              >
+                <Input size="large" />
+              </Form.Item>
+            </Col>
+            <Col xl={12} md={24} xs={24}>
+              <Form.Item
+                name="email"
+                label="Email"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input the title of collection!",
+                  },
+                ]}
+              >
+                <Input size="large" />
+              </Form.Item>
+            </Col>
+            <Col xl={12} md={24} xs={24}>
+              <Form.Item
+                name="password"
+                label="Password"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input the title of collection!",
+                  },
+                ]}
+              >
+                <Input type="password" size="large" />
+              </Form.Item>
+            </Col>
+            <Col xl={12} md={24} xs={24}>
+              <Form.Item
+                name="cnicNo"
+                type="text"
+                label="CNIC No"
+                rules={[
+                  {
+                    required: { match: /\d{5}-\d{4}-\d{3}-\d{1}/ },
+                    message:
+                      "CNIC Number should be formatted like, XXXXX-XXXX-XXX-X",
+                  },
+                ]}
+              >
+                <Input className="w-[100%]" size="large" />
+              </Form.Item>
+            </Col>
+            <Col xl={12} md={24} xs={24}>
+              <Form.Item
+                name="upload"
+                label="CNIC"
+                valuePropName="fileList"
+                getValueFromEvent={normFile}
+              >
+                <Upload
+                  onPreview={onPreview}
+                  customRequest={dummyRequest}
+                  listType="picture"
+                  name="cnic"
+                  maxCount={2}
+                >
+                  <Button danger size="medium" icon={<UploadOutlined />}>
+                    Click to upload
+                  </Button>
+                </Upload>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      )}
     </Modal>
   );
 };

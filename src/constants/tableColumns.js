@@ -261,10 +261,7 @@ export const companyColumnsNonEditable = [
     title: "Email Address",
     dataIndex: "email_adress",
   },
-  {
-    title: "Sales Agent",
-    dataIndex: "sales_agent",
-  },
+  
 ];
 export const DigitizerOrderColumns = [
   {

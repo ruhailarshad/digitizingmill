@@ -7,6 +7,8 @@ import { IoMdCall } from "react-icons/io";
 import { BsFillHouseDoorFill } from "react-icons/bs";
 import StatsCard from "../../../core/StatsCard";
 import { companyColumnsNonEditable, orderColumns } from "../../../constants/tableColumns";
+import { useParams } from "react-router-dom";
+import { useGetCompanyById } from "../../../hooks/useGetCompanyById";
 const tableData = [
     {
       company_id: 2,
@@ -64,7 +66,10 @@ const tableData = [
     },
   
   ];
-const UserDetails = ({ data = { src: "" } ,stats}) => {
+const UserDetails = ({ data = { src: "" } ,stats,onModalShow}) => {
+  const { id } = useParams();
+  const {data:companyData,isLoading:CompanyLoading}=useGetCompanyById(id)
+console.log(companyData,"CompanyData")
     const DashboardStats = (
         <Row gutter={[10, 10]}>
           {stats.map((item, i) => (
@@ -99,7 +104,7 @@ const UserDetails = ({ data = { src: "" } ,stats}) => {
                     className="rounded-[20px] mt-10"
                     danger
                     size="large"
-                    //TODO: Ruhail will integrate the user call here
+                    onClick={onModalShow}
                   >
                     Edit Details
                   </Button>
@@ -156,7 +161,7 @@ const UserDetails = ({ data = { src: "" } ,stats}) => {
       </Row>
       <Tabs danger type="card" defaultActiveKey="1" size="large" className="mt-20">
           <Tabs.TabPane tab="Company Details" key="1">
-          <CustomTable column={companyColumnsNonEditable} data={tableData} />
+          <CustomTable column={companyColumnsNonEditable} isLoading={CompanyLoading} data={companyData?.company} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Order Details" key="2">
           <CustomTable column={orderColumns} data={orderData}/>

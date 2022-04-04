@@ -1,13 +1,13 @@
 import React from "react";
 import { detailsStats } from "../../../constants/stats";
 import UserDetails from "../Common/UserDetails";
-import { useUserById } from "../request";
 import { useParams } from "react-router-dom";
+import { useGetUserById } from "../../../hooks/User/useGetUserById";
 
 const DigitizerDetailsContainer = () => {
 
   const { id } = useParams();
-  const {data, isLoading} = useUserById({
+  const {data, isLoading} = useGetUserById({
     id,
     role: 'digitizer'
   });

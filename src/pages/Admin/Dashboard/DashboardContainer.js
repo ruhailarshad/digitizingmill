@@ -1,5 +1,5 @@
 import { Col, Row } from "antd";
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { dashboardStats } from "../../../constants/stats";
 import { orderColumns } from "../../../constants/tableColumns";
 import DashboardChart from "../../../core/Dashboard/DashboardChart";
@@ -8,12 +8,12 @@ import NewUserForm from "../../../core/Forms/NewUserForm";
 import HeadAndContent from "../../../core/HeadAndContent";
 import StatsCard from "../../../core/StatsCard";
 import CustomTable from "../../../core/Table/Table";
-import NewUserAdd from "../Common/NewUserAdd";
-import jwt_decode from "jwt-decode"
 import { data } from "../OrderDetails/utils";
+import { isVisible } from "@testing-library/user-event/dist/utils";
+import { getUserData } from "../../../services/utils";
+import { useGetUserById } from "../../../hooks/User/useGetUserById";
+import { useOutletContext } from "react-router-dom";
 
-const token=localStorage.getItem('access_token')
-const {data:userData} = jwt_decode(token);
 const DashboardStats = (
   <Row align="center" gutter={[10, 10]}>
     {dashboardStats(267, 5, 5, 5).map((item, i) => (
@@ -24,10 +24,14 @@ const DashboardStats = (
   </Row>
 );
 const DashboardContainer = () => {
+ const { tokenData }=useOutletContext()
+  console.log(tokenData)
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const onCreate=()=>{
-    
-  }
+  const { data:userData, isLoading } = useGetUserById({
+    id:tokenData.userId,
+    role:'sales-agent',
+  });
+console.log(userData,"userData")
   return (
     <>
       <HeadAndContent heading="Dashboard">
@@ -35,11 +39,11 @@ const DashboardContainer = () => {
           <Col xl={6} lg={10} >
             <UserCard
               data={{
-                name: userData.name,
-                role: userData.role,
-                email: userData.email,
-                number: userData.contactNo,
-                address: userData.address,
+                name: userData?.userData[0]?.name,
+                role: userData?.userData[0]?.role,
+                email: userData?.userData[0]?.email,
+                number: userData?.userData[0]?.contactNo,
+                address: userData?.userData[0]?.address,
               }}
               btnHandler={()=>setIsModalVisible(true)}
             />
@@ -53,12 +57,15 @@ const DashboardContainer = () => {
         </Row>
         <CustomTable column={orderColumns} data={data} />
       </HeadAndContent>
-      <NewUserForm
+   
+     {isModalVisible &&  <NewUserForm
         visible={isModalVisible}
-        onCreate={onCreate}
+        data={userData?.userData[0]}
+        userRole={tokenData.role}
+        id={tokenData.userId}
         onCancel={() => 
           setIsModalVisible(false)}
-      />
+      />}
     </>
   );
 };

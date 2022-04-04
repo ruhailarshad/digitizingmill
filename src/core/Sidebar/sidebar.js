@@ -8,6 +8,7 @@ import { useMediaQuery } from "react-responsive";
 import { useNavigate } from "react-router-dom";
 import RouteNames from "../../routes/RouteNames";
 import { accessTokenKey } from "../../constants/localStorageKeys";
+import { getUserData } from "../../services/utils";
 const { Sider } = Layout;
 
 const SideNav = ({ data, Body,indexRoute }) => {
@@ -74,7 +75,7 @@ const SideNav = ({ data, Body,indexRoute }) => {
 
       </Sider>
       <Content>
-        <Outlet />
+        <Outlet context={{tokenData:getUserData().data}}/>
       </Content>
     </Layout>
   );

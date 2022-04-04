@@ -4,6 +4,7 @@ import React from "react";
 import HeadAndContent from "../../../core/HeadAndContent";
 import UserCard from "./UserCard";
 import VirtualList from "rc-virtual-list";
+import { Link } from "react-router-dom";
 const { Search } = Input;
 const NewUserAdd = ({ name, data, isLoading, btnHandler, onSearchChange }) => {
   const renderUsersList = (data) => {
@@ -22,7 +23,7 @@ const NewUserAdd = ({ name, data, isLoading, btnHandler, onSearchChange }) => {
               <List.Item key={item.email}>
                 <List.Item.Meta
                   avatar={<Avatar size={40}>RA</Avatar>}
-                  title={<a href="https://ant.design">{item.name}</a>}
+                  title={<Link to={`${item.userId}`}>{item.name}</Link>}
                   description={item.email}
                 />
                 <div>Content</div>
