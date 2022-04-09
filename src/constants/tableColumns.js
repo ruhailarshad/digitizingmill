@@ -1,10 +1,16 @@
 import { Tag } from "antd";
 import { MdDelete } from "react-icons/md";
-import { AiFillEdit, AiOutlineCheck, AiOutlineClose,AiFillEye } from "react-icons/ai";
+import {
+  AiFillEdit,
+  AiOutlineCheck,
+  AiOutlineClose,
+  AiFillEye,
+} from "react-icons/ai";
 import { Modal } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Popconfirm } from "antd";
 import { useMediaQuery } from "react-responsive";
+import moment from "moment";
 
 const getColor = (record) => {
   if (record.toLowerCase() === "completed") {
@@ -89,68 +95,74 @@ export const editableOrderColumns = (editHandler) => {
     },
   ];
 };
-export const orderColumns= [
-    {
-      title: "Order Id",
-      dataIndex: "order_id",
-      sorter: (a, b) => a.order_id - b.order_id,
-      responsive: ["lg"],
+export const orderColumns = [
+  {
+    title: "Order Id",
+    dataIndex: "order_id",
+    sorter: (a, b) => a.order_id - b.order_id,
+    responsive: ["lg"],
+  },
+  {
+    title: "Order Date",
+    dataIndex: "order_date",
+    responsive: ["lg"],
+  },
+  {
+    title: "Customer Name",
+    dataIndex: "customer_name",
+    responsive: ["lg"],
+  },
+  {
+    title: "Design Name",
+    dataIndex: "design_name",
+    responsive: ["lg"],
+  },
+  {
+    title: "Size/Type",
+    dataIndex: "size_type",
+    responsive: ["lg"],
+  },
+  {
+    title: "Amount",
+    dataIndex: "amount",
+    responsive: ["lg"],
+  },
+  {
+    title: "Payment Status",
+    dataIndex: "payment_status",
+    responsive: ["lg"],
+    render: (record) => {
+      const color = getColor(record);
+      return (
+        <Tag className="rounded-[10px]" color={color}>
+          {record.toUpperCase()}
+        </Tag>
+      );
     },
-    {
-      title: "Order Date",
-      dataIndex: "order_date",
-      responsive: ["lg"],
-    },
-    {
-      title: "Customer Name",
-      dataIndex: "customer_name",
-      responsive: ["lg"],
-    },
-    {
-      title: "Design Name",
-      dataIndex: "design_name",
-      responsive: ["lg"],
-    },
-    {
-      title: "Size/Type",
-      dataIndex: "size_type",
-      responsive: ["lg"],
-    },
-    {
-      title: "Amount",
-      dataIndex: "amount",
-      responsive: ["lg"],
-    },
-    {
-      title: "Payment Status",
-      dataIndex: "payment_status",
-      responsive: ["lg"],
-      render: (record) => {
-        const color = getColor(record);
-        return (
-          <Tag className="rounded-[10px]" color={color}>
-            {record.toUpperCase()}
-          </Tag>
-        );
-      },
-    },
+  },
 
-    {
-      title: "Order Status",
-      dataIndex: "order_status",
-      responsive: ["lg"],
-      render: (record) => {
-        const color = getColor(record);
-        return (
-          <Tag className="rounded-[10px]" color={color}>
-            {record.toUpperCase()}
-          </Tag>
-        );
-      },
+  {
+    title: "Order Status",
+    dataIndex: "order_status",
+    responsive: ["lg"],
+    render: (record) => {
+      const color = getColor(record);
+      return (
+        <Tag className="rounded-[10px]" color={color}>
+          {record.toUpperCase()}
+        </Tag>
+      );
     },
-   
-  ];
-export const companyColumns = (editing, save, cancel, edit,viewHandler,deleteHandler) => {
+  },
+];
+export const companyColumns = (
+  editing,
+  save,
+  cancel,
+  edit,
+  viewHandler,
+  deleteHandler
+) => {
   return [
     {
       title: "Company Id",
@@ -159,7 +171,11 @@ export const companyColumns = (editing, save, cancel, edit,viewHandler,deleteHan
     },
     {
       title: "Registration Date",
-      dataIndex: "registration_date",
+      dataIndex: "createdAt",
+      sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+      render: (_, record) => {
+        return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+      },
     },
     {
       title: "Company Name",
@@ -175,7 +191,7 @@ export const companyColumns = (editing, save, cancel, edit,viewHandler,deleteHan
     },
     {
       title: "Sales Agent",
-      dataIndex: "sales_agent",
+      dataIndex: "salesAgent",
       editable: true,
     },
     {
@@ -204,7 +220,7 @@ export const companyColumns = (editing, save, cancel, edit,viewHandler,deleteHan
             {editable ? (
               <span>
                 <div
-                  onClick={() => save(record.companyId)}
+                  onClick={() => save(record)}
                   style={{
                     marginRight: 8,
                   }}
@@ -261,7 +277,6 @@ export const companyColumnsNonEditable = [
     title: "Email Address",
     dataIndex: "email_adress",
   },
-  
 ];
 export const DigitizerOrderColumns = [
   {

@@ -5,7 +5,7 @@ const fetchCompanyDetails = (companyData = {}) => {
 }
 
 export const usePostCompanyDetails = (onSuccess) => {
-    
+    console.log("herer")
     return useMutation(fetchCompanyDetails, {
         mutatioKey: 'company-details-mutation',
         onSuccess,

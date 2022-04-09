@@ -23,7 +23,8 @@ const NewUserForm = ({
   onCancel,
   userRole = "",
   data,
-  isLoading
+  isLoading,
+  editable
   ,id
 }) => {
   const queryClient=useQueryClient()
@@ -87,7 +88,7 @@ const NewUserForm = ({
           });
       }}
     >
-      {isLoading ? (
+      {isLoading && editable ? (
         <LoadingOutlined style={{ fontSize: 24 }} spin />
       ) : (
         <Form

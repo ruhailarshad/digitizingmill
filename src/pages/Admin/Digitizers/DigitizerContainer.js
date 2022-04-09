@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import NewUserForm from "../../../core/Forms/NewUserForm";
 import NewUserAdd from "../Common/NewUserAdd";
-import { useUserData } from "../request";
 import { openErrorNotification } from "../../../alerts/commonAlert";
+import { useUserData } from "../../../hooks/User/useUserDataSearchTerm";
 
 const DigitizerContainer = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -15,7 +15,6 @@ const DigitizerContainer = () => {
     queryParams: {name: searchTerm, role: 'digitizer'},
     onError,
   });
-
   const usersData = data;
 
   

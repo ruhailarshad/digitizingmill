@@ -1,40 +1,41 @@
-import { Form } from "antd";
+import { Form, message } from "antd";
 import React, { useState } from "react";
-import { openErrorNotification } from "../../../alerts/commonAlert";
+import { useQueryClient } from "react-query";
 import { companyColumns } from "../../../constants/tableColumns";
 import { CustomTable } from "../../../core";
 import NewCompanyForm from "../../../core/Forms/NewCompanyForm";
 import HeadAndContent from "../../../core/HeadAndContent";
+import { useBulkDeleteCompany } from "../../../hooks/useDeleteBulkCompany";
 import { useDeleteCompany } from "../../../hooks/useDeleteCompany";
 import { useGetAllCompany } from "../../../hooks/useGetAllCompany";
-const tableData = [
-  {
-    company_id: 2,
-    registration_date: 2,
-    company_name: "sada",
-    contact_no: 123123123,
-    email_address: "asdad",
-    sales_agent: "Alex Josep",
-  },
-];
+import { useUpdateCompanySalesAgent } from "../../../hooks/User/useUpdateCompanySalesAgent";
+import DropdownActions from "./DropdownActions";
+
 const CompanyDetailsContainer = () => {
+  const queryClient = useQueryClient();
   const [editingKey, setEditingKey] = useState("");
   const [data, setData] = useState([]);
   const [visible, setVisible] = useState(false);
   const [editModal, setEditModal] = useState(false);
+  const [showActions, setShowActions] = useState(false);
+  const [selectedRow, setSelectedRow] = useState();
   const [form] = Form.useForm();
- console.log(data,"data")
-  const { data: AllCompany ,isLoading:isAllCompanyLoading} = useGetAllCompany();
-  const { mutate:deleteCompany } = useDeleteCompany();
+  const { data: AllCompany, isLoading: isAllCompanyLoading } =
+    useGetAllCompany();
+  const { mutate: deleteCompany } = useDeleteCompany();
+  const {mutate:deleteBulkCompany}=useBulkDeleteCompany()
+  const onSalesAgentUpdate = () => {
+    message.success("SalesAgent Updated Successfully");
+    queryClient.invalidateQueries("company-add-query");
+    setEditingKey("");
+  };
 
-  console.log(AllCompany,"all")
+  const { mutate: updateSalesAgent } =
+    useUpdateCompanySalesAgent(onSalesAgentUpdate);
+
   const edit = (record) => {
-    console.log(record,"record")
     form.setFieldsValue({
-      company_name: "",
-      contact_no: "",
-      email_address: "",
-      sales_agent: "",
+      salesAgent: "",
       ...record,
     });
     setEditingKey(record.companyId);
@@ -45,34 +46,36 @@ const CompanyDetailsContainer = () => {
     setEditingKey("");
   };
   const viewHandler = (values) => {
-    setEditModal(true);
     setData(values);
+    setEditModal(true);
   };
-  const save = async (companyId) => {
-    try {
-      // eslint-disable-next-line no-undef
-      const row = await form.validateFields();
-      const newData = [...data];
-      const index = newData.findIndex((item) => companyId === item.companyId);
+  const save = (record) => {
+    const row = form.getFieldValue();
+    updateSalesAgent({
+      companyId: record.companyId,
+      salesAgentId: row.salesAgent,
+    });
+  };
+  const deleteHandler = (id) => {
+    deleteCompany(id);
+  };
 
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        setData(newData);
-        setEditingKey("");
-      } else {
-        newData.push(row);
-        setData(newData);
-        setEditingKey("");
-      }
-    } catch (errInfo) {
-      console.log("Validate Failed:", errInfo);
-    }
+  const columns = companyColumns(
+    isEditing,
+    save,
+    cancel,
+    edit,
+    viewHandler,
+    deleteHandler
+  );
+  const bulkDeleteHandler = () => {
+    const newData = [...selectedRow];
+    const ids = newData.map((item) => {
+      return item.companyId;
+    });
+    deleteBulkCompany({data:ids})
+    setShowActions(false)
   };
-  const deleteHandler=(id)=>{
-    deleteCompany(id)
-  }
-  const columns = companyColumns(isEditing, save, cancel, edit, viewHandler,deleteHandler);
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {
       return col;
@@ -82,36 +85,47 @@ const CompanyDetailsContainer = () => {
       ...col,
       onCell: (record) => ({
         record,
-        inputType: col.dataIndex === "sales_agent" ? "select" : "text",
+        inputType: col.dataIndex === "salesAgent" ? "select" : "text",
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
       }),
     };
   });
- 
+  const rowHandler = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      selectedRows.length >= 1 ? setShowActions(true) : setShowActions(false);
+      setSelectedRow(selectedRows)
+    },
+  };
   return (
     <>
       <HeadAndContent
         heading="Comapny Details"
         btn={{ name: "Add New Company", buttonHandler: () => setVisible(true) }}
       >
-        <CustomTable column={mergedColumns}
+        <CustomTable
+          column={mergedColumns}
           loading={isAllCompanyLoading}
-          data={AllCompany?.companies} />
+          data={AllCompany?.companies}
+          selection
+          form={form}
+          rowHandler={rowHandler}
+          DropdownActions={
+            showActions && <DropdownActions deleteHandler={bulkDeleteHandler} />
+          }
+        />
       </HeadAndContent>
       {editModal && (
         <NewCompanyForm
-          id={data.companyId }
+          editable={true}
+          data={data}
           visible={editModal}
           onCancel={() => setEditModal(false)}
         />
       )}
       {visible && (
-        <NewCompanyForm
-          visible={visible}
-          onCancel={() => setVisible(false)}
-        />
+        <NewCompanyForm visible={visible} onCancel={() => setVisible(false)} />
       )}
     </>
   );

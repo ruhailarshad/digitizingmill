@@ -8,17 +8,7 @@ const fetchUsers = async (queryString) => {
     return instance.get(`/api/user${queryString}`);
 }
 
-export const useUserData = ({
-    queryParams,
-    onSucess = () => {},
-    onError = () => {}
-}) => {
-    const queryString = `?${qs.stringify(queryParams)}`;
-    return useQuery(['api/user',queryParams], () => fetchUsers(queryString), {
-        onSucess,
-        onError
-    });
-}
+
 
 const postSalesAgent = (data) => {
     return instance.post('/api/user', data, {});

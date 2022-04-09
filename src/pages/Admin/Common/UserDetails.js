@@ -9,6 +9,7 @@ import StatsCard from "../../../core/StatsCard";
 import { companyColumnsNonEditable, orderColumns } from "../../../constants/tableColumns";
 import { useParams } from "react-router-dom";
 import { useGetCompanyById } from "../../../hooks/useGetCompanyById";
+import { useGetCompanyByRole } from "../../../hooks/useGetCompanyByRole";
 const tableData = [
     {
       company_id: 2,
@@ -66,9 +67,10 @@ const tableData = [
     },
   
   ];
-const UserDetails = ({ data = { src: "" } ,stats,onModalShow}) => {
+const UserDetails = ({ data = { src: "" } ,stats,onModalShow,role}) => {
   const { id } = useParams();
-  const {data:companyData,isLoading:CompanyLoading}=useGetCompanyById(id)
+  const {data:companyData,isLoading:companyLoading}=useGetCompanyByRole({role:role,id:id})
+
 console.log(companyData,"CompanyData")
     const DashboardStats = (
         <Row gutter={[10, 10]}>
@@ -161,7 +163,7 @@ console.log(companyData,"CompanyData")
       </Row>
       <Tabs danger type="card" defaultActiveKey="1" size="large" className="mt-20">
           <Tabs.TabPane tab="Company Details" key="1">
-          <CustomTable column={companyColumnsNonEditable} isLoading={CompanyLoading} data={companyData?.company} />
+          <CustomTable column={companyColumnsNonEditable} isLoading={companyLoading} data={companyData?.company} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Order Details" key="2">
           <CustomTable column={orderColumns} data={orderData}/>

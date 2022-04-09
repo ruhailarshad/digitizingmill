@@ -1,25 +1,12 @@
-// import React from 'react';
 
-// import { Route, Switch } from 'react-router-dom';
-
-// import RouteConfig from './RouteConfig';
-
-// export default function BaseRouter() {
-//   return (
-//     <Switch>
-//       {RouteConfig.commonAppRoutes.map((route, index) => {
-//         return <Route key={route.path} component={route.component} exact path={route.path} />;
-//       })}
-//     </Switch>
-//   );
-// }
 import {useRoutes} from 'react-router-dom'
 import routes from './PrivateRoute';
-import { accessTokenKey } from '../constants/localStorageKeys';
-
+import { getUserData } from '../services/utils';
+const isLoggedIn = getUserData().data;
+console.log(isLoggedIn,'asdasd')
 const Routes = () => {
-  const isLoggedIn = localStorage.getItem(accessTokenKey);
-  const authRoutes = useRoutes(routes(true))
+
+  const authRoutes = useRoutes(routes({isLoggedIn:isLoggedIn,role:isLoggedIn?.role}))
   return authRoutes
 }
 

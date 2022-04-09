@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Col,
@@ -12,15 +12,14 @@ import {
 } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { usePostCompanyDetails } from "../../hooks/usePostCompanyDetails";
-import { useGetCompanyById } from "../../hooks/useGetCompanyById";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useQueryClient } from "react-query";
-import { getUserData } from "../../services/utils";
 import { useUpdateCompany } from "../../hooks/useUpdateCompany";
+import { useOutletContext } from "react-router-dom";
 
 
-const NewCompanyForm = ({ visible, onCancel, id }) => {
-  // const token = localStorage.getItem(accessTokenKey);
+const NewCompanyForm = ({ visible, onCancel, data ,editable}) => {
+ const { tokenData }=useOutletContext()
 const queryClient=useQueryClient()
   const [form] = Form.useForm();
 
@@ -35,36 +34,41 @@ const queryClient=useQueryClient()
     queryClient.invalidateQueries("company-add-query");
     message.success('Company Updated Successfully');
   };
-  const onGetByIdSuccess = (data) => {
-    form.setFieldsValue({
-      ...data?.company,
-      sizes: data?.company.design_sizes,
-    });
-  };
-  const {mutate:updateCompany}=useUpdateCompany(onCompanyUpdateSuccess)
-  const { mutate:companyAddMutate } = usePostCompanyDetails(onCompanyAddSuccess);
-  const { isLoading: isCompanyByIDLoading } = useGetCompanyById(
-    id,
-    onGetByIdSuccess
-  );
+  useEffect(() => {
+    if(editable && data){
+      form.setFieldsValue({
+        ...data,
+        sizes: [data?.design_sizes],
+      });
+    }
+  
+  
+  }, [editable,data,form])
+  
+  const {mutate:updateCompany,isLoading:isUpdateLoading}=useUpdateCompany(onCompanyUpdateSuccess)
+  const { mutate:companyAddMutate ,isLoading:isAddLoading} = usePostCompanyDetails(onCompanyAddSuccess);
+  
   const onCreate = (values) => {
- const decoded=getUserData()
-    const newValues={...values,userId:decoded.data.userId}
-    !id ? companyAddMutate(newValues) :
-    updateCompany({...newValues,companyId:id})
+    const newValues={...values,userId:tokenData.userId}
+const updateValues={...values,userId:data?.userId,companyId:data?.companyId}
+     !editable && !data ? companyAddMutate(newValues) :
+    updateCompany(updateValues)
   };
   return (
     <Modal
       visible={visible}
-      title={id ? "Update Company" : "Add New Company"}
-      okText={id ? "Update" : "Submit"}
+      
+      title={editable ? "Update Company" : "Add New Company"}
+      okText={editable ? "Update" : "Submit"}
       cancelText="Cancel"
       onCancel={onCancel}
+      confirmLoading={isUpdateLoading || isAddLoading }
       width={1000}
       onOk={() => {
         form
           .validateFields()
           .then((values) => {
+          
             onCreate(values);
           })
           .catch((info) => {
@@ -72,7 +76,7 @@ const queryClient=useQueryClient()
           });
       }}
     >
-      {isCompanyByIDLoading && id ? (
+    { !data && editable ? (
         <LoadingOutlined style={{ fontSize: 24 }} spin />
       ) : (
         <Form

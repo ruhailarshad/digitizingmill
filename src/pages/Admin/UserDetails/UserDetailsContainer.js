@@ -4,7 +4,6 @@ import UserDetails from "../Common/UserDetails";
 import { useParams } from "react-router-dom";
 import NewUserForm from "../../../core/Forms/NewUserForm";
 import { useGetUserById } from "../../../hooks/User/useGetUserById";
-import { useGetCompanyById } from "../../../hooks/useGetCompanyById";
 
 const UserDetailsContainer = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -14,7 +13,7 @@ const UserDetailsContainer = () => {
     id,
     role: "sales-agent",
   });
-  console.log(data, "sales");
+
   const getCurrencyWiseStats = (currencyName) => {
     if (data?.userStats[currencyName]) {
       return data.userStats[currencyName].sales;
@@ -47,6 +46,7 @@ const UserDetailsContainer = () => {
           getSalesByCAD,
           getSalesByEuro
         )}
+        role="sales-agent"
       />
       {isModalVisible && (
         

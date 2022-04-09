@@ -18,15 +18,14 @@ import { SalesCompanyDetailsConfig } from "../pages/SalesAgent/CompanyDetails";
 import { SalesDashboardConfig } from "../pages/SalesAgent/Dashboard";
 import { SalesOrderDetailsConfig } from "../pages/SalesAgent/OrderDetails";
 import { SalesReportConfig } from "../pages/SalesAgent/SalesReport";
+import { getUserData } from "../services/utils";
 import RouteNames from "./RouteNames";
-//404 Not Found Component
 
-const routes = (isLoggedIn) => [
-  { path: "/login", element: <LoginFormConfig /> },
-  //admin
+const routes = ({isLoggedIn,role}) => [
+  { path: "/login", element:!isLoggedIn ? <LoginFormConfig /> : <Navigate to={`/${role}`} /> },
   {
     path: RouteNames.admin,
-    element: isLoggedIn ? <AdminPanelConfig /> : <Navigate to="login" />,
+    element: isLoggedIn && role==='admin' ? <AdminPanelConfig /> : <Navigate to="/login" />,
     children: [
       {
         index: true,
@@ -53,7 +52,7 @@ const routes = (isLoggedIn) => [
   //sales
   {
     path: RouteNames.salesAgent,
-    element: isLoggedIn  ?  <SalesAgentPanelConfig /> : <Navigate to="login" />,
+    element: isLoggedIn && role==='sales-agent'  ?  <SalesAgentPanelConfig /> : <Navigate to="/login" />,
     children: [
       {
         index: true,
@@ -78,7 +77,7 @@ const routes = (isLoggedIn) => [
   //digitzer
   {
     path: RouteNames.digitizer,
-    element: isLoggedIn  ?  <DigitizerPanelConfig /> : <Navigate to="login" />,
+    element: isLoggedIn && role==='digitizer'  ?  <DigitizerPanelConfig /> : <Navigate to="/login" />,
     children: [
       {
         index: true,
