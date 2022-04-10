@@ -73,7 +73,16 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                     },
                   ]}
                 >
-                  <Select defaultValue="lucy" size="large">
+                  <Select
+                    showSearch
+                    filterOption={(input, option) =>
+                      option.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                    defaultValue="lucy"
+                    size="large"
+                  >
                     <Select.Option value="jack">Jack</Select.Option>
                     <Select.Option value="lucy">Lucy</Select.Option>
                     <Select.Option value="disabled" disabled>
@@ -83,7 +92,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col xl={24}  lg={24} md={24}  xs={24}>
+              <Col xl={24} lg={24} md={24} xs={24}>
                 <Form.Item
                   name="Customer Name"
                   label="Address"
@@ -150,7 +159,15 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                     },
                   ]}
                 >
-                  <Select size="large">
+                  <Select
+                    showSearch
+                    filterOption={(input, option) =>
+                      option.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                    size="large"
+                  >
                     <Select.Option value="jack">Jack</Select.Option>
                     <Select.Option value="lucy">Lucy</Select.Option>
                     <Select.Option value="disabled" disabled>
@@ -231,7 +248,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
             </Row>
           </Col>
 
-          <Col xl={8} lg={8} md={10}  xs={24} >
+          <Col xl={8} lg={8} md={10} xs={24}>
             <Row>
               <Col span={24}>
                 <Form.Item name="order_history" label="Order History">
@@ -291,7 +308,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name, ...restField }) => (
-                    <Row justify="center" align="middle" gutter={5} >
+                    <Row justify="center" align="middle" gutter={5}>
                       <Col xl={9} lg={9} md={9} xs={9}>
                         <Form.Item
                           {...restField}
@@ -315,7 +332,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                             </Select.Option>
                           </Select>
                         </Form.Item>
-                      </Col >
+                      </Col>
                       <Col xl={9} lg={9} md={9} xs={9}>
                         <Form.Item
                           {...restField}
@@ -323,16 +340,15 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                           label="Price"
                           rules={[
                             {
-                              validator: ( value) => {
+                              validator: (value) => {
                                 if (value.length > 2) {
-                                   value.pop();
-                                 
-                                } 
+                                  value.pop();
+                                }
                               },
                             },
                           ]}
                         >
-                           <Input size="large"/>
+                          <Input size="large" />
                         </Form.Item>
                       </Col>
                       <Col xl={5} lg={5} md={5} xs={5}>
@@ -351,7 +367,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                         </Form.Item>
                       </Col>
                       <Col xl={1} lg={1} md={1} sm={1}>
-                      <MinusCircleOutlined  onClick={() => remove(name)} />
+                        <MinusCircleOutlined onClick={() => remove(name)} />
                       </Col>
                     </Row>
                   ))}

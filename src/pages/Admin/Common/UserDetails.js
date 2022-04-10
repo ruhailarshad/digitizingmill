@@ -81,7 +81,7 @@ const UserDetails = ({ data = { src: "" } ,stats,onModalShow,role}) => {
       );   
 
   return (
-    <div className="p-40">
+    <div className="p-40  ml-20  max-md:p-0 max-md:ml-0 ">
       <Row gutter={[20,20]} className="bg-white rounded-20 p-20">
         <Col xl={12}>
           <Row align="middle" gutter={20}>

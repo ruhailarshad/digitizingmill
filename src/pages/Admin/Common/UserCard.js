@@ -1,7 +1,7 @@
 import { Avatar } from 'antd'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Card, Text } from '../../../core'
+import { Text } from '../../../core'
 
 const UserCard = ({name, userId}) => {
   return (

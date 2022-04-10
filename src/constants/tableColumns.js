@@ -9,7 +9,6 @@ import {
 import { Modal } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Popconfirm } from "antd";
-import { useMediaQuery } from "react-responsive";
 import moment from "moment";
 
 const getColor = (record) => {
@@ -27,8 +26,8 @@ export const editableOrderColumns = (editHandler) => {
   return [
     {
       title: "Order Id",
-      dataIndex: "order_id",
-      sorter: (a, b) => a.order_id - b.order_id,
+      dataIndex: "ordersId",
+      sorter: (a, b) => a.ordersId - b.ordersId,
       responsive: ["lg"],
     },
     {
@@ -100,22 +99,22 @@ export const orderColumns = [
     title: "Order Id",
     dataIndex: "order_id",
     sorter: (a, b) => a.order_id - b.order_id,
-    responsive: ["lg"],
   },
   {
     title: "Order Date",
     dataIndex: "order_date",
-    responsive: ["lg"],
+    sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+    render: (_, record) => {
+      return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+    },
   },
   {
     title: "Customer Name",
     dataIndex: "customer_name",
-    responsive: ["lg"],
   },
   {
     title: "Design Name",
     dataIndex: "design_name",
-    responsive: ["lg"],
   },
   {
     title: "Size/Type",
@@ -210,7 +209,12 @@ export const companyColumns = (
     {
       title: "Company Id",
       dataIndex: "companyId",
+      render: (_, record) => {
+        return <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">{record.companyId}</p>;
+      },
       sorter: (a, b) => a.companyId - b.companyId,
+      width: '15%',
+      responsive: ['md'],
     },
     {
       title: "Registration Date",
@@ -219,25 +223,37 @@ export const companyColumns = (
       render: (_, record) => {
         return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
       },
+      width: '15%',
+      responsive: ['md'],
+
     },
     {
       title: "Company Name",
       dataIndex: "companyName",
+      width: '15%',
+
     },
     {
       title: "Contact No",
       dataIndex: "phone",
+      width: '15%',
+
     },
     {
       title: "Email Address",
       dataIndex: "emailAddress",
+      width: '15%',
+
     },
     {
       title: "Sales Agent",
       dataIndex: "salesAgent",
       editable: true,
+      width: '15%',
+
     },
     {
+      title: "Actions",
       dataIndex: "icon",
       width: "10%",
       render: (_, record) => {
@@ -261,7 +277,9 @@ export const companyColumns = (
               <MdDelete size={22} color={"#9999"} onClick={confirm} />
             </div>
             {editable ? (
-              <span>
+              <span 
+              className="flex items-center"
+              >
                 <div
                   onClick={() => save(record)}
                   style={{
@@ -281,20 +299,14 @@ export const companyColumns = (
                 <AiFillEdit size={22} color={"#9999"} />
               </div>
             )}
+            <div onClick={() => viewHandler(record)}>
+              <AiFillEye size={22} color={"#9999"} />
+            </div>
           </div>
         ) : null;
       },
     },
-    {
-      title: "Action",
-      dataIndex: "",
-      key: "x",
-      render: (record) => (
-        <div onClick={() => viewHandler(record)}>
-          <AiFillEye size={22} color={"#9999"} />
-        </div>
-      ),
-    },
+   
   ];
 };
 

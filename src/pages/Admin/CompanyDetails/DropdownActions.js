@@ -6,19 +6,18 @@ import { useGetUserByRole } from "../../../hooks/User/useGetUserByRole";
 
 const { Option } = Select;
 
-const DropdownActions = ({deleteHandler,updateHandler}) => {
-
+const DropdownActions = ({ deleteHandler, updateHandler }) => {
   const [salesAgentVisible, setSalesAgentVisible] = useState(false);
-  const [salesAgent, setSalesAgent] = useState('');
+  const [salesAgent, setSalesAgent] = useState("");
   const { isLoading: isUserLoading, data: salesAgentData } = useGetUserByRole({
     role: "sales-agent",
   });
-  
+
   const menu = (
     <Menu>
       <Menu.Item
         onClick={() => {
-    setSalesAgentVisible(false)
+          setSalesAgentVisible(false);
           Modal.confirm({
             title: "Confirm",
             icon: <ExclamationCircleOutlined />,
@@ -27,7 +26,7 @@ const DropdownActions = ({deleteHandler,updateHandler}) => {
             okText: "Yes",
             okType: "danger",
             cancelText: "No",
-            onOk:  deleteHandler,
+            onOk: deleteHandler,
           });
         }}
       >
@@ -39,18 +38,28 @@ const DropdownActions = ({deleteHandler,updateHandler}) => {
     </Menu>
   );
   return (
-    <Row gutter={10}>
-      <Col  span={10}>
-        <Dropdown className="h-40 w-[100%]" overlay={menu} trigger={['click']}>
-          <Button  >
+    <Row gutter={[10, 10]}>
+      <Col xl={10} lg={10} md={9} xs={24}>
+        <Dropdown className="h-40 w-[100%]" overlay={menu} trigger={["click"]}>
+          <Button>
             Filter Action <DownOutlined />
           </Button>
         </Dropdown>
       </Col>
       {salesAgentVisible && (
         <>
-          <Col span={10}>
-            <Select loading={isUserLoading} onChange={(value)=>setSalesAgent(value)}  size="large" className=" w-[100%]" placeholder="Select SalesAgent" >
+          <Col xl={10} lg={10} xs={24}>
+            <Select
+              showSearch
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              loading={isUserLoading}
+              onChange={(value) => setSalesAgent(value)}
+              size="large"
+              className=" w-[100%]"
+              placeholder="Select SalesAgent"
+            >
               {salesAgentData.map((p) => (
                 <Option value={p.userId} key={p.userId}>
                   {p.name}
@@ -58,10 +67,18 @@ const DropdownActions = ({deleteHandler,updateHandler}) => {
               ))}
             </Select>
           </Col>
-          <Col  span={4}>
-          {salesAgent &&  <Button onClick={()=>updateHandler(salesAgent)} block size="large" type="primary" danger>
-              Update
-            </Button>}
+          <Col xl={4} lg={4} md={5}>
+            {salesAgent && (
+              <Button
+                onClick={() => updateHandler(salesAgent)}
+                block
+                size="large"
+                type="primary"
+                danger
+              >
+                Update
+              </Button>
+            )}
           </Col>
         </>
       )}

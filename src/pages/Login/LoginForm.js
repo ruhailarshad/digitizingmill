@@ -82,8 +82,8 @@ const LoginForm = () => {
                 span: 24,
               }}
             >
-              <Button disabled={isLoading} block type="primary"  danger htmlType="submit">
-                {isLoading ? <Spin tip="loading" /> : 'Submit'}
+              <Button loading={isLoading} block type="primary" size="large" danger htmlType="submit">
+                Submit
               </Button>
             </Form.Item>
           </Form>

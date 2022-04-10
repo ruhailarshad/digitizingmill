@@ -33,18 +33,18 @@ const CustomTable = ({
 
   return (
     <>
-      <Row justify="space-between" className="mb-20">
-        <Col span={14}>
-          <Row gutter={20}>
-            <Col span={10}>
+      <Row justify="space-between" className="mb-20" gutter={[20,10]}>
+        <Col xxl={14} xl={17} lg={24} sm={24}>
+          <Row gutter={[10,10]}>
+            <Col lg={8} md={8}>
               <Input.Search
                 size="large"
                 placeholder="Search Here"
-                className=" min-w-[200px]"
+                className=" min-w-[150px]"
                 onSearch={filterHandler}
               />
             </Col>
-            {DropdownActions && <Col span={14}>{DropdownActions}</Col>}
+            {DropdownActions && <Col lg={16} md={16}>{DropdownActions}</Col>}
           </Row>
         </Col>
         <Col>
