@@ -1,12 +1,11 @@
 
 import {useRoutes} from 'react-router-dom'
 import routes from './PrivateRoute';
-import { getUserData } from '../services/utils';
-const isLoggedIn = getUserData().data;
-console.log(isLoggedIn,'asdasd')
+import { useUserData } from '../pages/Login/userContext';
 const Routes = () => {
-
-  const authRoutes = useRoutes(routes({isLoggedIn:isLoggedIn,role:isLoggedIn?.role}))
+  const {userData}=useUserData()
+  console.log(userData,"userData")
+  const authRoutes = useRoutes(routes({isLoggedIn:userData?.data,role:userData?.data?.role}))
   return authRoutes
 }
 

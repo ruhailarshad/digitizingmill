@@ -3,7 +3,6 @@ import {
   Col,
   Form,
   Input,
-  InputNumber,
   message,
   Modal,
   Row,
@@ -14,43 +13,42 @@ import ImgCrop from "antd-img-crop";
 import { normFile, onPreview } from "./utils";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
-import { usePostUser } from "../../hooks/User/usePostUser";
-import { useUpdateUser } from "../../hooks/User/useUpdateUser";
 import { useQueryClient } from "react-query";
-
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { usePostUser, useUpdateUser } from "../../hooks";
 const NewUserForm = ({
   visible,
   onCancel,
   userRole = "",
   data,
   isLoading,
-  editable
-  ,id
+  editable,
+  id,
 }) => {
-  const queryClient=useQueryClient()
+  const queryClient = useQueryClient();
   const [form] = Form.useForm();
   useEffect(() => {
-    if (data) {
+    if (data && editable) {
       form.setFieldsValue(data);
     }
-    console.log(data)
-  }, [data, form]);
+  }, [data, editable, form]);
 
   const onSuccess = () => {
     form.resetFields();
     onCancel();
-    queryClient.invalidateQueries('user-byid')
-    message.success('User Added Successfully')
+    queryClient.invalidateQueries("user-byid");
+    message.success("User Added Successfully");
   };
   const onUserUpdateSuccess = () => {
     onCancel();
-    queryClient.invalidateQueries('user-byid')
-    message.success('User Updated Successfully')
+    queryClient.invalidateQueries("user-byid");
+    message.success("User Updated Successfully");
   };
 
   // Sales Agent User create Request
-  const { isLoading: isCreatingUser, mutate:addUser } = usePostUser(onSuccess);
-  const { isLoading: isAddingUser, mutate:updateUser } = useUpdateUser(onUserUpdateSuccess);
+  const { isLoading: isCreatingUser, mutate: addUser } = usePostUser(onSuccess);
+  const { isLoading: isAddingUser, mutate: updateUser } =
+    useUpdateUser(onUserUpdateSuccess);
 
   const dummyRequest = ({ file, onSuccess }) => {
     setTimeout(() => {
@@ -82,7 +80,9 @@ const NewUserForm = ({
 
             const uploadData = { ...values, role: userRole };
 
-            !data ? addUser(uploadData) : updateUser({...uploadData,userId:id});
+            !data && !editable
+              ? addUser(uploadData)
+              : updateUser({ ...uploadData, userId: id });
 
             console.log("Validate Failed:", values);
           });
@@ -192,7 +192,12 @@ const NewUserForm = ({
                   },
                 ]}
               >
-                <Input type="password" size="large" />
+                <Input.Password
+                  iconRender={(visible) =>
+                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                  }
+                  size="large"
+                />
               </Form.Item>
             </Col>
             <Col xl={12} md={24} xs={24}>

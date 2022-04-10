@@ -155,6 +155,49 @@ export const orderColumns = [
     },
   },
 ];
+
+export const DigitizerOrderColumns = [
+  {
+    title: "Order Id",
+    dataIndex: "order_id",
+    sorter: (a, b) => a.order_id - b.order_id,
+    responsive: ["lg"],
+  },
+  {
+    title: "Order Date",
+    dataIndex: "order_date",
+    responsive: ["lg"],
+  },
+  {
+    title: "Customer Name",
+    dataIndex: "customer_name",
+    responsive: ["lg"],
+  },
+  {
+    title: "Design Name",
+    dataIndex: "design_name",
+    responsive: ["lg"],
+  },
+  {
+    title: "Size/Type",
+    dataIndex: "size_type",
+    responsive: ["lg"],
+  },
+
+  {
+    title: "Order Status",
+    dataIndex: "order_status",
+    responsive: ["lg"],
+    render: (record) => {
+      const color = getColor(record);
+      return (
+        <Tag className="rounded-[10px]" color={color}>
+          {record.toUpperCase()}
+        </Tag>
+      );
+    },
+  },
+];
 export const companyColumns = (
   editing,
   save,
@@ -258,65 +301,65 @@ export const companyColumns = (
 export const companyColumnsNonEditable = [
   {
     title: "Company Id",
-    dataIndex: "company_id",
-    sorter: (a, b) => a.company_id - b.company_id,
+    dataIndex: "companyId",
+    sorter: (a, b) => a.companyId - b.companyId,
   },
   {
     title: "Registration Date",
-    dataIndex: "registration_date",
+    dataIndex: "createdAt",
+    sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+    render: (_, record) => {
+      return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+    },
   },
   {
     title: "Company Name",
-    dataIndex: "company_name",
+    dataIndex: "companyName",
   },
   {
     title: "Contact No",
-    dataIndex: "contact_no",
+    dataIndex: "phone",
   },
   {
     title: "Email Address",
-    dataIndex: "email_adress",
+    dataIndex: "emailAddress",
   },
 ];
-export const DigitizerOrderColumns = [
-  {
-    title: "Order Id",
-    dataIndex: "order_id",
-    sorter: (a, b) => a.order_id - b.order_id,
-    responsive: ["lg"],
-  },
-  {
-    title: "Order Date",
-    dataIndex: "order_date",
-    responsive: ["lg"],
-  },
-  {
-    title: "Customer Name",
-    dataIndex: "customer_name",
-    responsive: ["lg"],
-  },
-  {
-    title: "Design Name",
-    dataIndex: "design_name",
-    responsive: ["lg"],
-  },
-  {
-    title: "Size/Type",
-    dataIndex: "size_type",
-    responsive: ["lg"],
-  },
-
-  {
-    title: "Order Status",
-    dataIndex: "order_status",
-    responsive: ["lg"],
-    render: (record) => {
-      const color = getColor(record);
-      return (
-        <Tag className="rounded-[10px]" color={color}>
-          {record.toUpperCase()}
-        </Tag>
-      );
+export const companyColumnsForSalesAgent = (viewHandler) => {
+  return [
+    {
+      title: "Company Id",
+      dataIndex: "companyId",
     },
-  },
-];
+    {
+      title: "Registration Date",
+      dataIndex: "createdAt",
+      sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+      render: (_, record) => {
+        return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+      },
+    },
+    {
+      title: "Company Name",
+      dataIndex: "companyName",
+    },
+    {
+      title: "Contact No",
+      dataIndex: "phone",
+    },
+    {
+      title: "Email Address",
+      dataIndex: "emailAddress",
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "x",
+      render: (record) => (
+        <div onClick={() => viewHandler(record)}>
+          <AiFillEye size={22} color={"#9999"} />
+        </div>
+      ),
+    },
+  ];
+};

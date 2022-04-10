@@ -8,23 +8,25 @@ import { useMediaQuery } from "react-responsive";
 import { useNavigate } from "react-router-dom";
 import RouteNames from "../../routes/RouteNames";
 import { accessTokenKey } from "../../constants/localStorageKeys";
-import { getUserData } from "../../services/utils";
+import { useUserData } from "../../pages/Login/userContext";
 const { Sider } = Layout;
 
 const SideNav = ({ data, Body,indexRoute }) => {
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 756px)' })
   const [collapsed, setCollapsed] = useState(false);
   let location = useLocation();
-
+const{setUserData}=useUserData()
 
   const [current, setCurrent] = useState(indexRoute);
   console.log(current,"initial");
+  const {userData}=useUserData()
 
   const navigate = useNavigate();
 
   const onLogout = () => {
     localStorage.removeItem(accessTokenKey);
     navigate(RouteNames.login);
+    setUserData('')
   }
 
   useEffect(() => {
@@ -75,7 +77,7 @@ const SideNav = ({ data, Body,indexRoute }) => {
 
       </Sider>
       <Content>
-        <Outlet context={{tokenData:getUserData().data}}/>
+        <Outlet context={{tokenData:userData.data}}/>
       </Content>
     </Layout>
   );

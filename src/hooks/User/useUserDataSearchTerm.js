@@ -6,7 +6,7 @@ const fetchUsers = async (queryString) => {
     return instance.get(`/api/user${queryString}`);
 }
 
-export const useUserData = ({
+export const useUserDataSearchTerm = ({
     queryParams,
     onSucess = () => {},
     onError = () => {}

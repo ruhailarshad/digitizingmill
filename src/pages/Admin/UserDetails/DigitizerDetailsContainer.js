@@ -3,7 +3,6 @@ import { detailsStats } from "../../../constants/stats";
 import UserDetails from "../Common/UserDetails";
 import { useParams } from "react-router-dom";
 import { useGetUserById } from "../../../hooks/User/useGetUserById";
-import { useGetCompanyByRole } from "../../../hooks/useGetCompanyByRole";
 import NewUserForm from "../../../core/Forms/NewUserForm";
 
 const DigitizerDetailsContainer = () => {

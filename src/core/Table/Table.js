@@ -7,12 +7,13 @@ const { RangePicker } = DatePicker;
 
 const CustomTable = ({
   column,
-  data = [],
+  data,
   selection = false,
   rowHandler,
   loading = false,
   DropdownActions,
   form,
+  selectedRowKeys
 }) => {
   const [formData, setFormData] = useState([]);
   useEffect(() => {
@@ -64,6 +65,7 @@ const CustomTable = ({
           }}
           loading={loading}
           rowSelection={selection &&{
+            selectedRowKeys,
             ...rowHandler,
           }}
           columns={column}

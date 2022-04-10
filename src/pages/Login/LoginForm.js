@@ -4,16 +4,20 @@ import "./login.css";
 import Logo from "../../assets/finallogodm.png";
 import { useNavigate } from 'react-router-dom';
 import { openErrorNotification } from "../../alerts/commonAlert";
-
+import jwt_decode from "jwt-decode";
 import { useGetAccessToken } from "./mutations";
 import { getRedirectLinkForLogin } from "../../constants/getLoginRedirectionRoute";
 import { accessTokenKey } from "../../constants/localStorageKeys";
+import { useUserData } from "./userContext";
+
 const LoginForm = () => {
 
   const navigate = useNavigate();
-
+  const {setUserData}=useUserData()
   const onSuccess = ( data ) => {
     const { authToken, role }  = data;
+    const userData=jwt_decode(authToken)
+    setUserData(userData)
     localStorage.setItem(accessTokenKey, authToken);
     navigate(getRedirectLinkForLogin(role));
   }

@@ -5,7 +5,7 @@ import {
   Select,
   Radio,
 } from "antd";
-import { useGetUserByRole } from "../../hooks/User/useGetUserByRole";
+import { useGetUserByRole } from "../../hooks";
 // import moment from "moment";
 
 

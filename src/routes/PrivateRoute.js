@@ -18,7 +18,6 @@ import { SalesCompanyDetailsConfig } from "../pages/SalesAgent/CompanyDetails";
 import { SalesDashboardConfig } from "../pages/SalesAgent/Dashboard";
 import { SalesOrderDetailsConfig } from "../pages/SalesAgent/OrderDetails";
 import { SalesReportConfig } from "../pages/SalesAgent/SalesReport";
-import { getUserData } from "../services/utils";
 import RouteNames from "./RouteNames";
 
 const routes = ({isLoggedIn,role}) => [

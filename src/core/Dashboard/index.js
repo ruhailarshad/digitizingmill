@@ -2,7 +2,7 @@ import { Col, Row } from "antd";
 import React, {  useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { orderColumns } from "../../constants/tableColumns";
-import { useGetUserById } from "../../hooks/User/useGetUserById";
+import { useGetUserById } from "../../hooks";
 import { data } from "../../pages/Admin/OrderDetails/utils";
 import NewUserForm from "../Forms/NewUserForm";
 import HeadAndContent from "../HeadAndContent";

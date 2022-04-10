@@ -5,10 +5,13 @@ import { companyColumns } from "../../../constants/tableColumns";
 import { CustomTable } from "../../../core";
 import NewCompanyForm from "../../../core/Forms/NewCompanyForm";
 import HeadAndContent from "../../../core/HeadAndContent";
-import { useBulkDeleteCompany } from "../../../hooks/useDeleteBulkCompany";
-import { useDeleteCompany } from "../../../hooks/useDeleteCompany";
-import { useGetAllCompany } from "../../../hooks/useGetAllCompany";
-import { useUpdateCompanySalesAgent } from "../../../hooks/User/useUpdateCompanySalesAgent";
+import {
+  useBulkDeleteCompany,
+  useBulkUpdateSalesAgent,
+  useDeleteCompany,
+  useGetAllCompany,
+  useUpdateCompanySalesAgent,
+} from "../../../hooks";
 import DropdownActions from "./DropdownActions";
 
 const CompanyDetailsContainer = () => {
@@ -18,12 +21,12 @@ const CompanyDetailsContainer = () => {
   const [visible, setVisible] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [showActions, setShowActions] = useState(false);
-  const [selectedRow, setSelectedRow] = useState();
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [form] = Form.useForm();
   const { data: AllCompany, isLoading: isAllCompanyLoading } =
     useGetAllCompany();
   const { mutate: deleteCompany } = useDeleteCompany();
-  const {mutate:deleteBulkCompany}=useBulkDeleteCompany()
+  const { mutate: deleteBulkCompany } = useBulkDeleteCompany();
   const onSalesAgentUpdate = () => {
     message.success("SalesAgent Updated Successfully");
     queryClient.invalidateQueries("company-add-query");
@@ -32,6 +35,14 @@ const CompanyDetailsContainer = () => {
 
   const { mutate: updateSalesAgent } =
     useUpdateCompanySalesAgent(onSalesAgentUpdate);
+  const onBulkSalesAgentUpdate = () => {
+    message.success("SalesAgent Updated Successfully");
+    queryClient.invalidateQueries("company-add-query");
+    setShowActions(false);
+  };
+  const { mutate: updateBulkSalesAgent } = useBulkUpdateSalesAgent(
+    onBulkSalesAgentUpdate
+  );
 
   const edit = (record) => {
     form.setFieldsValue({
@@ -69,12 +80,24 @@ const CompanyDetailsContainer = () => {
     deleteHandler
   );
   const bulkDeleteHandler = () => {
-    const newData = [...selectedRow];
+    const newData = [...selectedRowKeys];
     const ids = newData.map((item) => {
-      return item.companyId;
+      return item;
     });
-    deleteBulkCompany({data:ids})
-    setShowActions(false)
+    deleteBulkCompany({ data: ids });
+    setShowActions(false);
+    setSelectedRowKeys([])
+  };
+  const bulkSalesAgentUpdate = (salesAgent) => {
+    console.log(salesAgent)
+    if (salesAgent) {
+      const newData = selectedRowKeys.map((item) => {
+        return { companyId: item,salesAgentId:salesAgent };
+      });
+      updateBulkSalesAgent(newData)
+      setSelectedRowKeys([])
+    }
+    
   };
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {
@@ -95,7 +118,8 @@ const CompanyDetailsContainer = () => {
   const rowHandler = {
     onChange: (selectedRowKeys, selectedRows) => {
       selectedRows.length >= 1 ? setShowActions(true) : setShowActions(false);
-      setSelectedRow(selectedRows)
+    setSelectedRowKeys(selectedRowKeys)
+
     },
   };
   return (
@@ -111,8 +135,14 @@ const CompanyDetailsContainer = () => {
           selection
           form={form}
           rowHandler={rowHandler}
+          selectedRowKeys={selectedRowKeys}
           DropdownActions={
-            showActions && <DropdownActions deleteHandler={bulkDeleteHandler} />
+            showActions && (
+              <DropdownActions
+                deleteHandler={bulkDeleteHandler}
+                updateHandler={bulkSalesAgentUpdate}
+              />
+            )
           }
         />
       </HeadAndContent>

@@ -51,6 +51,7 @@ const UserDetailsContainer = () => {
       {isModalVisible && (
         
         <NewUserForm
+        editable
           visible={isModalVisible}
           isLoading={isLoading}
           id={id}

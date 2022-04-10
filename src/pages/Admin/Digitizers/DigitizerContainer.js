@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import NewUserForm from "../../../core/Forms/NewUserForm";
 import NewUserAdd from "../Common/NewUserAdd";
 import { openErrorNotification } from "../../../alerts/commonAlert";
-import { useUserData } from "../../../hooks/User/useUserDataSearchTerm";
+import { useUserDataSearchTerm } from "../../../hooks";
 
 const DigitizerContainer = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -11,7 +11,7 @@ const DigitizerContainer = () => {
   const onError = (error) => {
     openErrorNotification(error.response);
   }
-  const { isLoading, data, refetch } = useUserData({
+  const { isLoading, data, refetch } = useUserDataSearchTerm({
     queryParams: {name: searchTerm, role: 'digitizer'},
     onError,
   });

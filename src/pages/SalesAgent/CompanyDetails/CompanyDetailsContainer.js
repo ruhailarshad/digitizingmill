@@ -1,88 +1,61 @@
 import { Form } from "antd";
 import React, { useState } from "react";
-import { companyColumns } from "../../../constants/tableColumns";
+import { useOutletContext } from "react-router-dom";
+import {  companyColumnsForSalesAgent } from "../../../constants/tableColumns";
 import { CustomTable } from "../../../core";
 import NewCompanyForm from "../../../core/Forms/NewCompanyForm";
 import HeadAndContent from "../../../core/HeadAndContent";
-const tableData = [
-  {
-    company_id: 2,
-    registration_date: 2,
-    company_name: "sada",
-    contact_no: 123123123,
-    email_address: "asdad",
-    sales_agent: "Alex Josep",
-  },
-];
+import {
+  useGetCompanyByRole,
+} from "../../../hooks";
+
 const CompanyDetailsContainer = () => {
-  const [editingKey, setEditingKey] = useState("");
+  const{tokenData}=useOutletContext()
   const [data, setData] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [form] = Form.useForm();
-  const edit = (record) => {
-    form.setFieldsValue({
-      company_name: "",
-      contact_no: "",
-      email_address: "",
-      sales_agent: "",
-      ...record,
-    });
-    setEditingKey(record.key);
+  const { data: AllCompany, isLoading: isAllCompanyLoading } =
+  useGetCompanyByRole({role:"sales-agent",id:tokenData.userId});
+ 
+  const viewHandler = (values) => {
+    setData(values);
+    setEditModal(true);
   };
-  const isEditing = (record) => record.key === editingKey;
+ 
 
-  const cancel = () => {
-    setEditingKey("");
-  };
+  const columns = companyColumnsForSalesAgent(
+    viewHandler,
+  );
+ 
 
-  const save = async (key) => {
-    try {
-      // eslint-disable-next-line no-undef
-      const row = await form.validateFields();
-      const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
-
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        setData(newData);
-        setEditingKey("");
-      } else {
-        newData.push(row);
-        setData(newData);
-        setEditingKey("");
-      }
-    } catch (errInfo) {
-      console.log("Validate Failed:", errInfo);
-    }
-  };
-  const columns = companyColumns(isEditing, save, cancel, edit);
-  const mergedColumns = columns.map((col) => {
-    if (!col.editable) {
-      return col;
-    }
-
-    return {
-      ...col,
-      onCell: (record) => ({
-        record,
-        inputType: col.dataIndex === "sales_agent" ? "select" : "text",
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: isEditing(record),
-      }),
-    };
-  });
   return (
     <>
       <HeadAndContent
         heading="Comapny Details"
         btn={{ name: "Add New Company", buttonHandler: () => setVisible(true) }}
       >
-        <CustomTable column={mergedColumns} data={tableData} />
+        <CustomTable
+          column={columns}
+          loading={isAllCompanyLoading}
+          data={AllCompany?.companies}
+          form={form}
+          selectedRowKeys={selectedRowKeys}
+         
+        />
       </HeadAndContent>
-    <NewCompanyForm visible={visible} onCancel={()=>setVisible(false)}/>
-      
+      {editModal && (
+        <NewCompanyForm
+          editable={true}
+          data={data}
+          visible={editModal}
+          onCancel={() => setEditModal(false)}
+        />
+      )}
+      {visible && (
+        <NewCompanyForm visible={visible} onCancel={() => setVisible(false)} />
+      )}
     </>
   );
 };

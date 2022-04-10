@@ -6,9 +6,10 @@ import { useGetUserByRole } from "../../../hooks/User/useGetUserByRole";
 
 const { Option } = Select;
 
-const DropdownActions = ({deleteHandler}) => {
+const DropdownActions = ({deleteHandler,updateHandler}) => {
 
   const [salesAgentVisible, setSalesAgentVisible] = useState(false);
+  const [salesAgent, setSalesAgent] = useState('');
   const { isLoading: isUserLoading, data: salesAgentData } = useGetUserByRole({
     role: "sales-agent",
   });
@@ -49,7 +50,7 @@ const DropdownActions = ({deleteHandler}) => {
       {salesAgentVisible && (
         <>
           <Col span={10}>
-            <Select loading={isUserLoading}  size="large" className=" w-[100%]" placeholder="Select SalesAgent" >
+            <Select loading={isUserLoading} onChange={(value)=>setSalesAgent(value)}  size="large" className=" w-[100%]" placeholder="Select SalesAgent" >
               {salesAgentData.map((p) => (
                 <Option value={p.userId} key={p.userId}>
                   {p.name}
@@ -58,9 +59,9 @@ const DropdownActions = ({deleteHandler}) => {
             </Select>
           </Col>
           <Col  span={4}>
-            <Button block size="large" type="primary" danger>
+          {salesAgent &&  <Button onClick={()=>updateHandler(salesAgent)} block size="large" type="primary" danger>
               Update
-            </Button>
+            </Button>}
           </Col>
         </>
       )}
