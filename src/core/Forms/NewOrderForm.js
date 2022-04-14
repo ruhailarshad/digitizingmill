@@ -14,9 +14,13 @@ import {
 import { UploadOutlined } from "@ant-design/icons";
 import { normFile, onPreview } from "./utils";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-const NewOrderForm = ({ visible, onCancel, onCreate }) => {
+import moment from "moment";
+import { useGetUserByRole } from "../../hooks";
+const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) => {
   const [form] = Form.useForm();
-
+  const {  data: digitizerData } = useGetUserByRole({
+    role: "digitizer",
+  });
   return (
     <Modal
       visible={visible}
@@ -48,7 +52,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
         <Row gutter={20}>
           <Col xl={16} lg={16} md={14} xs={24}>
             <Row gutter={[20, 20]}>
-              <Col xl={12} lg={12} md={12} xs={24}>
+            <Col xl={12} lg={12} md={12} xs={24}>
                 <Form.Item
                   name="order_date"
                   label="Order Date"
@@ -59,12 +63,16 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                     },
                   ]}
                 >
-                  <DatePicker className="w-[100%]" size="large" />
+                  <DatePicker 
+                  disabled
+                  showTime 
+                  defaultValue={moment(new Date(), 'MMMM Do YYYY h:mm:ss')} format={'MMMM Do YYYY h:mm:ss'}
+                  className="w-[100%]" size="large" />
                 </Form.Item>
               </Col>
               <Col xl={12} lg={12} md={12} xs={24}>
                 <Form.Item
-                  name="company_name"
+                  name="companyId"
                   label="Company  Name"
                   rules={[
                     {
@@ -80,15 +88,12 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                         .toLowerCase()
                         .indexOf(input.toLowerCase()) >= 0
                     }
-                    defaultValue="lucy"
                     size="large"
-                  >
-                    <Select.Option value="jack">Jack</Select.Option>
-                    <Select.Option value="lucy">Lucy</Select.Option>
-                    <Select.Option value="disabled" disabled>
-                      Disabled
-                    </Select.Option>
-                    <Select.Option value="Yiminghe">yiminghe</Select.Option>
+                  >{companies?.map(item=>(
+
+                    <Select.Option value={item?.companyId}>{item?.companyName}</Select.Option>
+
+                  ))}
                   </Select>
                 </Form.Item>
               </Col>
@@ -108,7 +113,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
               </Col>
               <Col xl={16} lg={16} md={24} xs={24}>
                 <Form.Item
-                  name="company_instruction"
+                  name="orderInstructions"
                   label="Comapny Instruction"
                   rules={[
                     {
@@ -122,7 +127,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
               </Col>
               <Col xl={8} lg={8} md={24} xs={24}>
                 <Form.Item
-                  name="sales_agent"
+                  name="salesAgentId"
                   label="Sales Agent"
                   rules={[
                     {
@@ -131,7 +136,20 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                     },
                   ]}
                 >
-                  <Input disabled size="large" />
+                 <Select
+                    showSearch
+                    filterOption={(input, option) =>
+                      option.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                    size="large"
+                  >{salesAgentData?.map(item=>(
+
+                    <Select.Option value={item?.userId}>{item?.name}</Select.Option>
+
+                  ))}
+                  </Select>
                 </Form.Item>
               </Col>
               <Col xl={16} lg={16} md={24} xs={24}>
@@ -150,7 +168,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
               </Col>
               <Col xl={8} lg={8} md={24} xs={24}>
                 <Form.Item
-                  name="digitizer"
+                  name="digitizerId"
                   label="Digitizer"
                   rules={[
                     {
@@ -159,7 +177,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                     },
                   ]}
                 >
-                  <Select
+                 <Select
                     showSearch
                     filterOption={(input, option) =>
                       option.children
@@ -167,13 +185,11 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                         .indexOf(input.toLowerCase()) >= 0
                     }
                     size="large"
-                  >
-                    <Select.Option value="jack">Jack</Select.Option>
-                    <Select.Option value="lucy">Lucy</Select.Option>
-                    <Select.Option value="disabled" disabled>
-                      Disabled
-                    </Select.Option>
-                    <Select.Option value="Yiminghe">yiminghe</Select.Option>
+                  >{salesAgentData?.map(item=>(
+
+                    <Select.Option value={item?.userId}>{item?.name}</Select.Option>
+
+                  ))}
                   </Select>
                 </Form.Item>
               </Col>
@@ -186,6 +202,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                 <Form.Item
                   name="delivery_status"
                   label="Delivery Status"
+                  defaultValue="Normal"
                   rules={[
                     {
                       required: true,
@@ -194,19 +211,16 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                   ]}
                 >
                   <Select size="large">
-                    <Select.Option value="jack">Jack</Select.Option>
-                    <Select.Option value="lucy">Lucy</Select.Option>
-                    <Select.Option value="disabled" disabled>
-                      Disabled
-                    </Select.Option>
-                    <Select.Option value="Yiminghe">yiminghe</Select.Option>
+                    <Select.Option value="Urgent">Urgent</Select.Option>
+                    <Select.Option value="Normal">Normal</Select.Option>
                   </Select>
                 </Form.Item>
               </Col>
               <Col xl={8} lg={8} md={24} xs={24}>
                 <Form.Item
-                  name="payment_status"
+                  name="paymentStatus"
                   label="Payment Status"
+                  defaultValue="Pending"
                   rules={[
                     {
                       required: true,
@@ -215,19 +229,16 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                   ]}
                 >
                   <Select size="large">
-                    <Select.Option value="jack">Jack</Select.Option>
-                    <Select.Option value="lucy">Lucy</Select.Option>
-                    <Select.Option value="disabled" disabled>
-                      Disabled
-                    </Select.Option>
-                    <Select.Option value="Yiminghe">yiminghe</Select.Option>
+                    <Select.Option value="Pending">Pending</Select.Option>
+                    <Select.Option value="Paid">Paid</Select.Option>
                   </Select>
                 </Form.Item>
               </Col>
               <Col xl={8} lg={8} md={24} xs={24}>
                 <Form.Item
-                  name="order_status"
+                  name="orderStatus"
                   label="Order Status"
+                  defaultValue="Pending"
                   rules={[
                     {
                       required: true,
@@ -236,12 +247,12 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                   ]}
                 >
                   <Select size="large">
-                    <Select.Option value="jack">Jack</Select.Option>
-                    <Select.Option value="lucy">Lucy</Select.Option>
-                    <Select.Option value="disabled" disabled>
-                      Disabled
+                    <Select.Option value="Pending">Pending</Select.Option>
+                    <Select.Option value="In Progress">In Progress</Select.Option>
+                    <Select.Option value="Completed" >
+                    Completed
                     </Select.Option>
-                    <Select.Option value="Yiminghe">yiminghe</Select.Option>
+                    <Select.Option value="Yiminghe">Ready To Deliver</Select.Option>
                   </Select>
                 </Form.Item>
               </Col>
@@ -304,7 +315,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
           </Col>
 
           <Col xl={8} lg={24} md={24} xs={24}>
-            <Form.List name="users">
+            <Form.List name="sizes">
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name, ...restField }) => (
@@ -370,9 +381,10 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                         <MinusCircleOutlined onClick={() => remove(name)} />
                       </Col>
                     </Row>
+                     
                   ))}
-                  <Form.Item>
-                    <Button
+                  <Button
+                  className="mb-40"
                       type="dashed"
                       onClick={() => add()}
                       block
@@ -380,6 +392,49 @@ const NewOrderForm = ({ visible, onCancel, onCreate }) => {
                     >
                       Add field
                     </Button>
+                  <Form.Item>
+                  <Row justify="center" align="middle" gutter={5}>
+                     <Col xl={9} lg={9} md={9} xs={9}>
+                       <Form.Item
+                         name={"totalPrize"}
+                         label={"Total"}
+                         rules={[
+                           {
+                             required: true,
+                             message: "Missing first name",
+                           },
+                         ]}
+                       >
+                         <Input size="large"/>
+                       </Form.Item>
+                     </Col>
+                     <Col xl={6} lg={6} md={6} xs={6}>
+                       <Form.Item
+                         name={ "currency"}
+                         label="Currency"
+                       >
+                         <Select size="large">
+                           <Select.Option value="jack">Jack</Select.Option>
+                           <Select.Option value="lucy">Lucy</Select.Option>
+                           <Select.Option value="Yiminghe">
+                             yiminghe
+                           </Select.Option>
+                         </Select>
+                       </Form.Item>
+                     </Col>
+                     <Col xl={9} lg={9} md={9} xs={9}>
+                       <Form.Item
+                         name={"bonus"}
+                         label="Bonus"
+                        
+                       >
+                         <Input size="large" />
+                       </Form.Item>
+                     </Col>
+                     
+                     
+                   </Row>
+                    
                   </Form.Item>
                 </>
               )}

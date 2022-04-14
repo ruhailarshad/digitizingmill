@@ -9,7 +9,7 @@ import { useMediaQuery } from "react-responsive";
 const UserCard = ({ data, btnHandler }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 756px)" });
   return (
-    <div className="px-20  rounded-20 py-40 bg-white flex flex-col items-center space-y-30">
+    <div className="px-20  rounded-20 py-[70px] bg-white flex flex-col items-center space-y-30">
       <div className="flex flex-col items-center justify-center">
         {!data.src && (
           <Avatar

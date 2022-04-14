@@ -69,7 +69,7 @@ const tableData = [
 const UserDetails = ({ data = { src: "" } ,stats,onModalShow,role}) => {
   const { id } = useParams();
   const {data:companyData,isLoading:companyLoading}=useGetCompanyByRole({role:role,id:id})
-
+console.log(companyData,"salesagemt")
     const DashboardStats = (
         <Row gutter={[10, 10]}>
           {stats.map((item, i) => (
@@ -101,7 +101,7 @@ const UserDetails = ({ data = { src: "" } ,stats,onModalShow,role}) => {
                 <Col>
                   <Button
                     type="primary"
-                    className="rounded-[20px] mt-10"
+                    className="rounded-[10px] mt-10"
                     danger
                     size="large"
                     onClick={onModalShow}
@@ -160,9 +160,9 @@ const UserDetails = ({ data = { src: "" } ,stats,onModalShow,role}) => {
         </Col>
       </Row>
       <Tabs danger type="card" defaultActiveKey="1" size="large" className="mt-20">
-          <Tabs.TabPane tab="Company Details" key="1">
-          <CustomTable column={companyColumnsNonEditable} isLoading={companyLoading} data={companyData?.company}/>
-          </Tabs.TabPane>
+         {role==='digitizer' && <Tabs.TabPane tab="Company Details" key="1">
+          <CustomTable column={companyColumnsNonEditable} isLoading={companyLoading} data={companyData?.companies}/>
+          </Tabs.TabPane>}
           <Tabs.TabPane tab="Order Details" key="2">
           <CustomTable column={orderColumns} data={orderData}/>
           </Tabs.TabPane>

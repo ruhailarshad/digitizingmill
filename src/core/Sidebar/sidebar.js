@@ -17,11 +17,10 @@ const SideNav = ({ data, Body, indexRoute }) => {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const [collapsed, setCollapsed] = useState(true);
   let location = useLocation();
-  const { setUserData } = useUserData();
 
   const [current, setCurrent] = useState(indexRoute);
   console.log(current, "initial");
-  const { userData } = useUserData();
+  const { userData,setUserData } = useUserData();
 
   const navigate = useNavigate();
 
@@ -70,7 +69,7 @@ const SideNav = ({ data, Body, indexRoute }) => {
           top: 0,
           bottom: 0,
           zIndex: 99,
-          transition: "all 0.1s linear",
+          transition: "all 0.2s linear",
         }}
         collapsed={collapsed}
         collapsible
@@ -122,7 +121,7 @@ const SideNav = ({ data, Body, indexRoute }) => {
       </Sider>
 
       <Content className="container">
-        <Outlet context={{ tokenData: userData.data }} />
+        <Outlet context={{ tokenData: userData }} />
       </Content>
     </Layout>
   );

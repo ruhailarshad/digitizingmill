@@ -133,6 +133,7 @@ const CompanyDetailsContainer = () => {
           loading={isAllCompanyLoading}
           data={AllCompany?.companies}
           selection
+          editable
           form={form}
           rowHandler={rowHandler}
           selectedRowKeys={selectedRowKeys}

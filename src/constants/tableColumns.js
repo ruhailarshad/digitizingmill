@@ -221,7 +221,7 @@ export const companyColumns = (
       dataIndex: "createdAt",
       sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
       render: (_, record) => {
-        return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+        return moment(record.createdAt).format("MMMM Do YYYY h:mm:ss");
       },
       width: '15%',
       responsive: ['md'],

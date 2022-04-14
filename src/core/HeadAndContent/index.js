@@ -8,7 +8,7 @@ const HeadAndContent = ({heading,btn,children,styles=''}) => {
    
     <div className="flex items-center space-x-40 mb-40 max-md:flex-col max-md:space-x-0 max-md:items-start ">
          <Text type="h3"  bold>{heading}</Text>
-    {btn &&  <Button  type="primary"  danger size="medium" onClick={btn.buttonHandler}>
+    {btn &&  <Button  type="primary" className='rounded-10'  danger size="medium" onClick={btn.buttonHandler}>
       {btn.name}
      </Button>}
      </div>

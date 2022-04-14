@@ -4,7 +4,7 @@ import React from "react";
 
 const StatsCard = ({ data }) => {
   return (
-    <Card className="rounded-20" style={{ width: 290 }} >
+    <Card className="rounded-10" style={{ width: 290 }} >
     <Meta
       avatar={<div className="p-12 bg-red-100 flex items-center justify-center rounded-20">{data.icon}</div>}
       title={ <h6 className=" h6-bold text-gray-40 whitespace-nowrap">{data.heading}</h6>}

@@ -18,13 +18,21 @@ import { SalesCompanyDetailsConfig } from "../pages/SalesAgent/CompanyDetails";
 import { SalesDashboardConfig } from "../pages/SalesAgent/Dashboard";
 import { SalesOrderDetailsConfig } from "../pages/SalesAgent/OrderDetails";
 import { SalesReportConfig } from "../pages/SalesAgent/SalesReport";
+import RequireAuth from "./RequireAuth";
 import RouteNames from "./RouteNames";
-
-const routes = ({isLoggedIn,role}) => [
-  { path: "/login", element:!isLoggedIn ? <LoginFormConfig /> : <Navigate to={`/${role}`} /> },
+const Roles = {
+  digitizer: "digitizer",
+  sales: "sales-agent",
+  admin: "admin",
+};
+const routes = () => [
   {
     path: RouteNames.admin,
-    element: isLoggedIn && role==='admin' ? <AdminPanelConfig /> : <Navigate to="/login" />,
+    element: (
+      <RequireAuth role={Roles.admin}>
+        <AdminPanelConfig />
+      </RequireAuth>
+    ),
     children: [
       {
         index: true,
@@ -51,7 +59,11 @@ const routes = ({isLoggedIn,role}) => [
   //sales
   {
     path: RouteNames.salesAgent,
-    element: isLoggedIn && role==='sales-agent'  ?  <SalesAgentPanelConfig /> : <Navigate to="/login" />,
+    element: (
+      <RequireAuth role={Roles.salesAgent}>
+        <SalesAgentPanelConfig />
+      </RequireAuth>
+    ),
     children: [
       {
         index: true,
@@ -62,21 +74,22 @@ const routes = ({isLoggedIn,role}) => [
         element: <SalesCompanyDetailsConfig />,
       },
       {
-        
         path: RouteNames.salesAgentOrderDetail,
         element: <SalesOrderDetailsConfig />,
       },
       {
-        
         path: RouteNames.salesAgentSalesReport,
         element: <SalesReportConfig />,
       },
     ],
   },
-  //digitzer
   {
     path: RouteNames.digitizer,
-    element: isLoggedIn && role==='digitizer'  ?  <DigitizerPanelConfig /> : <Navigate to="/login" />,
+    element: (
+      <RequireAuth role={Roles.digitizer}>
+        <DigitizerPanelConfig />
+      </RequireAuth>
+    ),
     children: [
       {
         index: true,
@@ -86,9 +99,9 @@ const routes = ({isLoggedIn,role}) => [
         path: RouteNames.digitizerOrderDetail,
         element: <DigitizerOrderDetailsConfig />,
       },
-    
     ],
   },
+  { path: "/login", element: <LoginFormConfig /> },
 ];
 
 export default routes;

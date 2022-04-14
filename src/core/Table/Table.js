@@ -13,7 +13,7 @@ const CustomTable = ({
   loading = false,
   DropdownActions,
   form,
-  selectedRowKeys
+  selectedRowKeys,editable
 }) => {
   const [formData, setFormData] = useState([]);
   useEffect(() => {
@@ -58,7 +58,7 @@ const CustomTable = ({
       <Form form={form} >
         <Table
           className="min-w-[200px] overflow-x-scroll"
-          components={{
+          components={editable && {
             body: {
               cell: EditableCell,
             },

@@ -26,7 +26,7 @@ const NewUserAdd = ({ name, data, isLoading, btnHandler, onSearchChange }) => {
                   title={<Link to={`${item.userId}`}>{item.name}</Link>}
                   description={item.email}
                 />
-                <Link to={`${item.userId}`}>View Details</Link>
+                {/* <Link to={`${item.userId}`}>View Details</Link> */}
               </List.Item>
             )}
           </VirtualList>
