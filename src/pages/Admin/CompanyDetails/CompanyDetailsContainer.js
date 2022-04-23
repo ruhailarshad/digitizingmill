@@ -29,7 +29,7 @@ const CompanyDetailsContainer = () => {
     useGetAllCompany({
       page,
       limit: 2,
-      search: 'sales agent company name'
+      search: ''
     });
   const { mutate: deleteCompany } = useDeleteCompany();
   const { mutate: deleteBulkCompany } = useBulkDeleteCompany();
@@ -128,6 +128,7 @@ const CompanyDetailsContainer = () => {
 
     },
   };
+  console.log(AllCompany);
   return (
     <>
       <HeadAndContent
@@ -143,6 +144,7 @@ const CompanyDetailsContainer = () => {
           form={form}
           rowHandler={rowHandler}
           selectedRowKeys={selectedRowKeys}
+          totalRecords={AllCompany?.count}
           DropdownActions={
             showActions && (
               <DropdownActions
@@ -151,6 +153,10 @@ const CompanyDetailsContainer = () => {
               />
             )
           }
+          page={page}
+          onPageChange={(page)=> {
+            setPage(page);
+          }}
         />
       </HeadAndContent>
       {editModal && (

@@ -13,7 +13,10 @@ const CustomTable = ({
   loading = false,
   DropdownActions,
   form,
-  selectedRowKeys,editable
+  selectedRowKeys,editable,
+  onPageChange = () => {},
+  page=1,
+  totalRecords=0,
 }) => {
   const [formData, setFormData] = useState([]);
   useEffect(() => {
@@ -71,6 +74,15 @@ const CustomTable = ({
           columns={column}
           dataSource={formData}
           rowClassName="editable-row"
+          pagination={{
+            showSizeChanger: false,
+            total: totalRecords,
+            current: page,
+            pageSize: 2,
+            onChange: (currentPage, pageSize) => {
+              if(currentPage!==page) onPageChange(currentPage);
+            }
+          }}
         />
       </Form>
     </>

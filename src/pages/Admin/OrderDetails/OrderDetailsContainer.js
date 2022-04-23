@@ -16,8 +16,8 @@ import { useGetOrders } from "../../../hooks/Orders/useGetOrders";
 const OrderDetailsContainer = () => {
  const {tokenData}= useOutletContext()
   const {data:ordersData,isLoading:orderLoading}=useGetOrders()
-  const { data: AllCompany } =
-  useGetAllCompany();
+  const { data:  AllCompany  } =
+  useGetAllCompany({});
   const {  data: salesAgentData } = useGetUserByRole({
     role: "sales-agent",
   });

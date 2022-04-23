@@ -8,7 +8,7 @@ const fetchAllCompany = ({
   search
 }) => {
   const queryString = qs.stringify({limit,
-    page});  
+    page, search});  
   return instance.get(`/api/company?${queryString}`);
 };
 
@@ -17,7 +17,7 @@ export const useGetAllCompany = ({
   page,
   search,
 }) => {
-  return useQuery("company-add-query", () => fetchAllCompany({
+  return useQuery(["company-add-query", page], () => fetchAllCompany({
     limit,
     page,
     search
@@ -26,7 +26,7 @@ export const useGetAllCompany = ({
       const newData = data?.companies.map((item) => {
         return { ...item, salesAgent: item?.user?.name,key:item?.companyId };
       });
-      return {companies:newData};
+      return {companies:newData, count: data?.count};
     },
   });
 };
