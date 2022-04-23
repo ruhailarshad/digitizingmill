@@ -97,12 +97,12 @@ export const editableOrderColumns = (editHandler) => {
 export const orderColumns = [
   {
     title: "Order Id",
-    dataIndex: "order_id",
+    dataIndex: "orderId",
     sorter: (a, b) => a.order_id - b.order_id,
   },
   {
     title: "Order Date",
-    dataIndex: "order_date",
+    dataIndex: "orderDate",
     sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
     render: (_, record) => {
       return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
@@ -110,26 +110,23 @@ export const orderColumns = [
   },
   {
     title: "Customer Name",
-    dataIndex: "customer_name",
+    dataIndex: "customerName",
   },
   {
     title: "Design Name",
-    dataIndex: "design_name",
+    dataIndex: "DesignName",
   },
   {
     title: "Size/Type",
     dataIndex: "size_type",
-    responsive: ["lg"],
   },
   {
     title: "Amount",
     dataIndex: "amount",
-    responsive: ["lg"],
   },
   {
     title: "Payment Status",
-    dataIndex: "payment_status",
-    responsive: ["lg"],
+    dataIndex: "paymentStatus",
     render: (record) => {
       const color = getColor(record);
       return (
@@ -142,8 +139,7 @@ export const orderColumns = [
 
   {
     title: "Order Status",
-    dataIndex: "order_status",
-    responsive: ["lg"],
+    dataIndex: "orderStatus",
     render: (record) => {
       const color = getColor(record);
       return (
@@ -366,7 +362,6 @@ export const companyColumnsForSalesAgent = (viewHandler) => {
     {
       title: "Action",
       dataIndex: "",
-      key: "x",
       render: (record) => (
         <div onClick={() => viewHandler(record)}>
           <AiFillEye size={22} color={"#9999"} />

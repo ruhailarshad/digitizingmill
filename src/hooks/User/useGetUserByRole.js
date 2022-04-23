@@ -9,7 +9,7 @@ export const useGetUserByRole = ({
     onSucess = () => {},
     onError = () => {}
 }) => {
-    return useQuery('user-byrole',() => fetchUserByRole(role), {
+    return useQuery(['user-byrole' + role],() => fetchUserByRole(role), {
         onSucess,
         onError
     });

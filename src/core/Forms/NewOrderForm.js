@@ -1,39 +1,76 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Col,
   DatePicker,
   Form,
   Input,
+  InputNumber,
   Modal,
   Row,
   Select,
-  Space,
   Upload,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { normFile, onPreview } from "./utils";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
-import { useGetUserByRole } from "../../hooks";
-const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) => {
+import { useGetCompanyById, useGetUserByRole } from "../../hooks";
+import { usePostOrderDetails } from "../../hooks/Orders/usePostOrder";
+const NewOrderForm = ({
+  visible,
+  onCancel,
+  companies,
+  salesAgentData,
+  editable,
+}) => {
+  const [companyId, setCompanyId] = useState("");
   const [form] = Form.useForm();
-  const {  data: digitizerData } = useGetUserByRole({
+  const {
+    data: companyById,
+    isLoading: isCompanyByIdLoading,
+    refetch,
+  } = useGetCompanyById({ id: companyId, skip: false });
+  useEffect(() => {
+    if (!isCompanyByIdLoading && companyId) {
+      refetch();
+    }
+  }, [isCompanyByIdLoading, companyId, refetch]);
+  useEffect(() => {
+    if (!isCompanyByIdLoading && companyById !== undefined) {
+      form.setFieldsValue({
+        companyInstruction: companyById.company.companyInstruction,
+        sizes: [...companyById.company.design_sizes],
+      });
+    }
+  }, [companyById, isCompanyByIdLoading, form]);
+  const { mutate: orderSubmit } = usePostOrderDetails();
+  const { data: digitizerData } = useGetUserByRole({
     role: "digitizer",
   });
+  const formValueChangeHandler = (changedValues, allValues) => {
+    if (changedValues.companyId) {
+      setCompanyId(changedValues.companyId);
+    }
+  };
+  const onCreate = (values) => {
+    console.log(values, "orders");
+    orderSubmit(values)
+  };
   return (
     <Modal
       visible={visible}
-      title="Create a new collection"
-      okText="Create"
+      title={editable ? "Update Order" : "Add New Order"}
+      okText={editable ? "Update" : "Submit"}
       cancelText="Cancel"
       onCancel={onCancel}
-      width={1500}
+      width={editable ? 1500 : 1000}
+      okButtonProps={{type:"primary" ,danger:true}}
       onOk={() => {
+        console.log("onOk")
         form
           .validateFields()
           .then((values) => {
-            form.resetFields();
             onCreate(values);
           })
           .catch((info) => {
@@ -45,29 +82,27 @@ const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) 
         form={form}
         layout="vertical"
         name="form_in_modal"
-        initialValues={{
-          modifier: "public",
-        }}
+       
+        onValuesChange={formValueChangeHandler}
       >
         <Row gutter={20}>
-          <Col xl={16} lg={16} md={14} xs={24}>
+          <Col
+            xl={editable ? 16 : 24}
+            lg={editable ? 16 : 24}
+            md={editable ? 14 : 24}
+            xs={24}
+          >
             <Row gutter={[20, 20]}>
-            <Col xl={12} lg={12} md={12} xs={24}>
-                <Form.Item
-                  name="order_date"
-                  label="Order Date"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Order Date is required",
-                    },
-                  ]}
-                >
-                  <DatePicker 
-                  disabled
-                  showTime 
-                  defaultValue={moment(new Date(), 'MMMM Do YYYY h:mm:ss')} format={'MMMM Do YYYY h:mm:ss'}
-                  className="w-[100%]" size="large" />
+              <Col xl={12} lg={12} md={12} xs={24}>
+                <Form.Item name="order_date" label="Order Date">
+                  <DatePicker
+                    disabled
+                    showTime
+                    defaultValue={moment(new Date(), "MMMM Do YYYY h:mm:ss")}
+                    format={"MMMM Do YYYY h:mm:ss"}
+                    className="w-[100%]"
+                    size="large"
+                  />
                 </Form.Item>
               </Col>
               <Col xl={12} lg={12} md={12} xs={24}>
@@ -77,7 +112,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) 
                   rules={[
                     {
                       required: true,
-                      message: "Compant Name No is Required",
+                      message: "Compant Name is Required",
                     },
                   ]}
                 >
@@ -88,12 +123,14 @@ const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) 
                         .toLowerCase()
                         .indexOf(input.toLowerCase()) >= 0
                     }
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     size="large"
-                  >{companies?.map(item=>(
-
-                    <Select.Option value={item?.companyId}>{item?.companyName}</Select.Option>
-
-                  ))}
+                  >
+                    {companies?.map((item) => (
+                      <Select.Option value={item?.companyId}>
+                        {item?.companyName}
+                      </Select.Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </Col>
@@ -113,7 +150,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) 
               </Col>
               <Col xl={16} lg={16} md={24} xs={24}>
                 <Form.Item
-                  name="orderInstructions"
+                  name="companyInstruction"
                   label="Comapny Instruction"
                   rules={[
                     {
@@ -135,26 +172,29 @@ const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) 
                       message: "Sales Agent is Required",
                     },
                   ]}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 >
-                 <Select
+                  <Select
                     showSearch
                     filterOption={(input, option) =>
                       option.children
                         .toLowerCase()
                         .indexOf(input.toLowerCase()) >= 0
                     }
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     size="large"
-                  >{salesAgentData?.map(item=>(
-
-                    <Select.Option value={item?.userId}>{item?.name}</Select.Option>
-
-                  ))}
+                  >
+                    {salesAgentData?.map((item) => (
+                      <Select.Option value={item?.userId}>
+                        {item?.name}
+                      </Select.Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </Col>
               <Col xl={16} lg={16} md={24} xs={24}>
                 <Form.Item
-                  name="order_instruction"
+                  name="orderInstructions"
                   label="Order Instruction"
                   rules={[
                     {
@@ -173,34 +213,42 @@ const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) 
                   rules={[
                     {
                       required: true,
-                      message: "digitizer is Required",
+                      message: "Digitizer is Required",
                     },
                   ]}
                 >
-                 <Select
+                  <Select
                     showSearch
                     filterOption={(input, option) =>
                       option.children
                         .toLowerCase()
                         .indexOf(input.toLowerCase()) >= 0
                     }
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     size="large"
-                  >{salesAgentData?.map(item=>(
-
-                    <Select.Option value={item?.userId}>{item?.name}</Select.Option>
-
-                  ))}
+                  >
+                    {digitizerData?.map((item) => (
+                      <Select.Option value={item?.userId}>
+                        {item?.name}
+                      </Select.Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </Col>
               <Col xl={24} md={24} xs={24}>
-                <Form.Item name="remarks" label="Remarks">
+                <Form.Item name="remarks" label="Remarks" 
+                 rules={[
+                  {
+                    required: true,
+                    message: "Remarks is Required",
+                  },
+                ]}>
                   <Input size="large" />
                 </Form.Item>
               </Col>
               <Col xl={8} lg={8} md={24} xs={24}>
                 <Form.Item
-                  name="delivery_status"
+                  name="deliveryStatus"
                   label="Delivery Status"
                   defaultValue="Normal"
                   rules={[
@@ -210,7 +258,10 @@ const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) 
                     },
                   ]}
                 >
-                  <Select size="large">
+                  <Select
+                    size="large"
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                  >
                     <Select.Option value="Urgent">Urgent</Select.Option>
                     <Select.Option value="Normal">Normal</Select.Option>
                   </Select>
@@ -228,7 +279,10 @@ const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) 
                     },
                   ]}
                 >
-                  <Select size="large">
+                  <Select
+                    size="large"
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                  >
                     <Select.Option value="Pending">Pending</Select.Option>
                     <Select.Option value="Paid">Paid</Select.Option>
                   </Select>
@@ -246,32 +300,39 @@ const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) 
                     },
                   ]}
                 >
-                  <Select size="large">
+                  <Select
+                    size="large"
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                  >
                     <Select.Option value="Pending">Pending</Select.Option>
-                    <Select.Option value="In Progress">In Progress</Select.Option>
-                    <Select.Option value="Completed" >
-                    Completed
+                    <Select.Option value="In Progress">
+                      In Progress
                     </Select.Option>
-                    <Select.Option value="Yiminghe">Ready To Deliver</Select.Option>
+                    <Select.Option value="Completed">Completed</Select.Option>
+                    <Select.Option value="Yiminghe">
+                      Ready To Deliver
+                    </Select.Option>
                   </Select>
                 </Form.Item>
               </Col>
             </Row>
           </Col>
 
-          <Col xl={8} lg={8} md={10} xs={24}>
-            <Row>
-              <Col span={24}>
-                <Form.Item name="order_history" label="Order History">
-                  <Input.TextArea autoSize={{ minRows: 22, maxRows: 22 }} />
-                </Form.Item>
-              </Col>
-            </Row>
-          </Col>
+          {false && (
+            <Col xl={8} lg={8} md={10} xs={24}>
+              <Row>
+                <Col span={24}>
+                  <Form.Item name="order_history" label="Order History">
+                    <Input.TextArea autoSize={{ minRows: 22, maxRows: 22 }} />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Col>
+          )}
         </Row>
 
         <Row gutter={[20, 20]}>
-          <Col xl={16} lg={24} md={24} xs={24}>
+          <Col xl={14} lg={24} md={24} xs={24}>
             <Row>
               <Col xl={8} md={12} xs={12}>
                 <Form.Item
@@ -314,7 +375,7 @@ const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) 
             </Row>
           </Col>
 
-          <Col xl={8} lg={24} md={24} xs={24}>
+          <Col xl={10} lg={24} md={24} xs={24}>
             <Form.List name="sizes">
               {(fields, { add, remove }) => (
                 <>
@@ -325,14 +386,12 @@ const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) 
                           {...restField}
                           name={[name, "size"]}
                           label={"Size"}
-                          rules={[
-                            {
-                              required: true,
-                              message: "Missing first name",
-                            },
-                          ]}
+                         
                         >
-                          <Select size="large">
+                          <Select
+                            size="large"
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                          >
                             <Select.Option value="jack">Jack</Select.Option>
                             <Select.Option value="lucy">Lucy</Select.Option>
                             <Select.Option value="disabled" disabled>
@@ -344,22 +403,14 @@ const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) 
                           </Select>
                         </Form.Item>
                       </Col>
-                      <Col xl={9} lg={9} md={9} xs={9}>
+                      <Col xl={8} lg={8} md={8} xs={8}>
                         <Form.Item
                           {...restField}
-                          name={[name, "price"]}
+                          name={[name, "prize"]}
                           label="Price"
-                          rules={[
-                            {
-                              validator: (value) => {
-                                if (value.length > 2) {
-                                  value.pop();
-                                }
-                              },
-                            },
-                          ]}
+                         
                         >
-                          <Input size="large" />
+                          <InputNumber className="w-[100%]" size="large" />
                         </Form.Item>
                       </Col>
                       <Col xl={5} lg={5} md={5} xs={5}>
@@ -368,7 +419,10 @@ const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) 
                           name={[name, "currency"]}
                           label="Currency"
                         >
-                          <Select size="large">
+                          <Select
+                            size="large"
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                          >
                             <Select.Option value="jack">Jack</Select.Option>
                             <Select.Option value="lucy">Lucy</Select.Option>
                             <Select.Option value="Yiminghe">
@@ -377,68 +431,44 @@ const NewOrderForm = ({ visible, onCancel, onCreate,companies,salesAgentData }) 
                           </Select>
                         </Form.Item>
                       </Col>
-                      <Col xl={1} lg={1} md={1} sm={1}>
+                      <Col span={2}>
                         <MinusCircleOutlined onClick={() => remove(name)} />
                       </Col>
                     </Row>
-                     
                   ))}
                   <Button
-                  className="mb-40"
-                      type="dashed"
-                      onClick={() => add()}
-                      block
-                      icon={<PlusOutlined />}
-                    >
-                      Add field
-                    </Button>
-                  <Form.Item>
-                  <Row justify="center" align="middle" gutter={5}>
-                     <Col xl={9} lg={9} md={9} xs={9}>
-                       <Form.Item
-                         name={"totalPrize"}
-                         label={"Total"}
-                         rules={[
-                           {
-                             required: true,
-                             message: "Missing first name",
-                           },
-                         ]}
-                       >
-                         <Input size="large"/>
-                       </Form.Item>
-                     </Col>
-                     <Col xl={6} lg={6} md={6} xs={6}>
-                       <Form.Item
-                         name={ "currency"}
-                         label="Currency"
-                       >
-                         <Select size="large">
-                           <Select.Option value="jack">Jack</Select.Option>
-                           <Select.Option value="lucy">Lucy</Select.Option>
-                           <Select.Option value="Yiminghe">
-                             yiminghe
-                           </Select.Option>
-                         </Select>
-                       </Form.Item>
-                     </Col>
-                     <Col xl={9} lg={9} md={9} xs={9}>
-                       <Form.Item
-                         name={"bonus"}
-                         label="Bonus"
-                        
-                       >
-                         <Input size="large" />
-                       </Form.Item>
-                     </Col>
-                     
-                     
-                   </Row>
-                    
-                  </Form.Item>
+                    className="mb-40"
+                    type="dashed"
+                    onClick={() => add()}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Add field
+                  </Button>
                 </>
               )}
             </Form.List>
+            <Row justify="center" align="middle" gutter={5}>
+              <Col xl={9} lg={9} md={9} xs={9}>
+                <Form.Item
+                  name="totalPrize"
+                  label={"Total"}
+                 
+                >
+                  <Input size="large" />
+                </Form.Item>
+              </Col>
+              <Col xl={6} lg={6} md={6} xs={6}>
+                <Form.Item name="currency" label="Currency">
+                  <Input size="large" />
+                </Form.Item>
+              </Col>
+              <Col xl={9} lg={9} md={9} xs={9}>
+                <Form.Item name="bonus" label="Bonus">
+                  <Input size="large" />
+                </Form.Item>
+              </Col>
+            </Row>
           </Col>
         </Row>
       </Form>

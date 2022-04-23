@@ -12,16 +12,16 @@ import HeadAndContent from "../../../core/HeadAndContent";
 import StatsCard from "../../../core/StatsCard";
 import { useGetAllCompany, useGetUserByRole } from "../../../hooks";
 import { useGetOrders } from "../../../hooks/Orders/useGetOrders";
-import { data } from "./utils";
 
 const OrderDetailsContainer = () => {
  const {tokenData}= useOutletContext()
-  const {data:ordersData}=useGetOrders()
+  const {data:ordersData,isLoading:orderLoading}=useGetOrders()
   const { data: AllCompany } =
   useGetAllCompany();
   const {  data: salesAgentData } = useGetUserByRole({
     role: "sales-agent",
   });
+
   const [visible, setVisible] = useState(false);
   const orderStats = (
     <Row gutter={[5, 10]}>
@@ -44,9 +44,9 @@ const OrderDetailsContainer = () => {
         btn={{ name: "Add New Order", buttonHandler: () => setVisible(true) }}
       >
         {orderStats}
-        <CustomTable column={column} data={data} />
+        <CustomTable column={column} data={ordersData?.orders} loading={orderLoading}/>
       </HeadAndContent>
-      <NewOrderForm salesAgentData={salesAgentData} companies={AllCompany?.companies} visible={visible} onCancel={() => setVisible(false)} />
+     {visible &&  <NewOrderForm salesAgentData={salesAgentData} companies={AllCompany?.companies} visible={visible} onCancel={() => setVisible(false)} />}
     </>
   );
 };

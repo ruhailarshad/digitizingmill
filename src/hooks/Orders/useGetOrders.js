@@ -5,14 +5,13 @@ const fetchAllOrder = () => {
 };
 
 export const useGetOrders = () => {
-  return useQuery("order-get-query", fetchAllOrder)
-//   {
-    // select: (data) => {
-    //   const newData = data?.companies.map((item) => {
-    //     return { ...item, salesAgent: item?.user?.name,key:item?.companyId };
-    //   });
-    //   console.log(newData, "newData");
-    //   return {companies:newData};
-    // },
-//   });
+  return useQuery("order-get-query", fetchAllOrder,
+  {
+    select: (data) => {
+      const newData = data?.orders.map((item) => {
+        return { ...item, salesAgent: item?.user?.name,key:item?.companyId };
+      });
+      return {companies:newData};
+    },
+  });
 };

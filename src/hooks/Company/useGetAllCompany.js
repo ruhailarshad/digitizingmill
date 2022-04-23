@@ -10,7 +10,6 @@ export const useGetAllCompany = () => {
       const newData = data?.companies.map((item) => {
         return { ...item, salesAgent: item?.user?.name,key:item?.companyId };
       });
-      console.log(newData, "newData");
       return {companies:newData};
     },
   });

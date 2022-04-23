@@ -4,6 +4,6 @@ const fetchCompanyDetailsById = (id) => {
     return instance.get(`/api/company/${id}`);
 }
 
-export const useGetCompanyById = ( id ,onSuccess) => {
-    return useQuery( 'company-byid-query',()=>fetchCompanyDetailsById(id),{enabled:!!id,onSuccess})
+export const useGetCompanyById = ( {id ,skip,onSuccess}) => {
+    return useQuery( 'company-byid-query',()=>fetchCompanyDetailsById(id),{enabled:skip,onSuccess})
 }

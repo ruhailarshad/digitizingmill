@@ -4,7 +4,6 @@ import { useMediaQuery } from "react-responsive";
 import { useOutletContext } from "react-router-dom";
 import { orderColumns } from "../../constants/tableColumns";
 import { useGetUserById } from "../../hooks";
-import { data } from "../../pages/Admin/OrderDetails/utils";
 import NewUserForm from "../Forms/NewUserForm";
 import HeadAndContent from "../HeadAndContent";
 import StatsCard from "../StatsCard";
@@ -52,7 +51,7 @@ const DashboardStats = (
             />
           </Col>
         </Row>
-        <CustomTable column={orderColumns} data={data} />
+        {/* <CustomTable column={orderColumns} data={data} /> */}
       </HeadAndContent>
    
      {isModalVisible &&  <NewUserForm

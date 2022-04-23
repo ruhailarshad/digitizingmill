@@ -4,10 +4,12 @@ const fetchCompanyDetailsByRole = (role, id) => {
   return instance.get(`/api/company/by-${role}/${id}`);
 };
 
-export const useGetCompanyByRole = ({ role, id, onSuccess }) => {
+export const useGetCompanyByRole = ({ role,skip, id, onSuccess }) => {
   return useQuery(
     "company-byrole-query",
     () => fetchCompanyDetailsByRole(role, id),
-    
+    {
+      enabled:skip
+    }
   );
 };
