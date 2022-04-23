@@ -136,7 +136,21 @@ const NewOrderForm = ({
               </Col>
               <Col xl={24} lg={24} md={24} xs={24}>
                 <Form.Item
-                  name="Customer Name"
+                  name="customerName"
+                  label="Customer Name"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Address is Required",
+                    },
+                  ]}
+                >
+                  <Input size="large" />
+                </Form.Item>
+              </Col>
+              <Col xl={24} lg={24} md={24} xs={24}>
+                <Form.Item
+                  name="address"
                   label="Address"
                   rules={[
                     {

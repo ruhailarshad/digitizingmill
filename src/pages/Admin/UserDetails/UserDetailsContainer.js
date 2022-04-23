@@ -14,17 +14,10 @@ const UserDetailsContainer = () => {
     role: "sales-agent",
   });
 
-  const getCurrencyWiseStats = (currencyName) => {
-    if (data?.userStats[currencyName]) {
-      return data.userStats[currencyName].sales;
-    }
-    return 0;
-  };
-
-  const getSalesByCAD = getCurrencyWiseStats("CAD");
-  const getSalesByUSD = getCurrencyWiseStats("USD");
-  const getSalesByEuro = getCurrencyWiseStats("Euro");
-  const getCompanies = data?.totalCompanies || 0;
+  const totalCompanies = data?.totalCompanies;
+  const totalSales = data?.totalSales;
+  const pendingSales = data?.pendingSales;
+  const completedSales = data?.completedSales;
 
   return (
     <>
@@ -41,10 +34,10 @@ const UserDetailsContainer = () => {
         isLoading={isLoading}
         onModalShow={()=>{setIsModalVisible(true)}}
         stats={detailsStats(
-          getCompanies,
-          getSalesByUSD,
-          getSalesByCAD,
-          getSalesByEuro
+          totalCompanies,
+          totalSales,
+          pendingSales,
+          completedSales
         )}
         role="sales-agent"
       />

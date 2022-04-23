@@ -23,8 +23,14 @@ const CompanyDetailsContainer = () => {
   const [showActions, setShowActions] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [form] = Form.useForm();
+  const [page, setPage] = useState(1);
+
   const { data: AllCompany, isLoading: isAllCompanyLoading } =
-    useGetAllCompany();
+    useGetAllCompany({
+      page,
+      limit: 2,
+      search: 'sales agent company name'
+    });
   const { mutate: deleteCompany } = useDeleteCompany();
   const { mutate: deleteBulkCompany } = useBulkDeleteCompany();
   const onSalesAgentUpdate = () => {
