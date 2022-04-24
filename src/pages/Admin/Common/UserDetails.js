@@ -68,7 +68,7 @@ const tableData = [
   ];
 const UserDetails = ({ data = { src: "" } ,stats,onModalShow,role}) => {
   const { id } = useParams();
-  const {data:companyData,isLoading:companyLoading}=useGetCompanyByRole({role:role,id:id,skip:role==='digitizer'})
+  const {data:companyData,isLoading:companyLoading}=useGetCompanyByRole({role:role,id:id,skip:role!=='digitizer'})
     const DashboardStats = (
         <Row gutter={[10, 10]}>
           {stats.map((item, i) => (

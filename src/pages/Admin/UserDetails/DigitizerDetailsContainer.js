@@ -37,7 +37,6 @@ const DigitizerDetailsContainer = () => {
               }
             : {}
         }
-        userCompanies={data?.userCompanies?.companies}
         userSales={data?.userOrders}
         isLoading={isLoading}
         stats={detailsStats(
@@ -54,7 +53,7 @@ const DigitizerDetailsContainer = () => {
           isLoading={isLoading}
           id={id}
           data={data?.userData[0]}
-          userRole={"digitizer"}
+          userRole="digitizer"
           onCancel={() => setIsModalVisible(false)}
         />
       )}

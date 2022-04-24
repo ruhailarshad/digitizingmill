@@ -12,42 +12,42 @@ import { Popconfirm } from "antd";
 import moment from "moment";
 
 const getColor = (record) => {
-  if (record.toLowerCase() === "completed") {
+  if (record?.toLowerCase() === "completed") {
     return "#E23737";
   }
-  if (record.toLowerCase() === "paid") {
+  if (record?.toLowerCase() === "paid") {
     return "#79CB7D";
   }
-  if (record.toLowerCase() === "pending") {
-    return "#707070";
+  if (record?.toLowerCase() === "pending") {
+    return "#6A6A6A";
   }
 };
 export const editableOrderColumns = (editHandler) => {
   return [
     {
       title: "Order Id",
-      dataIndex: "ordersId",
+      dataIndex: "orderId",
       sorter: (a, b) => a.ordersId - b.ordersId,
       responsive: ["lg"],
     },
     {
       title: "Order Date",
-      dataIndex: "order_date",
+      dataIndex: "orderDate",
       responsive: ["lg"],
     },
     {
       title: "Customer Name",
-      dataIndex: "customer_name",
+      dataIndex: "customerName",
       responsive: ["lg"],
     },
     {
       title: "Design Name",
-      dataIndex: "design_name",
+      dataIndex: "designName",
       responsive: ["lg"],
     },
     {
       title: "Size/Type",
-      dataIndex: "size_type",
+      dataIndex: "size",
       responsive: ["lg"],
     },
     {
@@ -57,13 +57,13 @@ export const editableOrderColumns = (editHandler) => {
     },
     {
       title: "Payment Status",
-      dataIndex: "payment_status",
+      dataIndex: "paymentStatus",
       responsive: ["lg"],
       render: (record) => {
         const color = getColor(record);
         return (
           <Tag className="rounded-[10px]" color={color}>
-            {record.toUpperCase()}
+            {record}
           </Tag>
         );
       },
@@ -71,13 +71,13 @@ export const editableOrderColumns = (editHandler) => {
 
     {
       title: "Order Status",
-      dataIndex: "order_status",
+      dataIndex: "orderStatus",
       responsive: ["lg"],
       render: (record) => {
         const color = getColor(record);
         return (
           <Tag className="rounded-[10px]" color={color}>
-            {record.toUpperCase()}
+            {record}
           </Tag>
         );
       },

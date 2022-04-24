@@ -7,8 +7,8 @@ const fetchAllCompany = ({
   page,
   search
 }) => {
-  const queryString = qs.stringify({limit,
-    page, search});  
+  const queryString =limit && page ? qs.stringify({limit,
+    page}) :''
   return instance.get(`/api/company?${queryString}`);
 };
 
@@ -16,8 +16,8 @@ export const useGetAllCompany = ({
   limit,
   page,
   search,
-}) => {
-  return useQuery(["company-add-query", page], () => fetchAllCompany({
+}={}) => {
+  return useQuery("company-add-query", () => fetchAllCompany({
     limit,
     page,
     search

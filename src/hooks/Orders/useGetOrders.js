@@ -11,7 +11,7 @@ export const useGetOrders = () => {
       const newData = data?.orders.map((item) => {
         return { ...item, salesAgent: item?.user?.name,key:item?.companyId };
       });
-      return {companies:newData};
+      return {orders:newData};
     },
   });
 };

@@ -3,20 +3,29 @@ import {
   Button,
   Col,
   DatePicker,
+  Divider,
   Form,
   Input,
   InputNumber,
   Modal,
   Row,
   Select,
+  Space,
+  Typography,
   Upload,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { normFile, onPreview } from "./utils";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
-import { useGetCompanyById, useGetUserByRole } from "../../hooks";
+import {
+  useGetAllCompany,
+  useGetCompanyById,
+  useGetUserByRole,
+} from "../../hooks";
 import { usePostOrderDetails } from "../../hooks/Orders/usePostOrder";
+import { Option } from "antd/lib/mentions";
+let index = 0;
 const NewOrderForm = ({
   visible,
   onCancel,
@@ -25,22 +34,25 @@ const NewOrderForm = ({
   editable,
 }) => {
   const [companyId, setCompanyId] = useState("");
+
   const [form] = Form.useForm();
+
   const {
     data: companyById,
     isLoading: isCompanyByIdLoading,
     refetch,
   } = useGetCompanyById({ id: companyId, skip: false });
   useEffect(() => {
-    if (!isCompanyByIdLoading && companyId) {
+    if (companyId) {
       refetch();
     }
-  }, [isCompanyByIdLoading, companyId, refetch]);
+  }, [companyId, refetch]);
   useEffect(() => {
     if (!isCompanyByIdLoading && companyById !== undefined) {
       form.setFieldsValue({
         companyInstruction: companyById.company.companyInstruction,
         sizes: [...companyById.company.design_sizes],
+        currency:companyById.company.design_sizes[0].currency
       });
     }
   }, [companyById, isCompanyByIdLoading, form]);
@@ -49,13 +61,10 @@ const NewOrderForm = ({
     role: "digitizer",
   });
   const formValueChangeHandler = (changedValues, allValues) => {
-    if (changedValues.companyId) {
-      setCompanyId(changedValues.companyId);
-    }
+    changedValues.companyId && setCompanyId(changedValues.companyId);
   };
   const onCreate = (values) => {
-    console.log(values, "orders");
-    orderSubmit(values)
+    orderSubmit(values);
   };
   return (
     <Modal
@@ -65,9 +74,9 @@ const NewOrderForm = ({
       cancelText="Cancel"
       onCancel={onCancel}
       width={editable ? 1500 : 1000}
-      okButtonProps={{type:"primary" ,danger:true}}
+      okButtonProps={{ type: "primary", danger: true }}
       onOk={() => {
-        console.log("onOk")
+        console.log("onOk");
         form
           .validateFields()
           .then((values) => {
@@ -82,7 +91,6 @@ const NewOrderForm = ({
         form={form}
         layout="vertical"
         name="form_in_modal"
-       
         onValuesChange={formValueChangeHandler}
       >
         <Row gutter={20}>
@@ -250,13 +258,16 @@ const NewOrderForm = ({
                 </Form.Item>
               </Col>
               <Col xl={24} md={24} xs={24}>
-                <Form.Item name="remarks" label="Remarks" 
-                 rules={[
-                  {
-                    required: true,
-                    message: "Remarks is Required",
-                  },
-                ]}>
+                <Form.Item
+                  name="remarks"
+                  label="Remarks"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Remarks is Required",
+                    },
+                  ]}
+                >
                   <Input size="large" />
                 </Form.Item>
               </Col>
@@ -393,28 +404,15 @@ const NewOrderForm = ({
             <Form.List name="sizes">
               {(fields, { add, remove }) => (
                 <>
-                  {fields.map(({ key, name, ...restField }) => (
+                  {fields.map(({ key, name, ...restField }, i) => (
                     <Row justify="center" align="middle" gutter={5}>
                       <Col xl={9} lg={9} md={9} xs={9}>
                         <Form.Item
                           {...restField}
                           name={[name, "size"]}
                           label={"Size"}
-                         
                         >
-                          <Select
-                            size="large"
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                          >
-                            <Select.Option value="jack">Jack</Select.Option>
-                            <Select.Option value="lucy">Lucy</Select.Option>
-                            <Select.Option value="disabled" disabled>
-                              Disabled
-                            </Select.Option>
-                            <Select.Option value="Yiminghe">
-                              yiminghe
-                            </Select.Option>
-                          </Select>
+                          <Input size="large" disabled />
                         </Form.Item>
                       </Col>
                       <Col xl={8} lg={8} md={8} xs={8}>
@@ -422,7 +420,6 @@ const NewOrderForm = ({
                           {...restField}
                           name={[name, "prize"]}
                           label="Price"
-                         
                         >
                           <InputNumber className="w-[100%]" size="large" />
                         </Form.Item>
@@ -433,48 +430,32 @@ const NewOrderForm = ({
                           name={[name, "currency"]}
                           label="Currency"
                         >
-                          <Select
+                          <Input
+                            disabled
                             size="large"
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                          >
-                            <Select.Option value="jack">Jack</Select.Option>
-                            <Select.Option value="lucy">Lucy</Select.Option>
-                            <Select.Option value="Yiminghe">
-                              yiminghe
-                            </Select.Option>
-                          </Select>
+                            value={companyById?.company?.design_sizes?.currency}
+                          />
                         </Form.Item>
                       </Col>
                       <Col span={2}>
-                        <MinusCircleOutlined onClick={() => remove(name)} />
+                        {i >= 1 && (
+                          <MinusCircleOutlined onClick={() => remove(name)} />
+                        )}
                       </Col>
                     </Row>
                   ))}
-                  <Button
-                    className="mb-40"
-                    type="dashed"
-                    onClick={() => add()}
-                    block
-                    icon={<PlusOutlined />}
-                  >
-                    Add field
-                  </Button>
                 </>
               )}
             </Form.List>
             <Row justify="center" align="middle" gutter={5}>
               <Col xl={9} lg={9} md={9} xs={9}>
-                <Form.Item
-                  name="totalPrize"
-                  label={"Total"}
-                 
-                >
-                  <Input size="large" />
+                <Form.Item name="totalPrize" label={"Total"}>
+                  <Input  size="large" />
                 </Form.Item>
               </Col>
               <Col xl={6} lg={6} md={6} xs={6}>
                 <Form.Item name="currency" label="Currency">
-                  <Input size="large" />
+                  <Input disabled  size="large" />
                 </Form.Item>
               </Col>
               <Col xl={9} lg={9} md={9} xs={9}>
