@@ -16,6 +16,8 @@ import { useEffect } from "react";
 import { useQueryClient } from "react-query";
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { usePostUser, useUpdateUser } from "../../hooks";
+import axios from "axios";
+
 const NewUserForm = ({
   visible,
   onCancel,
@@ -67,24 +69,29 @@ const NewUserForm = ({
         form
           .validateFields()
           .then((values) => {
-            // Error araha he catch chalega tou API hit hjaegi
-          })
-          .catch(({ values }) => {
             console.log("user", values);
             const uploadArray = values.upload;
-            // const profilePic=values.profile.originFileObj
+            const profilePic=values.profilePic.originFileObj
             delete values.upload;
-            delete values.profile;
-            // const cnicBackPic = uploadArray[0].originFileObj;
-            // const cnicFrontPic = uploadArray[0].originFileObj;
+            delete values.profilePic;
+            const cnicBackPic = uploadArray[0].originFileObj;
+            const cnicFrontPic = uploadArray[1].originFileObj;
 
-            const uploadData = { ...values, role: userRole };
+            const uploadData = { ...values, role: userRole, profilePic, cnicBackPic, cnicFrontPic};
 
-            !data && !editable
-              ? addUser(uploadData)
-              : updateUser({ ...uploadData, userId: id });
+            const formData = new FormData();
 
-            console.log("Validate Failed:", values);
+            Object.keys(uploadData).forEach(key => {
+              formData.append(key, uploadData[key]);
+            });
+
+            if(!data && !editable) addUser(formData);
+            else {
+              formData.append('userId', id);
+              updateUser(formData);
+            }
+          })
+          .catch(({ values }) => {
           });
       }}
     >
@@ -102,7 +109,7 @@ const NewUserForm = ({
           <Row gutter={20}>
             <Col span={24}>
               <Form.Item
-                name="profile"
+                name="profilePic"
                 label="Profile Picture"
                 rules={[
                   {
@@ -114,11 +121,10 @@ const NewUserForm = ({
               >
                 <ImgCrop rotate>
                   <Upload
-                    onPreview={onPreview}
                     customRequest={dummyRequest}
                     listType="picture-card"
                     maxCount={1}
-                    onChange={(e) => form.setFieldsValue({ profile: e.file })}
+                    onChange={(e) => form.setFieldsValue({ profilePic: e.file })}
                   >
                     Upload
                   </Upload>
