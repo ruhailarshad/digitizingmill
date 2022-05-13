@@ -7,6 +7,7 @@ import {
   Form,
   Input,
   InputNumber,
+  message,
   Modal,
   Row,
   Select,
@@ -19,12 +20,13 @@ import { normFile, onPreview } from "./utils";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
 import {
-  useGetAllCompany,
+  usePostOrder,
+  useUpdateOrder,
   useGetCompanyById,
   useGetUserByRole,
 } from "../../hooks";
-import { usePostOrderDetails } from "../../hooks/Orders/usePostOrder";
 import { Option } from "antd/lib/mentions";
+import { useQueryClient } from "react-query";
 let index = 0;
 const NewOrderForm = ({
   visible,
@@ -32,39 +34,100 @@ const NewOrderForm = ({
   companies,
   salesAgentData,
   editable,
+  data,
 }) => {
   const [companyId, setCompanyId] = useState("");
 
   const [form] = Form.useForm();
-
-  const {
-    data: companyById,
-    isLoading: isCompanyByIdLoading,
-    refetch,
-  } = useGetCompanyById({ id: companyId, skip: false });
+  const queryClient = useQueryClient();
+  const { data: companyById, isLoading: isCompanyByIdLoading } =
+    useGetCompanyById({ id: companyId, skip: !!companyId });
   useEffect(() => {
-    if (companyId) {
-      refetch();
-    }
-  }, [companyId, refetch]);
-  useEffect(() => {
-    if (!isCompanyByIdLoading && companyById !== undefined) {
+    if (data && editable) {
       form.setFieldsValue({
-        companyInstruction: companyById.company.companyInstruction,
-        sizes: [...companyById.company.design_sizes],
-        currency:companyById.company.design_sizes[0].currency
+        ...data,
+        sizes: data?.design_sizes,
       });
     }
-  }, [companyById, isCompanyByIdLoading, form]);
-  const { mutate: orderSubmit } = usePostOrderDetails();
+  }, [data, form, editable]);
+
+  useEffect(() => {
+    if (!isCompanyByIdLoading && companyById !== undefined && companyId) {
+      form.resetFields(["sizes"]);
+      form.setFieldsValue({
+        companyInstruction: companyById?.company?.companyInstruction,
+        sizes: companyById?.company?.design_sizes,
+        currency: companyById?.company?.design_sizes[0]?.currency,
+        totalPrize: companyById?.company?.design_sizes.reduce((prev, acc) => {
+          console.log(prev.prize, acc.prize, "asdasdasd");
+          return prev + acc.prize;
+        }, 0),
+      });
+    }
+  }, [companyById, isCompanyByIdLoading, form, companyId]);
+  const onOrderSubmitSuccess = () => {
+    form.resetFields();
+    onCancel();
+    queryClient.invalidateQueries("order-get-query");
+    message.success("Order Added Successfully");
+  };
+  const { mutate: orderSubmit } = usePostOrder(onOrderSubmitSuccess);
+  const onOrderUpdateSuccess = () => {
+    form.resetFields();
+    onCancel();
+    queryClient.invalidateQueries("order-get-query");
+    message.success("Order Updated Successfully");
+  };
+  const { mutate: orderUpdate } = useUpdateOrder(onOrderUpdateSuccess);
   const { data: digitizerData } = useGetUserByRole({
     role: "digitizer",
   });
   const formValueChangeHandler = (changedValues, allValues) => {
     changedValues.companyId && setCompanyId(changedValues.companyId);
+    allValues.sizes &&
+      form.setFieldsValue({
+        totalPrize: allValues.sizes.reduce((acc, prev) => acc + prev.prize, 0),
+      });
   };
   const onCreate = (values) => {
-    orderSubmit(values);
+    const newData = { ...data, sizes: data?.design_sizes };
+    delete newData["SalesAgent"];
+    delete newData["Digitizer"];
+    delete newData["company"];
+    delete newData["isDeleted"];
+    delete newData["updatedAt"];
+    delete values["customer_file"];
+    delete values["order_date"];
+
+    const isObject = (v) => v !== null && typeof v == "object";
+
+    function getDifference(x, y) {
+      let data = {...x};
+      Object.entries(x).forEach(function ([key]) {
+        if (Array.isArray(x[key]) && Array.isArray(y[key])) {
+          getDifference(x[key], y[key]);
+          if (x[key].length) {
+            delete data[key];
+          }
+        }
+        if (isObject(x[key]) && isObject(y[key])) {
+          getDifference(x[key], y[key]);
+          if (!Object.keys(x[key]).length) {
+            delete data[key];
+          }
+        }
+        if (x[key] === y[key]) delete data[key]
+        return
+      });
+      return data;
+    }
+
+    const orderHistory = getDifference(values, newData);
+
+  
+    editable
+      ? orderUpdate({ ...values, orderId: data.orderId,orderHistory })
+      : orderSubmit(values);
   };
   return (
     <Modal
@@ -72,7 +135,10 @@ const NewOrderForm = ({
       title={editable ? "Update Order" : "Add New Order"}
       okText={editable ? "Update" : "Submit"}
       cancelText="Cancel"
-      onCancel={onCancel}
+      onCancel={() => {
+        onCancel();
+        setCompanyId("");
+      }}
       width={editable ? 1500 : 1000}
       okButtonProps={{ type: "primary", danger: true }}
       onOk={() => {
@@ -343,12 +409,15 @@ const NewOrderForm = ({
             </Row>
           </Col>
 
-          {false && (
+          {editable && (
             <Col xl={8} lg={8} md={10} xs={24}>
               <Row>
                 <Col span={24}>
                   <Form.Item name="order_history" label="Order History">
-                    <Input.TextArea autoSize={{ minRows: 22, maxRows: 22 }} />
+                    <Input.TextArea
+                      disabled
+                      autoSize={{ minRows: 33, maxRows: 33 }}
+                    />
                   </Form.Item>
                 </Col>
               </Row>
@@ -424,11 +493,11 @@ const NewOrderForm = ({
                           <InputNumber className="w-[100%]" size="large" />
                         </Form.Item>
                       </Col>
-                      <Col xl={5} lg={5} md={5} xs={5}>
+                      <Col span={4}>
                         <Form.Item
                           {...restField}
                           name={[name, "currency"]}
-                          label="Currency"
+                          className="mt-30 ml-[-6px]"
                         >
                           <Input
                             disabled
@@ -447,15 +516,15 @@ const NewOrderForm = ({
                 </>
               )}
             </Form.List>
-            <Row justify="center" align="middle" gutter={5}>
-              <Col xl={9} lg={9} md={9} xs={9}>
+            <Row className="mt-20" justify="center" align="middle" gutter={5}>
+              <Col span={9}>
                 <Form.Item name="totalPrize" label={"Total"}>
-                  <Input  size="large" />
+                  <Input disabled size="large" />
                 </Form.Item>
               </Col>
-              <Col xl={6} lg={6} md={6} xs={6}>
-                <Form.Item name="currency" label="Currency">
-                  <Input disabled  size="large" />
+              <Col span={4}>
+                <Form.Item name="currency" className="mt-30 ml-[-6px]">
+                  <Input disabled size="large" />
                 </Form.Item>
               </Col>
               <Col xl={9} lg={9} md={9} xs={9}>

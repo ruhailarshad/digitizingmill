@@ -2,15 +2,16 @@ import { Col, Grid, Row } from "antd";
 import React, {  useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import { useOutletContext } from "react-router-dom";
+import { dashboardStats } from "../../constants/stats";
 import { orderColumns } from "../../constants/tableColumns";
-import { useGetUserById } from "../../hooks";
+import { useGetOrders, useGetUserById } from "../../hooks";
 import NewUserForm from "../Forms/NewUserForm";
 import HeadAndContent from "../HeadAndContent";
 import StatsCard from "../StatsCard";
 import CustomTable from "../Table/Table";
 import DashboardChart from "./DashboardChart";
 import UserCard from "./UserCard";
-const Dashboard = ({dashboardStats}) => {
+const Dashboard = () => {
   const isLaptop = useMediaQuery({ query: "(max-width: 900px)" });
 
 const [isModalVisible, setIsModalVisible] = useState(false);
@@ -19,9 +20,16 @@ const [isModalVisible, setIsModalVisible] = useState(false);
     id:tokenData.userId,
     role:tokenData.role,
   });
+  const {
+    data: ordersData,
+    isLoading: orderLoading,
+  } = useGetOrders({
+    page:1,
+    limit: 20,
+  });
 const DashboardStats = (
     <Row  gutter={[10, 10]}>
-      {dashboardStats.map((item, i) => (
+      {dashboardStats(userData?.totalCompanies, userData?.totalSales, userData?.pendingSales, userData?.completedSales).map((item, i) => (
         <Col xxl={6} xl={8} lg={12} md={11} sm={24} key={i}>
           <StatsCard  data={item} />
         </Col>
@@ -51,7 +59,7 @@ const DashboardStats = (
             />
           </Col>
         </Row>
-        {/* <CustomTable column={orderColumns} data={data} /> */}
+        <CustomTable noFilter column={orderColumns} data={ordersData?.orderList} loading={orderLoading}/>
       </HeadAndContent>
    
      {isModalVisible &&  <NewUserForm

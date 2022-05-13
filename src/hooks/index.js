@@ -12,7 +12,10 @@ import { usePostUser } from "./User/usePostUser";
 import { useUpdateUser } from "./User/useUpdateUser";
 import { useUserDataSearchTerm } from "./User/useUserDataSearchTerm";
 import { useBulkUpdateSalesAgent } from "./Company/useBulkUpdateSalesAgent";
-
+import { usePostOrder } from "./Orders/usePostOrder";
+import { useUpdateOrder } from "./Orders/useUpdateOrder";
+import { useGetOrders } from "./Orders/useGetOrders";
+import { useDeleteOrder } from "./Orders/useDeleteOrder";
 export {
   useDeleteCompany,
   useGetAllCompany,
@@ -27,5 +30,9 @@ export {
   usePostUser,
   useUpdateUser,
   useUserDataSearchTerm,
-  useBulkUpdateSalesAgent
+  useBulkUpdateSalesAgent,
+  useGetOrders,
+  usePostOrder,
+  useUpdateOrder,
+  useDeleteOrder
 };

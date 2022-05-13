@@ -1,4 +1,4 @@
-import { Col, Row } from "antd";
+import { Button, Col, Row } from "antd";
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { orderDetailStats } from "../../../constants/stats";
@@ -10,33 +10,78 @@ import { CustomTable } from "../../../core";
 import NewOrderForm from "../../../core/Forms/NewOrderForm";
 import HeadAndContent from "../../../core/HeadAndContent";
 import StatsCard from "../../../core/StatsCard";
-import { useGetAllCompany, useGetUserByRole } from "../../../hooks";
+import {
+  useDeleteOrder,
+  useGetAllCompany,
+  useGetUserByRole,
+} from "../../../hooks";
 import { useGetOrders } from "../../../hooks/Orders/useGetOrders";
 
 const OrderDetailsContainer = () => {
- const {tokenData}= useOutletContext()
-  const {data:ordersData,isLoading:orderLoading}=useGetOrders()
-  const { data: AllCompany } =
-  useGetAllCompany({});
-  const {  data: salesAgentData } = useGetUserByRole({
+  const { tokenData } = useOutletContext();
+  const [page, setPage] = useState(1);
+  const [editData, setEditData] = useState("");
+  const [visible, setVisible] = useState(false);
+  const [editVisible, setEditVisible] = useState(false);
+  const [searchParam, setSearchParam] = useState("");
+  const [showActions, setShowActions] = useState(false);  
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]); 
+
+  const { mutate: deleteOrder } = useDeleteOrder();
+  const {
+    data: ordersData,
+    isLoading: orderLoading,
+    refetch: refetchOrders,
+  } = useGetOrders({
+    page,
+    limit: 10,
+    search: searchParam,
+  });
+  const { data: AllCompany } = useGetAllCompany({});
+
+  const { data: salesAgentData } = useGetUserByRole({
     role: "sales-agent",
   });
-
-  const [visible, setVisible] = useState(false);
   const orderStats = (
     <Row gutter={[5, 10]}>
-      {orderDetailStats(267, 5, 5, 22, 5).map((item, i) => (
-        <Col xxl={5} xl={8} lg={8} md={10}  xs={24} key={i}>
+      {orderDetailStats(
+        ordersData?.totalOrders,
+        ordersData?.inProgressOrders,
+        ordersData?.pendingOrders,
+        ordersData?.readyToDeliveredOrders,
+        ordersData?.completedOrders,
+        ordersData?.totalOrders
+      ).map((item, i) => (
+        <Col xxl={4} xl={6} lg={8} md={10} xs={24} key={i}>
           <StatsCard data={item} />
         </Col>
       ))}
     </Row>
   );
   const editHandler = (record) => {
-    setVisible(true);
-    console.log(record);
+    setEditVisible(true);
+    setEditData(record);
   };
-  const column = editableOrderColumns(editHandler);
+  const deleteHandler = (id) => {
+    deleteOrder(id);
+  };
+  const rowHandler = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      selectedRows.length >= 1 ? setShowActions(true) : setShowActions(false);
+    setSelectedRowKeys(selectedRowKeys)
+
+    },
+  };
+  const bulkDeleteHandler = () => {
+    const newData = [...selectedRowKeys];
+    const ids = newData.map((item) => {
+      return item;
+    });
+    // deleteBulkCompany({ data: ids });
+    setShowActions(false);
+    setSelectedRowKeys([])
+  };
+  const column = editableOrderColumns(editHandler, deleteHandler);
   return (
     <>
       <HeadAndContent
@@ -44,9 +89,44 @@ const OrderDetailsContainer = () => {
         btn={{ name: "Add New Order", buttonHandler: () => setVisible(true) }}
       >
         {orderStats}
-        <CustomTable column={column} data={ordersData?.orders} loading={orderLoading}/>
+        <CustomTable
+          filterHandler={(value) => setSearchParam(value)}
+          column={column}
+          data={ordersData?.orderList}
+          loading={orderLoading}
+          totalRecords={ordersData?.count}
+          page={page}
+          onPageChange={(page) => {
+            setPage(page);
+          }}
+          selection
+          rowHandler={rowHandler}
+          selectedRowKeys={selectedRowKeys}
+          DropdownActions={
+            showActions && (
+             <Button onClick={bulkDeleteHandler} size="large" type="primary" danger>Delete Orders</Button>
+            )
+          }
+        />
       </HeadAndContent>
-     {visible &&  <NewOrderForm salesAgentData={salesAgentData} companies={AllCompany?.companies} visible={visible} onCancel={() => setVisible(false)} />}
+      {visible && (
+        <NewOrderForm
+          salesAgentData={salesAgentData}
+          companies={AllCompany?.companies}
+          visible={visible}
+          onCancel={() => setVisible(false)}
+        />
+      )}
+      {editVisible && (
+        <NewOrderForm
+          salesAgentData={salesAgentData}
+          data={editData}
+          companies={AllCompany?.companies}
+          visible={editVisible}
+          onCancel={() => setEditVisible(false)}
+          editable
+        />
+      )}
     </>
   );
 };

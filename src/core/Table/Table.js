@@ -17,6 +17,8 @@ const CustomTable = ({
   onPageChange = () => {},
   page=1,
   totalRecords=0,
+  filterHandler,
+  noFilter
 }) => {
   const [formData, setFormData] = useState([]);
   useEffect(() => {
@@ -25,18 +27,11 @@ const CustomTable = ({
     }
   }, [data]);
 
-  const filterHandler = (value) => {
-    const filteredData = data.filter((item) => {
-      return Object.keys(item).some((key) =>
-        item[key].toString().toLowerCase().includes(value.toLowerCase())
-      );
-    });
-    setFormData(filteredData);
-  };
+  
 
   return (
     <>
-      <Row justify="space-between" className="mb-20" gutter={[20,10]}>
+   {!noFilter &&   <Row justify="space-between" className="mb-20" gutter={[20,10]}>
         <Col xxl={14} xl={17} lg={24} sm={24}>
           <Row gutter={[10,10]}>
             <Col lg={8} md={8}>
@@ -57,7 +52,7 @@ const CustomTable = ({
             format={"YYYY/MM/DD"}
           />
         </Col>
-      </Row>
+      </Row>}
       <Form form={form} >
         <Table
           className="min-w-[200px] overflow-x-scroll"
@@ -77,8 +72,9 @@ const CustomTable = ({
           pagination={{
             showSizeChanger: false,
             total: totalRecords,
+            hideOnSinglePage:true,
             current: page,
-            pageSize: 2,
+            pageSize: 10,
             onChange: (currentPage, pageSize) => {
               if(currentPage!==page) onPageChange(currentPage);
             }

@@ -15,54 +15,88 @@ const getColor = (record) => {
   if (record?.toLowerCase() === "completed") {
     return "#E23737";
   }
+  if (record?.toLowerCase() === "urgent") {
+    return "#FF0000";
+  }
   if (record?.toLowerCase() === "paid") {
     return "#79CB7D";
   }
-  if (record?.toLowerCase() === "pending") {
+  if (record?.toLowerCase() === "in progress") {
     return "#6A6A6A";
   }
+  if (record?.toLowerCase() === "pending") {
+    return "#FF2D81";
+  }
+  if (record?.toLowerCase() === "ready to deliver") {
+    return " #FFA42D";
+  }
 };
-export const editableOrderColumns = (editHandler) => {
+export const editableOrderColumns = (editHandler, deleteHandler) => {
   return [
     {
       title: "Order Id",
       dataIndex: "orderId",
-      sorter: (a, b) => a.ordersId - b.ordersId,
-      responsive: ["lg"],
+      render: (_, record) => {
+        return (
+          <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">
+            {record.companyId}
+          </p>
+        );
+      },
+      sorter: (a, b) => a.companyId - b.companyId,
+      width: "15%",
+      responsive: ["md"],
     },
     {
       title: "Order Date",
       dataIndex: "orderDate",
-      responsive: ["lg"],
+      sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+      render: (_, record) => {
+        return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+      },
     },
     {
       title: "Customer Name",
       dataIndex: "customerName",
-      responsive: ["lg"],
     },
     {
       title: "Design Name",
       dataIndex: "designName",
-      responsive: ["lg"],
     },
     {
       title: "Size/Type",
       dataIndex: "size",
-      responsive: ["lg"],
+      render: (_, record) => {
+        return record.design_sizes.map((item) => item.size).join(", ");
+      },
     },
     {
       title: "Amount",
-      dataIndex: "amount",
-      responsive: ["lg"],
+      dataIndex: "totalPrize",
+      render: (_, record) => {
+        return (
+          <p>{`${
+            record.currency === "Euro"
+              ? "€"
+              : record.currency === "USD"
+              ? "$"
+              : record.currency === "CAD"
+              ? "CA$"
+              : "$"
+          }${record.totalPrize}`}</p>
+        );
+      },
     },
     {
       title: "Payment Status",
       dataIndex: "paymentStatus",
-      responsive: ["lg"],
       render: (record) => {
         const color = getColor(record);
         return (
-          <Tag className="rounded-[10px]" color={color}>
+          <Tag
+            className="rounded-4 w-[109px] h-32 flex text-14 items-center justify-center"
+            color={color}
+          >
             {record}
           </Tag>
         );
@@ -72,11 +106,28 @@ export const editableOrderColumns = (editHandler) => {
     {
       title: "Order Status",
       dataIndex: "orderStatus",
-      responsive: ["lg"],
       render: (record) => {
         const color = getColor(record);
         return (
-          <Tag className="rounded-[10px]" color={color}>
+          <Tag
+            className="rounded-4 w-[109px] h-32 flex text-14 items-center justify-center"
+            color={color}
+          >
+            {record}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: "Delivery Status",
+      dataIndex: "deliveryStatus",
+      render: (record) => {
+        const color = getColor(record);
+        return (
+          <Tag
+            className="rounded-4 w-[109px] h-32 flex text-14 items-center justify-center"
+            color={color}
+          >
             {record}
           </Tag>
         );
@@ -86,11 +137,30 @@ export const editableOrderColumns = (editHandler) => {
       title: "Action",
       dataIndex: "",
       key: "x",
-      render: (record) => (
-        <div onClick={() => editHandler(record)}>
-          <AiFillEdit size={22} color={"#9999"} />
-        </div>
-      ),
+      render: (record) => {
+        const confirm = () => {
+          Modal.confirm({
+            title: "Confirm",
+            icon: <ExclamationCircleOutlined />,
+            content: "Do you want to delete this items?",
+
+            okText: "Yes",
+            okType: "danger",
+            cancelText: "No",
+            onOk: () => deleteHandler(record.orderId),
+          });
+        };
+        return (
+          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+            <div>
+              <MdDelete size={22} color={"#9999"} onClick={confirm} />
+            </div>
+            <div onClick={() => editHandler(record)}>
+              <AiFillEdit size={22} color={"#9999"} />
+            </div>
+          </div>
+        );
+      },
     },
   ];
 };
@@ -98,7 +168,16 @@ export const orderColumns = [
   {
     title: "Order Id",
     dataIndex: "orderId",
-    sorter: (a, b) => a.order_id - b.order_id,
+    render: (_, record) => {
+      return (
+        <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">
+          {record.companyId}
+        </p>
+      );
+    },
+    sorter: (a, b) => a.companyId - b.companyId,
+    width: "15%",
+    responsive: ["md"],
   },
   {
     title: "Order Date",
@@ -114,15 +193,31 @@ export const orderColumns = [
   },
   {
     title: "Design Name",
-    dataIndex: "DesignName",
+    dataIndex: "designName",
   },
   {
     title: "Size/Type",
-    dataIndex: "size_type",
+    dataIndex: "size",
+    render: (_, record) => {
+      return record.design_sizes.map((item) => item.size).join(", ");
+    },
   },
   {
     title: "Amount",
-    dataIndex: "amount",
+    dataIndex: "totalPrize",
+    render: (_, record) => {
+      return (
+        <p>{`${
+          record.currency === "Euro"
+            ? "€"
+            : record.currency === "USD"
+            ? "$"
+            : record.currency === "CAD"
+            ? "CA$"
+            : "$"
+        }${record.totalPrize}`}</p>
+      );
+    },
   },
   {
     title: "Payment Status",
@@ -130,8 +225,11 @@ export const orderColumns = [
     render: (record) => {
       const color = getColor(record);
       return (
-        <Tag className="rounded-[10px]" color={color}>
-          {record.toUpperCase()}
+        <Tag
+          className="rounded-4 w-[109px] h-32 flex text-14 items-center justify-center"
+          color={color}
+        >
+          {record}
         </Tag>
       );
     },
@@ -143,8 +241,26 @@ export const orderColumns = [
     render: (record) => {
       const color = getColor(record);
       return (
-        <Tag className="rounded-[10px]" color={color}>
-          {record.toUpperCase()}
+        <Tag
+          className="rounded-4 w-[109px] h-32 flex text-14 items-center justify-center"
+          color={color}
+        >
+          {record}
+        </Tag>
+      );
+    },
+  },
+  {
+    title: "Delivery Status",
+    dataIndex: "deliveryStatus",
+    render: (record) => {
+      const color = getColor(record);
+      return (
+        <Tag
+          className="rounded-4 w-[109px] h-32 flex text-14 items-center justify-center"
+          color={color}
+        >
+          {record}
         </Tag>
       );
     },
@@ -206,11 +322,15 @@ export const companyColumns = (
       title: "Company Id",
       dataIndex: "companyId",
       render: (_, record) => {
-        return <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">{record.companyId}</p>;
+        return (
+          <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">
+            {record.companyId}
+          </p>
+        );
       },
       sorter: (a, b) => a.companyId - b.companyId,
-      width: '15%',
-      responsive: ['md'],
+      width: "15%",
+      responsive: ["md"],
     },
     {
       title: "Registration Date",
@@ -219,34 +339,29 @@ export const companyColumns = (
       render: (_, record) => {
         return moment(record.createdAt).format("MMMM Do YYYY h:mm:ss");
       },
-      width: '15%',
-      responsive: ['md'],
-
+      width: "15%",
+      responsive: ["md"],
     },
     {
       title: "Company Name",
       dataIndex: "companyName",
-      width: '15%',
-
+      width: "15%",
     },
     {
       title: "Contact No",
       dataIndex: "phone",
-      width: '15%',
-
+      width: "15%",
     },
     {
       title: "Email Address",
       dataIndex: "emailAddress",
-      width: '15%',
-
+      width: "15%",
     },
     {
       title: "Sales Agent",
       dataIndex: "salesAgent",
       editable: true,
-      width: '15%',
-
+      width: "15%",
     },
     {
       title: "Actions",
@@ -273,9 +388,7 @@ export const companyColumns = (
               <MdDelete size={22} color={"#9999"} onClick={confirm} />
             </div>
             {editable ? (
-              <span 
-              className="flex items-center"
-              >
+              <span className="flex items-center">
                 <div
                   onClick={() => save(record)}
                   style={{
@@ -302,7 +415,6 @@ export const companyColumns = (
         ) : null;
       },
     },
-   
   ];
 };
 

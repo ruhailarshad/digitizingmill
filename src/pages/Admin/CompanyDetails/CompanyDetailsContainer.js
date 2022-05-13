@@ -20,15 +20,15 @@ const CompanyDetailsContainer = () => {
   const [data, setData] = useState([]);
   const [visible, setVisible] = useState(false);
   const [editModal, setEditModal] = useState(false);
-  const [showActions, setShowActions] = useState(false);
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [showActions, setShowActions] = useState(false);  
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]); 
   const [form] = Form.useForm();
   const [page, setPage] = useState(1);
 
   const { data: AllCompany, isLoading: isAllCompanyLoading } =
     useGetAllCompany({
       page,
-      limit: 2,
+      limit: 10,
       search: ''
     });
   const { mutate: deleteCompany } = useDeleteCompany();
@@ -128,7 +128,6 @@ const CompanyDetailsContainer = () => {
 
     },
   };
-  console.log(AllCompany);
   return (
     <>
       <HeadAndContent

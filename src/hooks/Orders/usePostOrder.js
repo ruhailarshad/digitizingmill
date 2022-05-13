@@ -4,7 +4,7 @@ const fetchCompanyDetails = (orderData = {}) => {
     return instance.post('/api/order', orderData);
 }
 
-export const usePostOrderDetails = (onSuccess) => {
+export const usePostOrder = (onSuccess) => {
     return useMutation(fetchCompanyDetails, {
         mutatioKey: 'order-details-mutation',
         onSuccess,

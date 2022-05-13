@@ -82,8 +82,10 @@ const DashboardChart = () => {
     <Row gutter={[20, 20]}>
       <Col span={24}>
         <Row align="end">
-          <Select size="large" className="w-100 ">
-            <Select.Option>USD</Select.Option>
+          <Select size="large" defaultValue="USD" className="w-100 ">
+            <Select.Option value="USD">USD</Select.Option>
+            <Select.Option value="CAD">CAD</Select.Option>
+            <Select.Option value="Euro">Euro</Select.Option>
           </Select>
         </Row>
       </Col>

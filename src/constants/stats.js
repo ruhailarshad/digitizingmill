@@ -60,7 +60,7 @@ export const detailsStats = (companies,sales,pending,completed) => {
     ];
   };
 
-  export const orderDetailStats = (orders,progress,pending,ready,completed) => {
+  export const orderDetailStats = (orders,progress,pending,ready,completed,urgent) => {
     return [
       {
         heading: "Total Orders",
@@ -86,6 +86,12 @@ export const detailsStats = (companies,sales,pending,completed) => {
       },
       {
         heading: "Completed Orders",
+        stats: completed,
+        icon:<TiTick color="#fff" size={36}/>
+
+      },
+      {
+        heading: "Urgent Orders",
         stats: completed,
         icon:<TiTick color="#fff" size={36}/>
 

@@ -3,4 +3,6 @@
     top: 100%;
     font-size: 12px;
   }
-  
+  .ant-card-body{
+    @apply !py-18 !px-20
+  }
