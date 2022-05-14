@@ -52,7 +52,7 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
       dataIndex: "orderDate",
       sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
       render: (_, record) => {
-        return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+        return moment(record.createdAt).format("dates: [moment, moment]");
       },
     },
     {

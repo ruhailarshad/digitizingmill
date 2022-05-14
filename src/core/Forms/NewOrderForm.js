@@ -3,7 +3,6 @@ import {
   Button,
   Col,
   DatePicker,
-  Divider,
   Form,
   Input,
   InputNumber,
@@ -11,13 +10,11 @@ import {
   Modal,
   Row,
   Select,
-  Space,
-  Typography,
   Upload,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { normFile, onPreview } from "./utils";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { MinusCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import {
   usePostOrder,
@@ -25,7 +22,6 @@ import {
   useGetCompanyById,
   useGetUserByRole,
 } from "../../hooks";
-import { Option } from "antd/lib/mentions";
 import { useQueryClient } from "react-query";
 let index = 0;
 const NewOrderForm = ({
@@ -42,14 +38,6 @@ const NewOrderForm = ({
   const queryClient = useQueryClient();
   const { data: companyById, isLoading: isCompanyByIdLoading } =
     useGetCompanyById({ id: companyId, skip: !!companyId });
-  useEffect(() => {
-    if (data && editable) {
-      form.setFieldsValue({
-        ...data,
-        sizes: data?.design_sizes,
-      });
-    }
-  }, [data, form, editable]);
 
   useEffect(() => {
     if (!isCompanyByIdLoading && companyById !== undefined && companyId) {
@@ -59,12 +47,21 @@ const NewOrderForm = ({
         sizes: companyById?.company?.design_sizes,
         currency: companyById?.company?.design_sizes[0]?.currency,
         totalPrize: companyById?.company?.design_sizes.reduce((prev, acc) => {
-          console.log(prev.prize, acc.prize, "asdasdasd");
           return prev + acc.prize;
         }, 0),
       });
     }
   }, [companyById, isCompanyByIdLoading, form, companyId]);
+  useEffect(() => {
+    if (data && editable) {
+      form.resetFields();
+      form.setFieldsValue({
+        ...data,
+        sizes: data?.design_sizes,
+      });
+    }
+  }, [data, form, editable]);
+
   const onOrderSubmitSuccess = () => {
     form.resetFields();
     onCancel();
@@ -90,44 +87,42 @@ const NewOrderForm = ({
       });
   };
   const onCreate = (values) => {
-    const newData = { ...data, sizes: data?.design_sizes };
-    delete newData["SalesAgent"];
-    delete newData["Digitizer"];
-    delete newData["company"];
-    delete newData["isDeleted"];
-    delete newData["updatedAt"];
-    delete values["customer_file"];
-    delete values["order_date"];
+    if (editable) {
+      const newData = JSON.parse(
+        JSON.stringify({ ...data, sizes: data?.design_sizes })
+      );
+      const newValues = JSON.parse(JSON.stringify(values));
+      delete newData["SalesAgent"];
+      delete newData["Digitizer"];
+      delete newData["company"];
+      delete newData["isDeleted"];
+      delete newData["updatedAt"];
+      delete newValues["customer_file"];
+      delete newValues["order_date"];
 
-    const isObject = (v) => v !== null && typeof v == "object";
+      function getDifference(x, y) {
+        let data = { ...x };
+        Object.entries(x).forEach(function ([key]) {
+          if (Array.isArray(x[key]) && Array.isArray(y[key])) {
+            x[key].forEach(
+              (_, i) =>
+                x[key][i].prize === y[key][i].prize && delete data[key][i]
+            );
+        !x[key][0] && delete data[key];
 
-    function getDifference(x, y) {
-      let data = {...x};
-      Object.entries(x).forEach(function ([key]) {
-        if (Array.isArray(x[key]) && Array.isArray(y[key])) {
-          getDifference(x[key], y[key]);
-          if (x[key].length) {
-            delete data[key];
           }
-        }
-        if (isObject(x[key]) && isObject(y[key])) {
-          getDifference(x[key], y[key]);
-          if (!Object.keys(x[key]).length) {
-            delete data[key];
-          }
-        }
-        if (x[key] === y[key]) delete data[key]
-        return
-      });
-      return data;
+
+          if (x[key] === y[key]) delete data[key];
+          return;
+        });
+        return data;
+      }
+      const orderHistory = getDifference(newValues, newData);
+      orderUpdate({ ...values, orderId: data.orderId, orderHistory });
+      return;
     }
 
-    const orderHistory = getDifference(values, newData);
-
-  
-    editable
-      ? orderUpdate({ ...values, orderId: data.orderId,orderHistory })
-      : orderSubmit(values);
+    orderSubmit(values);
   };
   return (
     <Modal
@@ -499,11 +494,7 @@ const NewOrderForm = ({
                           name={[name, "currency"]}
                           className="mt-30 ml-[-6px]"
                         >
-                          <Input
-                            disabled
-                            size="large"
-                            value={companyById?.company?.design_sizes?.currency}
-                          />
+                          <Input disabled size="large" />
                         </Form.Item>
                       </Col>
                       <Col span={2}>

@@ -1,4 +1,4 @@
-import { Button, Col, Row } from "antd";
+import { Button, Col, Modal, Row } from "antd";
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { orderDetailStats } from "../../../constants/stats";
@@ -16,16 +16,18 @@ import {
   useGetUserByRole,
 } from "../../../hooks";
 import { useGetOrders } from "../../../hooks/Orders/useGetOrders";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 const OrderDetailsContainer = () => {
-  const { tokenData } = useOutletContext();
   const [page, setPage] = useState(1);
   const [editData, setEditData] = useState("");
   const [visible, setVisible] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
   const [searchParam, setSearchParam] = useState("");
-  const [showActions, setShowActions] = useState(false);  
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]); 
+  const [dateParam, setDateParam] = useState([]);
+  const [showActions, setShowActions] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  console.log(dateParam,'dateParam')
 
   const { mutate: deleteOrder } = useDeleteOrder();
   const {
@@ -36,6 +38,7 @@ const OrderDetailsContainer = () => {
     page,
     limit: 10,
     search: searchParam,
+    dateParamss:dateParam,
   });
   const { data: AllCompany } = useGetAllCompany({});
 
@@ -68,8 +71,7 @@ const OrderDetailsContainer = () => {
   const rowHandler = {
     onChange: (selectedRowKeys, selectedRows) => {
       selectedRows.length >= 1 ? setShowActions(true) : setShowActions(false);
-    setSelectedRowKeys(selectedRowKeys)
-
+      setSelectedRowKeys(selectedRowKeys);
     },
   };
   const bulkDeleteHandler = () => {
@@ -77,9 +79,19 @@ const OrderDetailsContainer = () => {
     const ids = newData.map((item) => {
       return item;
     });
+    Modal.confirm({
+      title: "Confirm",
+      icon: <ExclamationCircleOutlined />,
+      content: "Do you want to delete this items?",
+
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk: deleteHandler,
+    });
     // deleteBulkCompany({ data: ids });
     setShowActions(false);
-    setSelectedRowKeys([])
+    setSelectedRowKeys([]);
   };
   const column = editableOrderColumns(editHandler, deleteHandler);
   return (
@@ -90,7 +102,14 @@ const OrderDetailsContainer = () => {
       >
         {orderStats}
         <CustomTable
-          filterHandler={(value) => setSearchParam(value)}
+          filterHandler={(value) => {
+            setSearchParam(value);
+            setPage(1);
+          }}
+          dateChangeHandler={(value) => {
+            setDateParam(value);
+            setPage(1);
+          }}
           column={column}
           data={ordersData?.orderList}
           loading={orderLoading}
@@ -104,7 +123,14 @@ const OrderDetailsContainer = () => {
           selectedRowKeys={selectedRowKeys}
           DropdownActions={
             showActions && (
-             <Button onClick={bulkDeleteHandler} size="large" type="primary" danger>Delete Orders</Button>
+              <Button
+                onClick={bulkDeleteHandler}
+                size="large"
+                type="primary"
+                danger
+              >
+                Delete Orders
+              </Button>
             )
           }
         />

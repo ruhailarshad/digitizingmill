@@ -1,5 +1,4 @@
 import React from "react";
-import { dashboardStats } from "../../../constants/stats";
 import Dashboard from "../../../core/Dashboard";
 
 const DashboardContainer = () => {

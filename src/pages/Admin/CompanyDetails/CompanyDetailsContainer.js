@@ -22,6 +22,8 @@ const CompanyDetailsContainer = () => {
   const [editModal, setEditModal] = useState(false);
   const [showActions, setShowActions] = useState(false);  
   const [selectedRowKeys, setSelectedRowKeys] = useState([]); 
+  const [searchParam, setSearchParam] = useState("");
+
   const [form] = Form.useForm();
   const [page, setPage] = useState(1);
 
@@ -29,7 +31,7 @@ const CompanyDetailsContainer = () => {
     useGetAllCompany({
       page,
       limit: 10,
-      search: ''
+      search: searchParam
     });
   const { mutate: deleteCompany } = useDeleteCompany();
   const { mutate: deleteBulkCompany } = useBulkDeleteCompany();
@@ -136,6 +138,7 @@ const CompanyDetailsContainer = () => {
       >
         <CustomTable
           column={mergedColumns}
+          filterHandler={(value) => setSearchParam(value)}
           loading={isAllCompanyLoading}
           data={AllCompany?.companies}
           selection

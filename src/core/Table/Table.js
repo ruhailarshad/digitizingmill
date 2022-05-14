@@ -18,6 +18,7 @@ const CustomTable = ({
   page=1,
   totalRecords=0,
   filterHandler,
+  dateChangeHandler,
   noFilter
 }) => {
   const [formData, setFormData] = useState([]);
@@ -47,6 +48,7 @@ const CustomTable = ({
         </Col>
         <Col>
           <RangePicker
+          onChange={dateChangeHandler}
             size="large"
             defaultValue={[moment().subtract(10, "days"), moment()]}
             format={"YYYY/MM/DD"}

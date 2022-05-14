@@ -1,6 +1,12 @@
 import { Column } from "@ant-design/plots";
 import { Col, Row, Select } from "antd";
+import { useState } from "react";
+import { useGetAllSales } from "../../hooks/User/Sales/useGetSales";
 const DashboardChart = () => {
+  const [currency, setCurrency] = useState('USD')
+  const { data:currencyData, isLoading } = useGetAllSales({
+    byCurrency:currency,
+  });
   const data = [
     {
       type: "January",
@@ -82,7 +88,7 @@ const DashboardChart = () => {
     <Row gutter={[20, 20]}>
       <Col span={24}>
         <Row align="end">
-          <Select size="large" defaultValue="USD" className="w-100 ">
+          <Select size="large" defaultValue="USD" className="w-100 " onChange={(value)=>setCurrency(value)}>
             <Select.Option value="USD">USD</Select.Option>
             <Select.Option value="CAD">CAD</Select.Option>
             <Select.Option value="Euro">Euro</Select.Option>

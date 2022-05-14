@@ -1,6 +1,6 @@
 
 import { useQuery } from "react-query";
-import instance from "../../services/AxiosConfig";
+import instance from "../../../services/AxiosConfig";
 import qs from 'qs';
 
 const fetchSales = ({ byCurrency}) => {
