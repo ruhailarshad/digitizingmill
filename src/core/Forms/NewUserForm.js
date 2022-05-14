@@ -1,20 +1,11 @@
-import {
-  Button,
-  Col,
-  Form,
-  Input,
-  message,
-  Modal,
-  Row,
-  Upload,
-} from "antd";
+import { Button, Col, Form, Input, message, Modal, Row, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import ImgCrop from "antd-img-crop";
 import { normFile, onPreview } from "./utils";
 import { LoadingOutlined } from "@ant-design/icons";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { usePostUser, useUpdateUser } from "../../hooks";
 import axios from "axios";
 
@@ -28,6 +19,41 @@ const NewUserForm = ({
   id,
 }) => {
   const queryClient = useQueryClient();
+  const [showEditImage, setShowEditImage] = useState({
+    profilePic: false,
+    cnicFrontPic: false,
+    cnicBackPic: false,
+  });
+
+  const toggleImageDisplayHandler = (imageType) => {
+    debugger;
+    setShowEditImage((prev) => ({
+      ...prev,
+      [imageType]: !prev[imageType],
+    }));
+  };
+
+  const renderUserImageWithToggle = (imageType) => {
+    return (
+      <div style={{ width: "80px", height: "80px", display: "flex" }}>
+        <img
+          src={`http://localhost:4000/user/image/${data[imageType]}`}
+          height="80px"
+          width="80px"
+          alt="user-media"
+        />
+        <button
+          type="input"
+          onClick={(e) => {
+            toggleImageDisplayHandler(imageType);
+          }}
+        >
+          Change Image
+        </button>
+      </div>
+    );
+  };
+
   const [form] = Form.useForm();
   useEffect(() => {
     if (data && editable) {
@@ -57,6 +83,10 @@ const NewUserForm = ({
       onSuccess("ok");
     }, 0);
   };
+  const renderTogglerForImage = (imageType) => {
+    return <div onClick={() => toggleImageDisplayHandler(imageType)}>Show Image</div>;
+  };
+
   return (
     <Modal
       visible={visible}
@@ -66,33 +96,37 @@ const NewUserForm = ({
       onCancel={onCancel}
       width={800}
       onOk={() => {
-        form
-          .validateFields()
-          .then((values) => {
-            console.log("user", values);
-            const uploadArray = values.upload;
-            const profilePic=values.profilePic.originFileObj
-            delete values.upload;
-            delete values.profilePic;
-            const cnicBackPic = uploadArray[0].originFileObj;
-            const cnicFrontPic = uploadArray[1].originFileObj;
+        form.validateFields().then((values) => {
+          const profilePic = values?.profilePic?.originFileObj;
+          const cnicBackPic = values?.cnicBackPic?.originFileObj;
+          const cnicFrontPic = values?.cnicFrontPic?.originFileObj;
 
-            const uploadData = { ...values, role: userRole, profilePic, cnicBackPic, cnicFrontPic};
+          delete values.upload;
+          delete values.profilePic;
 
-            const formData = new FormData();
+          const uploadData = {
+            ...values,
+            role: userRole,
+            profilePic,
+            cnicBackPic,
+            cnicFrontPic,
+          };
 
-            Object.keys(uploadData).forEach(key => {
-              formData.append(key, uploadData[key]);
-            });
+          const formData = new FormData();
 
-            if(!data && !editable) addUser(formData);
-            else {
-              formData.append('userId', id);
-              updateUser(formData);
-            }
-          })
-          .catch(({ values }) => {
+          Object.keys(uploadData).forEach((key) => {
+            formData.append(key, uploadData[key]);
           });
+
+          if (!data && !editable) addUser(formData);
+          else {
+            formData.append("userId", id);
+            updateUser(formData);
+          }
+        });
+        // .catch(({ values, ...rest }) => {
+        //   debugger;
+        // });
       }}
     >
       {isLoading && editable ? (
@@ -108,28 +142,31 @@ const NewUserForm = ({
         >
           <Row gutter={20}>
             <Col span={24}>
-              <Form.Item
-                name="profilePic"
-                label="Profile Picture"
-                rules={[
-                  {
-                    required: true,
-                    message: "",
-                  },
-                ]}
-                valuePropName="file"
-              >
-                <ImgCrop rotate>
-                  <Upload
-                    customRequest={dummyRequest}
-                    listType="picture-card"
-                    maxCount={1}
-                    onChange={(e) => form.setFieldsValue({ profilePic: e.file })}
+              {editable && data?.profilePic && !showEditImage["profilePic"] ? (
+                renderUserImageWithToggle("profilePic")
+              ) : (
+                <>
+                  <Form.Item
+                    name="profilePic"
+                    label="Profile Picture"
+                    valuePropName="file"
                   >
-                    Upload
-                  </Upload>
-                </ImgCrop>
-              </Form.Item>
+                    <ImgCrop rotate>
+                      <Upload
+                        customRequest={dummyRequest}
+                        listType="picture-card"
+                        maxCount={1}
+                        onChange={(e) =>
+                          form.setFieldsValue({ profilePic: e.file })
+                        }
+                      >
+                        Upload
+                      </Upload>
+                    </ImgCrop>
+                  </Form.Item>
+                  {renderTogglerForImage("profilePic")}
+                </>
+              )}
             </Col>
             <Col xl={12} md={24} xs={24}>
               <Form.Item
@@ -222,25 +259,59 @@ const NewUserForm = ({
                 <Input className="w-[100%]" size="large" />
               </Form.Item>
             </Col>
-            <Col xl={12} md={24} xs={24}>
-              <Form.Item
-                name="upload"
-                label="CNIC"
-                valuePropName="fileList"
-                getValueFromEvent={normFile}
-              >
-                <Upload
-                  onPreview={onPreview}
-                  customRequest={dummyRequest}
-                  listType="picture"
-                  name="cnic"
-                  maxCount={2}
-                >
-                  <Button danger size="medium" icon={<UploadOutlined />}>
-                    Click to upload
-                  </Button>
-                </Upload>
-              </Form.Item>
+            <Col span={12}>
+              {editable && data?.cnicFrontPic && !showEditImage["cnicFrontPic"] ? (
+                renderUserImageWithToggle("cnicFrontPic")
+              ) : (
+                <>
+                  <Form.Item
+                    name="cnicFrontPic"
+                    label="CNIC Front Pic"
+                    valuePropName="file"
+                  >
+                    <ImgCrop rotate>
+                      <Upload
+                        customRequest={dummyRequest}
+                        listType="picture-card"
+                        maxCount={1}
+                        onChange={(e) =>
+                          form.setFieldsValue({ cnicFrontPic: e.file })
+                        }
+                      >
+                        Upload CNIC FRONT PIC
+                      </Upload>
+                    </ImgCrop>
+                  </Form.Item>
+                  {renderTogglerForImage("cnicFrontPic")}
+                </>
+              )}
+            </Col>
+            <Col span={12}>
+              {editable && data?.cnicBackPic && !showEditImage["cnicBackPic"] ? (
+                renderUserImageWithToggle("cnicBackPic")
+              ) : (
+                <>
+                  <Form.Item
+                    name="cnicBackPic"
+                    label="CNIC Back Pic"
+                    valuePropName="file"
+                  >
+                    <ImgCrop rotate>
+                      <Upload
+                        customRequest={dummyRequest}
+                        listType="picture-card"
+                        maxCount={1}
+                        onChange={(e) =>
+                          form.setFieldsValue({ cnicBackPic: e.file })
+                        }
+                      >
+                        Upload CNIC BACK PIC
+                      </Upload>
+                    </ImgCrop>
+                  </Form.Item>
+                  {renderTogglerForImage("cnicBackPic")}
+                </>
+              )}
             </Col>
           </Row>
         </Form>
