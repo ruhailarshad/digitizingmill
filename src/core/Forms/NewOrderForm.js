@@ -28,7 +28,6 @@ const NewOrderForm = ({
   visible,
   onCancel,
   companies,
-  salesAgentData,
   editable,
   data,
 }) => {
@@ -38,7 +37,13 @@ const NewOrderForm = ({
   const queryClient = useQueryClient();
   const { data: companyById, isLoading: isCompanyByIdLoading } =
     useGetCompanyById({ id: companyId, skip: !!companyId });
-
+    const { data: digitizerData } = useGetUserByRole({
+      role: "digitizer",
+    });
+   
+    const { isLoading: isAdminLoading,data: adminData } = useGetUserByRole({
+    });
+    console.log(data,'Data')
   useEffect(() => {
     if (!isCompanyByIdLoading && companyById !== undefined && companyId) {
       form.resetFields(["sizes"]);
@@ -76,9 +81,7 @@ const NewOrderForm = ({
     message.success("Order Updated Successfully");
   };
   const { mutate: orderUpdate } = useUpdateOrder(onOrderUpdateSuccess);
-  const { data: digitizerData } = useGetUserByRole({
-    role: "digitizer",
-  });
+ 
   const formValueChangeHandler = (changedValues, allValues) => {
     changedValues.companyId && setCompanyId(changedValues.companyId);
     allValues.sizes &&
@@ -266,9 +269,11 @@ const NewOrderForm = ({
                     }
                     getPopupContainer={(trigger) => trigger.parentNode}
                     size="large"
+              loading={ isAdminLoading}
+
                   >
-                    {salesAgentData?.map((item) => (
-                      <Select.Option value={item?.userId}>
+                    {adminData?.filter(item=>item.role==='admin' || item.role=== 'sales-agent')?.map((item) => (
+                      <Select.Option value={item?.userId} key={item.userId}>
                         {item?.name}
                       </Select.Option>
                     ))}

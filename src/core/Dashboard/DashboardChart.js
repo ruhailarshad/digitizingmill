@@ -4,9 +4,10 @@ import { useState } from "react";
 import { useGetAllSales } from "../../hooks/User/Sales/useGetSales";
 const DashboardChart = () => {
   const [currency, setCurrency] = useState('USD')
-  const { data:currencyData, isLoading } = useGetAllSales({
+  const sales = useGetAllSales({
     byCurrency:currency,
   });
+  console.log(sales)
   const data = [
     {
       type: "January",

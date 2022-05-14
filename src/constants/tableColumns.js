@@ -39,11 +39,11 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
       render: (_, record) => {
         return (
           <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">
-            {record.companyId}
+            {record.orderId}
           </p>
         );
       },
-      sorter: (a, b) => a.companyId - b.companyId,
+      sorter: (a, b) => a.orderId - b.orderId,
       width: "15%",
       responsive: ["md"],
     },
@@ -171,11 +171,11 @@ export const orderColumns = [
     render: (_, record) => {
       return (
         <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">
-          {record.companyId}
+          {record.orderId}
         </p>
       );
     },
-    sorter: (a, b) => a.companyId - b.companyId,
+    sorter: (a, b) => a.orderId - b.orderId,
     width: "15%",
     responsive: ["md"],
   },
@@ -270,7 +270,7 @@ export const orderColumns = [
 export const DigitizerOrderColumns = [
   {
     title: "Order Id",
-    dataIndex: "order_id",
+    dataIndex: "orderid",
     sorter: (a, b) => a.order_id - b.order_id,
     responsive: ["lg"],
   },
