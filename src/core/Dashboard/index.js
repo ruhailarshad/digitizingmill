@@ -27,6 +27,7 @@ const [isModalVisible, setIsModalVisible] = useState(false);
     page:1,
     limit: 20,
   });
+  console.log(ordersData,'ordersData')
 const DashboardStats = (
     <Row  gutter={[10, 10]}>
       {dashboardStats(userData?.totalCompanies, userData?.totalSales, userData?.pendingSales, userData?.completedSales).map((item, i) => (

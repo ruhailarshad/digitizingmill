@@ -7,9 +7,8 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 const EditableCell = (props) => {
-  const { isLoading: isUserLoading, data: salesAgentData } = useGetUserByRole({
-    role: "sales-agent",
-  });
+
+  const { isLoading: isAdminLoading, data: adminData } = useGetUserByRole();
   const getInput = (record, dataIndex, title) => {
     switch (props.inputType) {
       case "select":
@@ -24,9 +23,9 @@ const EditableCell = (props) => {
               filterOption={(input, option) =>
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
-              loading={isUserLoading}
+              loading={isAdminLoading}
             >
-              {salesAgentData?.map((p) => (
+              {adminData?.filter(item=>item.role==='admin' || item.role=== 'sales-agent')?.map((p) => (
                 <Option value={p.userId} key={p.userId}>
                   {p.name}
                 </Option>

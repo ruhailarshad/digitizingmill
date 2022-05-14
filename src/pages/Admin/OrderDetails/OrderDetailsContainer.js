@@ -2,22 +2,18 @@ import { Button, Col, Modal, Row } from "antd";
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { orderDetailStats } from "../../../constants/stats";
-import {
-  editableOrderColumns,
-  orderColumns,
-} from "../../../constants/tableColumns";
+import { editableOrderColumns } from "../../../constants/tableColumns";
 import { CustomTable } from "../../../core";
 import NewOrderForm from "../../../core/Forms/NewOrderForm";
 import HeadAndContent from "../../../core/HeadAndContent";
 import StatsCard from "../../../core/StatsCard";
 import {
   useDeleteOrder,
-  useBulkDeleteOrders,
   useGetAllCompany,
-  useGetUserByRole,
 } from "../../../hooks";
 import { useGetOrders } from "../../../hooks/Orders/useGetOrders";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { useBulkDeleteOrder } from "../../../hooks/Orders/useBulkDeleteOrder";
 
 const OrderDetailsContainer = () => {
   const [page, setPage] = useState(1);
@@ -28,29 +24,19 @@ const OrderDetailsContainer = () => {
   const [dateParam, setDateParam] = useState([]);
   const [showActions, setShowActions] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  console.log(dateParam,'dateParam')
-
   const { mutate: deleteOrder } = useDeleteOrder();
-  
-  const { mutate: deleteOrders } = useBulkDeleteOrders();
-  const {
-    data: ordersData,
-    isLoading: orderLoading,
-    refetch: refetchOrders,
-  } = useGetOrders({
+
+  const { data: ordersData, isLoading: orderLoading } = useGetOrders({
     page,
     limit: 10,
     search: searchParam,
-    dateParamss:dateParam,
+    dateParam,
   });
 
-  console.log('------------------?', ordersData);
+  const { mutate: deleteBulkOrder } = useBulkDeleteOrder();
 
   const { data: AllCompany } = useGetAllCompany({});
 
-  const { data: salesAgentData } = useGetUserByRole({
-    role: "sales-agent",
-  });
   const orderStats = (
     <Row gutter={[5, 10]}>
       {orderDetailStats(
@@ -75,20 +61,15 @@ const OrderDetailsContainer = () => {
     deleteOrder(id);
   };
 
-  const onBulkDeleteOrders = (ids) => {
-    deleteOrders(ids);
-  };
   const rowHandler = {
     onChange: (selectedRowKeys, selectedRows) => {
       selectedRows.length >= 1 ? setShowActions(true) : setShowActions(false);
-      setSelectedRowKeys(selectedRowKeys);
+      setSelectedRowKeys(selectedRowKeys)
     },
   };
   const bulkDeleteHandler = () => {
     const newData = [...selectedRowKeys];
-    const ids = newData.map((item) => {
-      return item;
-    });
+   
     Modal.confirm({
       title: "Confirm",
       icon: <ExclamationCircleOutlined />,
@@ -97,11 +78,12 @@ const OrderDetailsContainer = () => {
       okText: "Yes",
       okType: "danger",
       cancelText: "No",
-      onOk: () => onBulkDeleteOrders(ids),
+      onOk: () => {
+        deleteBulkOrder({ data: newData });
+        setShowActions(false);
+        setSelectedRowKeys([])
+      },
     });
-    // deleteBulkCompany({ data: ids });
-    setShowActions(false);
-    setSelectedRowKeys([]);
   };
   const column = editableOrderColumns(editHandler, deleteHandler);
   return (
@@ -147,7 +129,6 @@ const OrderDetailsContainer = () => {
       </HeadAndContent>
       {visible && (
         <NewOrderForm
-          salesAgentData={salesAgentData}
           companies={AllCompany?.companies}
           visible={visible}
           onCancel={() => setVisible(false)}
@@ -155,7 +136,6 @@ const OrderDetailsContainer = () => {
       )}
       {editVisible && (
         <NewOrderForm
-          salesAgentData={salesAgentData}
           data={editData}
           companies={AllCompany?.companies}
           visible={editVisible}

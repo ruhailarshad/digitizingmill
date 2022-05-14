@@ -1,16 +1,15 @@
 import { useQuery } from "react-query";
 import instance from '../../services/AxiosConfig'
 const fetchUserByRole = async ( role) => {
-    const userRole=role ? `?role=${role}` : ''
-    return instance.get(`/api/user${userRole}`);
+    return instance.get(`/api/user`);
 }
 
 export const useGetUserByRole = ({
-    role='',
+    role,
     onSucess = () => {},
     onError = () => {}
-}={}) => {
-    return useQuery(['user-byrole' + role],() => fetchUserByRole(role), {
+}) => {
+    return useQuery(['user-byrole' , role],() => fetchUserByRole(role), {
         onSucess,
         onError
     });

@@ -17,7 +17,7 @@ export const useGetAllCompany = ({
   page,
   search,
 }={}) => {
-  return useQuery(["company-add-query" + search], () => fetchAllCompany({
+  return useQuery(["company-add-query" , search], () => fetchAllCompany({
     limit,
     page,
     search

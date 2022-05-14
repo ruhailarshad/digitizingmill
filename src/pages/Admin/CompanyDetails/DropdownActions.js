@@ -9,10 +9,7 @@ const { Option } = Select;
 const DropdownActions = ({ deleteHandler, updateHandler }) => {
   const [salesAgentVisible, setSalesAgentVisible] = useState(false);
   const [salesAgent, setSalesAgent] = useState("");
-  const { isLoading: isUserLoading, data: salesAgentData } = useGetUserByRole({
-    role: "sales-agent",
-  });
-
+  const { isLoading: isUserLoading, data: adminData } = useGetUserByRole();
   const menu = (
     <Menu>
       <Menu.Item
@@ -60,7 +57,7 @@ const DropdownActions = ({ deleteHandler, updateHandler }) => {
               className=" w-[100%]"
               placeholder="Select SalesAgent"
             >
-              {salesAgentData.map((p) => (
+              {adminData?.filter(item=>item.role==='admin' || item.role=== 'sales-agent').map((p) => (
                 <Option value={p.userId} key={p.userId}>
                   {p.name}
                 </Option>
