@@ -3,7 +3,6 @@ import qs from "qs";
 import instance from "../../services/AxiosConfig";
 
 const formatHistory = (orderHistory) => {
-  debugger
   if (!orderHistory?.changedData) return;
   return Object.entries(JSON.parse(orderHistory.changedData)).reduce((string, [key, value]) => {
     const newStr = `${string} ${string.length ? '\n' : ''} User ${orderHistory.username} has ${key === 'created' ? key : ` changed ${key}`}  ${value} at ${orderHistory.updatedAt}`;

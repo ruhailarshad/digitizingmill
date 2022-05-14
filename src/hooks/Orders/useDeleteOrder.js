@@ -16,3 +16,23 @@ export const useDeleteOrder = () => {
         },
     })
 }
+
+const deleteOrdersAPI = (ids) => {
+    return instance.delete('api/order/bulk/delete', {
+        data: {
+            ids
+        }
+    });
+}
+
+export const useBulkDeleteOrders = () => {
+    const queryClient=useQueryClient()
+    return useMutation(deleteOrdersAPI, {  
+        mutatioKey: 'bulk-order-delete-mutation',
+        onSuccess:()=>{
+            message.success("Orders Deleted Successfully")
+            queryClient.invalidateQueries("order-get-query");
+
+        },
+    })
+}

@@ -12,6 +12,7 @@ import HeadAndContent from "../../../core/HeadAndContent";
 import StatsCard from "../../../core/StatsCard";
 import {
   useDeleteOrder,
+  useBulkDeleteOrders,
   useGetAllCompany,
   useGetUserByRole,
 } from "../../../hooks";
@@ -30,6 +31,8 @@ const OrderDetailsContainer = () => {
   console.log(dateParam,'dateParam')
 
   const { mutate: deleteOrder } = useDeleteOrder();
+  
+  const { mutate: deleteOrders } = useBulkDeleteOrders();
   const {
     data: ordersData,
     isLoading: orderLoading,
@@ -71,6 +74,10 @@ const OrderDetailsContainer = () => {
   const deleteHandler = (id) => {
     deleteOrder(id);
   };
+
+  const onBulkDeleteOrders = (ids) => {
+    deleteOrders(ids);
+  };
   const rowHandler = {
     onChange: (selectedRowKeys, selectedRows) => {
       selectedRows.length >= 1 ? setShowActions(true) : setShowActions(false);
@@ -85,12 +92,12 @@ const OrderDetailsContainer = () => {
     Modal.confirm({
       title: "Confirm",
       icon: <ExclamationCircleOutlined />,
-      content: "Do you want to delete this items?",
+      content: "Do you want to delete following this items?",
 
       okText: "Yes",
       okType: "danger",
       cancelText: "No",
-      onOk: deleteHandler,
+      onOk: () => onBulkDeleteOrders(ids),
     });
     // deleteBulkCompany({ data: ids });
     setShowActions(false);
