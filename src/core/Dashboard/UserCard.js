@@ -8,15 +8,15 @@ import { BsFillHouseDoorFill } from "react-icons/bs";
 import { useMediaQuery } from "react-responsive";
 const UserCard = ({ data, btnHandler }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 756px)" });
+  console.log(data,'daataaa')
   return (
     <div className="px-20  rounded-20 py-[70px] bg-white flex flex-col items-center space-y-30">
       <div className="flex flex-col items-center justify-center">
-        {!data.src && (
           <Avatar
+          src={`http://localhost:4000/user/image/${data?.src}`}
             size={{ xs: 100, sm: 100, md: 150, lg: 150, xl: 150, xxl: 150 }}
             icon={<UserOutlined />}
           />
-        )}
         <Text
           type={`${isMobile ? "h4" : "h3"}`}
           tyles={`text-gray-80 ${isMobile ? "h4-med" : "h3-med"} `}

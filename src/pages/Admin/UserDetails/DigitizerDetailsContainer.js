@@ -22,10 +22,13 @@ const DigitizerDetailsContainer = () => {
   };
   
 
-  const getSalesByCAD = getCurrencyWiseStats("CAD");
-  const getSalesByUSD = getCurrencyWiseStats("USD");
-  const getSalesByEuro = getCurrencyWiseStats("Euro");
+  // const getSalesByCAD = getCurrencyWiseStats("CAD");
+  // const getSalesByUSD = getCurrencyWiseStats("USD");
+  // const getSalesByEuro = getCurrencyWiseStats("Euro");
   const getCompanies = data?.totalCompanies || 0;
+  const getTotalSales = data?.totalSales || 0;
+  const getPeningSales = data?.pendingSales || 0;
+  const getCompletedSales = data?.completedSales || 0;
 
   return (
     <>
@@ -41,9 +44,9 @@ const DigitizerDetailsContainer = () => {
         isLoading={isLoading}
         stats={detailsStats(
           getCompanies,
-          getSalesByUSD,
-          getSalesByCAD,
-          getSalesByEuro
+          getTotalSales,
+          getPeningSales,
+          getCompletedSales
         )}
         role="digitizer"
       />

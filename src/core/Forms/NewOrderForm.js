@@ -24,26 +24,19 @@ import {
 } from "../../hooks";
 import { useQueryClient } from "react-query";
 let index = 0;
-const NewOrderForm = ({
-  visible,
-  onCancel,
-  companies,
-  editable,
-  data,
-}) => {
+const NewOrderForm = ({ visible, onCancel, companies, editable, data }) => {
   const [companyId, setCompanyId] = useState("");
 
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
   const { data: companyById, isLoading: isCompanyByIdLoading } =
     useGetCompanyById({ id: companyId, skip: !!companyId });
-    const { data: digitizerData } = useGetUserByRole({
-      role: "digitizer",
-    });
-   
-    const { isLoading: isAdminLoading,data: adminData } = useGetUserByRole({
-    });
-    console.log(data,'Data')
+  const { data: digitizerData } = useGetUserByRole({
+    role: "digitizer",
+  });
+
+  const { isLoading: isAdminLoading, data: adminData } = useGetUserByRole({});
+  console.log(data, "Data");
   useEffect(() => {
     if (!isCompanyByIdLoading && companyById !== undefined && companyId) {
       form.resetFields(["sizes"]);
@@ -62,6 +55,7 @@ const NewOrderForm = ({
       form.resetFields();
       form.setFieldsValue({
         ...data,
+        orderHistory:data?.orderHistory ? data?.orderHistory.toString() : '',
         sizes: data?.design_sizes,
       });
     }
@@ -81,7 +75,7 @@ const NewOrderForm = ({
     message.success("Order Updated Successfully");
   };
   const { mutate: orderUpdate } = useUpdateOrder(onOrderUpdateSuccess);
- 
+
   const formValueChangeHandler = (changedValues, allValues) => {
     changedValues.companyId && setCompanyId(changedValues.companyId);
     allValues.sizes &&
@@ -100,27 +94,33 @@ const NewOrderForm = ({
       delete newData["company"];
       delete newData["isDeleted"];
       delete newData["updatedAt"];
+      delete newData["orderHistory"];
       delete newValues["customer_file"];
       delete newValues["order_date"];
+      delete newValues["orderHistory"];
 
       function getDifference(x, y) {
-        let data = { ...x };
+        let data = {};
         Object.entries(x).forEach(function ([key]) {
           if (Array.isArray(x[key]) && Array.isArray(y[key])) {
-            x[key].forEach(
-              (_, i) =>
-                x[key][i].prize === y[key][i].prize && delete data[key][i]
-            );
-        !x[key][0] && delete data[key];
-
+            x[key].forEach((_, i) => {
+              if (x[key][i].prize !== y[key][i].prize)
+                data[
+                  `Size-${y[key][i].size}`
+                ] = `${y[key][i].prize} to ${x[key][i].prize}`;
+            });
+            return
           }
+          if(x[key]==='sizes') return
 
-          if (x[key] === y[key]) delete data[key];
+          if (x[key] !== y[key])
+            data[key] = `${y[key]} to ${x[key]}`;
           return;
         });
         return data;
       }
       const orderHistory = getDifference(newValues, newData);
+      console.log(orderHistory, "dataaaaaaaaaaaaaaaaaa");
       orderUpdate({ ...values, orderId: data.orderId, orderHistory });
       return;
     }
@@ -269,14 +269,18 @@ const NewOrderForm = ({
                     }
                     getPopupContainer={(trigger) => trigger.parentNode}
                     size="large"
-              loading={ isAdminLoading}
-
+                    loading={isAdminLoading}
                   >
-                    {adminData?.filter(item=>item.role==='admin' || item.role=== 'sales-agent')?.map((item) => (
-                      <Select.Option value={item?.userId} key={item.userId}>
-                        {item?.name}
-                      </Select.Option>
-                    ))}
+                    {adminData
+                      ?.filter(
+                        (item) =>
+                          item.role === "admin" || item.role === "sales-agent"
+                      )
+                      ?.map((item) => (
+                        <Select.Option value={item?.userId} key={item.userId}>
+                          {item?.name}
+                        </Select.Option>
+                      ))}
                   </Select>
                 </Form.Item>
               </Col>
@@ -323,7 +327,7 @@ const NewOrderForm = ({
                   </Select>
                 </Form.Item>
               </Col>
-              <Col xl={24} md={24} xs={24}>
+              <Col xl={16} lg={16} md={24} xs={24}>
                 <Form.Item
                   name="remarks"
                   label="Remarks"
@@ -331,6 +335,20 @@ const NewOrderForm = ({
                     {
                       required: true,
                       message: "Remarks is Required",
+                    },
+                  ]}
+                >
+                  <Input size="large" />
+                </Form.Item>
+              </Col>
+              <Col xl={8} lg={8} md={24} xs={24}>
+                <Form.Item
+                  name="designName"
+                  label="Design Name"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Design Name is Required",
                     },
                   ]}
                 >
@@ -400,7 +418,7 @@ const NewOrderForm = ({
                       In Progress
                     </Select.Option>
                     <Select.Option value="Completed">Completed</Select.Option>
-                    <Select.Option value="Yiminghe">
+                    <Select.Option value="Ready To Deliver">
                       Ready To Deliver
                     </Select.Option>
                   </Select>
@@ -413,7 +431,7 @@ const NewOrderForm = ({
             <Col xl={8} lg={8} md={10} xs={24}>
               <Row>
                 <Col span={24}>
-                  <Form.Item name="order_history" label="Order History">
+                  <Form.Item name="orderHistory" label="Order History">
                     <Input.TextArea
                       disabled
                       autoSize={{ minRows: 33, maxRows: 33 }}

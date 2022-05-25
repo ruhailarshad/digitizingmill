@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Col, DatePicker, Form, Input, Row, Table, Tag } from "antd";
+import { Button, Col, DatePicker, Form, Input, Row, Table, Tag } from "antd";
+import { CSVLink } from "react-csv";
 import moment from "moment";
 import EditableCell from "./utils";
 import "./Table.css";
@@ -13,13 +14,19 @@ const CustomTable = ({
   loading = false,
   DropdownActions,
   form,
-  selectedRowKeys,editable,
+  selectedRowKeys,
+  editable,
   onPageChange = () => {},
-  page=1,
-  totalRecords=0,
+  page = 1,
+  totalRecords = 0,
   filterHandler,
   dateChangeHandler,
-  noFilter
+  noFilter,
+  exportData = { header: [], data: [] },
+  filename,
+  showActions,
+  pageLimit,
+  setPageLimit
 }) => {
   const [formData, setFormData] = useState([]);
   useEffect(() => {
@@ -28,58 +35,82 @@ const CustomTable = ({
     }
   }, [data]);
 
-  
-
   return (
     <>
-   {!noFilter &&   <Row justify="space-between" className="mb-20" gutter={[20,10]}>
-        <Col xxl={14} xl={17} lg={24} sm={24}>
-          <Row gutter={[10,10]}>
-            <Col lg={8} md={8}>
-              <Input.Search
-                size="large"
-                placeholder="Search Here"
-                className=" min-w-[150px]"
-                onSearch={filterHandler}
-              />
-            </Col>
-            {DropdownActions && <Col lg={16} md={16}>{DropdownActions}</Col>}
-          </Row>
-        </Col>
-        <Col>
-          <RangePicker
-          onChange={dateChangeHandler}
-            size="large"
-            defaultValue={[moment().subtract(10, "days"), moment()]}
-            format={"YYYY/MM/DD"}
-          />
-        </Col>
-      </Row>}
-      <Form form={form} >
+      {!noFilter && (
+        <Row justify="space-between" className="mb-20" gutter={[20, 10]}>
+          <Col xxl={14} xl={17} lg={24} sm={24}>
+            <Row gutter={[10, 10]}>
+              <Col lg={8} md={8}>
+                <Input.Search
+                  size="large"
+                  placeholder="Search Here"
+                  className=" min-w-[150px]"
+                  onSearch={filterHandler}
+                />
+              </Col>
+              {showActions && (
+                <Col lg={16} md={16}>
+                  {DropdownActions}
+                </Col>
+              )}
+            </Row>
+          </Col>
+          <Col>
+            {showActions && (
+              <CSVLink filename={filename} data={exportData.data} headers={exportData.header}>
+                <Button
+                  className="rounded-10 px-40 mr-30"
+                  size="large"
+                  type="primary"
+                  danger
+                >
+                  Export
+                </Button>
+              </CSVLink>
+            )}
+            <RangePicker
+              onChange={dateChangeHandler}
+              size="large"
+              defaultValue={[moment().subtract(30, "days"), moment()]}
+              format={"YYYY/MM/DD"}
+              allowClear={false}
+            />
+          </Col>
+        </Row>
+      )}
+      <Form form={form}>
         <Table
-          className="min-w-[200px] overflow-x-scroll"
-          components={editable && {
-            body: {
-              cell: EditableCell,
-            },
-          }}
+          components={
+            editable && {
+              body: {
+                cell: EditableCell,
+              },
+            }
+          }
           loading={loading}
-          rowSelection={selection &&{
-            selectedRowKeys,
-            ...rowHandler,
-          }}
+          rowSelection={
+            selection && {
+              selectedRowKeys,
+              ...rowHandler,
+            }
+          }
           columns={column}
           dataSource={formData}
           rowClassName="editable-row"
+          scroll={{
+           x:'calc(700px + 50%)', y: 1000,
+          }}
           pagination={{
-            showSizeChanger: false,
+            showSizeChanger: true,
+            onShowSizeChange:(current, size)=>setPageLimit(size),
             total: totalRecords,
-            hideOnSinglePage:true,
             current: page,
-            pageSize: 10,
+            pageSize: pageLimit,
             onChange: (currentPage, pageSize) => {
-              if(currentPage!==page) onPageChange(currentPage);
-            }
+              if (currentPage !== page) onPageChange(currentPage);
+            },
+            pageSizeOptions:[10,20,30,50,100,200,500]
           }}
         />
       </Form>

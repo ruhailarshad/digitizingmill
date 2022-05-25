@@ -1,7 +1,6 @@
 import { useDeleteCompany } from "./Company/useDeleteCompany";
 import { useGetAllCompany } from "./Company/useGetAllCompany";
 import { useGetCompanyById } from "./Company/useGetCompanyById";
-import { useGetCompanyByRole } from "./Company/useGetCompanyByRole";
 import { usePostCompanyDetails } from "./Company/usePostCompanyDetails";
 import { useUpdateCompany } from "./Company/useUpdateCompany";
 import { useUpdateCompanySalesAgent } from "./Company/useUpdateCompanySalesAgent";
@@ -15,12 +14,12 @@ import { useBulkUpdateSalesAgent } from "./Company/useBulkUpdateSalesAgent";
 import { usePostOrder } from "./Orders/usePostOrder";
 import { useUpdateOrder } from "./Orders/useUpdateOrder";
 import { useGetOrders } from "./Orders/useGetOrders";
-import { useDeleteOrder, useBulkDeleteOrders } from "./Orders/useDeleteOrder";
+import { useDeleteOrder } from "./Orders/useDeleteOrder";
+import { useBulkDeleteOrders } from "./Orders/useBulkDeleteOrder";
 export {
   useDeleteCompany,
   useGetAllCompany,
   useGetCompanyById,
-  useGetCompanyByRole,
   usePostCompanyDetails,
   useUpdateCompany,
   useUpdateCompanySalesAgent,

@@ -1,6 +1,6 @@
 import { Button, Col, Modal, Row } from "antd";
 import React, { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import moment from "moment";
 import { orderDetailStats } from "../../../constants/stats";
 import { editableOrderColumns } from "../../../constants/tableColumns";
 import { CustomTable } from "../../../core";
@@ -8,12 +8,13 @@ import NewOrderForm from "../../../core/Forms/NewOrderForm";
 import HeadAndContent from "../../../core/HeadAndContent";
 import StatsCard from "../../../core/StatsCard";
 import {
+  useBulkDeleteOrders,
   useDeleteOrder,
   useGetAllCompany,
 } from "../../../hooks";
 import { useGetOrders } from "../../../hooks/Orders/useGetOrders";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { useBulkDeleteOrder } from "../../../hooks/Orders/useBulkDeleteOrder";
+import { exceOrderrHeader } from "../../../constants/execelHeader";
 
 const OrderDetailsContainer = () => {
   const [page, setPage] = useState(1);
@@ -24,16 +25,19 @@ const OrderDetailsContainer = () => {
   const [dateParam, setDateParam] = useState([]);
   const [showActions, setShowActions] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [orderPageLimit, setOrderPageLimit] = useState(10);
+
   const { mutate: deleteOrder } = useDeleteOrder();
 
   const { data: ordersData, isLoading: orderLoading } = useGetOrders({
     page,
-    limit: 10,
+    limit: orderPageLimit,
     search: searchParam,
     dateParam,
   });
 
-  const { mutate: deleteBulkOrder } = useBulkDeleteOrder();
+  const { mutate: deleteBulkOrder } = useBulkDeleteOrders();
 
   const { data: AllCompany } = useGetAllCompany({});
 
@@ -65,6 +69,29 @@ const OrderDetailsContainer = () => {
     onChange: (selectedRowKeys, selectedRows) => {
       selectedRows.length >= 1 ? setShowActions(true) : setShowActions(false);
       setSelectedRowKeys(selectedRowKeys)
+      console.log(selectedRows,'selectedRows')
+      const filter=[...selectedRows].map((item) => {
+        return {
+          orderId: item.orderId,
+          orderDate:moment(item.orderDate).format("MMMM Do YYYY,h:mm:ss"),
+          customerName: item.customerName,
+          designName: item.designName,
+          size:item.design_sizes.map((item) => item.size).join(", "),
+          amount: `${
+            item.currency === "Euro"
+              ? "€"
+              : item.currency === "USD"
+              ? "$"
+              : item.currency === "CAD"
+              ? "CA$"
+              : "$"
+          }${item.totalPrize}`,
+          paymentStatus: item.paymentStatus,
+          orderStatus: item.orderStatus,
+          deliveryStatus: item.deliveryStatus,
+        };
+      });
+      setSelectedRows(filter);
     },
   };
   const bulkDeleteHandler = () => {
@@ -79,7 +106,7 @@ const OrderDetailsContainer = () => {
       okType: "danger",
       cancelText: "No",
       onOk: () => {
-        deleteBulkOrder({ data: newData });
+        deleteBulkOrder({ data:{ids: newData} });
         setShowActions(false);
         setSelectedRowKeys([])
       },
@@ -114,7 +141,6 @@ const OrderDetailsContainer = () => {
           rowHandler={rowHandler}
           selectedRowKeys={selectedRowKeys}
           DropdownActions={
-            showActions && (
               <Button
                 onClick={bulkDeleteHandler}
                 size="large"
@@ -123,8 +149,11 @@ const OrderDetailsContainer = () => {
               >
                 Delete Orders
               </Button>
-            )
           }
+          exportData={{ header: exceOrderrHeader, data: selectedRows }}
+          showActions={showActions}
+          pageLimit={orderPageLimit}
+          setPageLimit={setOrderPageLimit}
         />
       </HeadAndContent>
       {visible && (

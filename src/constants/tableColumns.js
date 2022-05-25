@@ -52,7 +52,7 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
       dataIndex: "orderDate",
       sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
       render: (_, record) => {
-        return moment(record.createdAt).format("dates: [moment, moment]");
+        return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
       },
     },
     {
@@ -94,7 +94,7 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
         const color = getColor(record);
         return (
           <Tag
-            className="rounded-4 w-[109px] h-32 flex text-14 items-center justify-center"
+            className="rounded-4 w-[109px] px-[70px] h-32 flex text-14 items-center justify-center"
             color={color}
           >
             {record}
@@ -110,7 +110,7 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
         const color = getColor(record);
         return (
           <Tag
-            className="rounded-4 w-[109px] h-32 flex text-14 items-center justify-center"
+            className="rounded-4 w-[109px] h-32 px-[70px] flex text-14 items-center justify-center"
             color={color}
           >
             {record}
@@ -125,7 +125,7 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
         const color = getColor(record);
         return (
           <Tag
-            className="rounded-4 w-[109px] h-32 flex text-14 items-center justify-center"
+            className="rounded-4 w-[109px] h-32 px-[70px] flex text-14 items-center justify-center"
             color={color}
           >
             {record}
@@ -158,6 +158,124 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
             <div onClick={() => editHandler(record)}>
               <AiFillEdit size={22} color={"#9999"} />
             </div>
+          </div>
+        );
+      },
+    },
+  ];
+};
+export const editableOrderColumnsUserDetails = (viewHandler) => {
+  return [
+    {
+      title: "Order Id",
+      dataIndex: "orderId",
+      render: (_, record) => {
+        return (
+          <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">
+            {record.orderId}
+          </p>
+        );
+      },
+      sorter: (a, b) => a.orderId - b.orderId,
+      width: "15%",
+      responsive: ["md"],
+    },
+    {
+      title: "Order Date",
+      dataIndex: "orderDate",
+      sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+      render: (_, record) => {
+        return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+      },
+    },
+    {
+      title: "Customer Name",
+      dataIndex: "customerName",
+    },
+    {
+      title: "Design Name",
+      dataIndex: "designName",
+    },
+    {
+      title: "Size/Type",
+      dataIndex: "size",
+      render: (_, record) => {
+        return record.design_sizes.map((item) => item.size).join(", ");
+      },
+    },
+    {
+      title: "Amount",
+      dataIndex: "totalPrize",
+      render: (_, record) => {
+        return (
+          <p>{`${
+            record.currency === "Euro"
+              ? "€"
+              : record.currency === "USD"
+              ? "$"
+              : record.currency === "CAD"
+              ? "CA$"
+              : "$"
+          }${record.totalPrize}`}</p>
+        );
+      },
+    },
+    {
+      title: "Payment Status",
+      dataIndex: "paymentStatus",
+      render: (record) => {
+        const color = getColor(record);
+        return (
+          <Tag
+            className="rounded-4 w-[109px] px-[70px] h-32 flex text-14 items-center justify-center"
+            color={color}
+          >
+            {record}
+          </Tag>
+        );
+      },
+    },
+
+    {
+      title: "Order Status",
+      dataIndex: "orderStatus",
+      render: (record) => {
+        const color = getColor(record);
+        return (
+          <Tag
+            className="rounded-4 w-[109px] h-32 px-[70px] flex text-14 items-center justify-center"
+            color={color}
+          >
+            {record}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: "Delivery Status",
+      dataIndex: "deliveryStatus",
+      render: (record) => {
+        const color = getColor(record);
+        return (
+          <Tag
+            className="rounded-4 w-[109px] h-32 px-[70px] flex text-14 items-center justify-center"
+            color={color}
+          >
+            {record}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "x",
+      render: (record) => {
+        return (
+          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+           <div onClick={() => viewHandler(record)}>
+          <AiFillEye size={22} color={"#9999"} />
+        </div>
           </div>
         );
       },
@@ -226,7 +344,7 @@ export const orderColumns = [
       const color = getColor(record);
       return (
         <Tag
-          className="rounded-4 w-[109px] h-32 flex text-14 items-center justify-center"
+          className="rounded-4 w-[109px] h-32 px-[70px] flex text-14 items-center justify-center"
           color={color}
         >
           {record}
@@ -242,7 +360,7 @@ export const orderColumns = [
       const color = getColor(record);
       return (
         <Tag
-          className="rounded-4 w-[109px] h-32 flex text-14 items-center justify-center"
+          className="rounded-4 px-[70px] w-[109px] h-32 flex text-14 items-center justify-center"
           color={color}
         >
           {record}
@@ -257,7 +375,7 @@ export const orderColumns = [
       const color = getColor(record);
       return (
         <Tag
-          className="rounded-4 w-[109px] h-32 flex text-14 items-center justify-center"
+          className="rounded-4 px-[70px] w-[109px] h-32 flex text-14 items-center justify-center"
           color={color}
         >
           {record}
@@ -270,40 +388,100 @@ export const orderColumns = [
 export const DigitizerOrderColumns = [
   {
     title: "Order Id",
-    dataIndex: "orderid",
-    sorter: (a, b) => a.order_id - b.order_id,
-    responsive: ["lg"],
+    dataIndex: "orderId",
+    render: (_, record) => {
+      return (
+        <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">
+          {record.orderId}
+        </p>
+      );
+    },
+    sorter: (a, b) => a.orderId - b.orderId,
+    width: "15%",
+    responsive: ["md"],
   },
   {
     title: "Order Date",
-    dataIndex: "order_date",
-    responsive: ["lg"],
+    dataIndex: "orderDate",
+    sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+    render: (_, record) => {
+      return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+    },
   },
   {
     title: "Customer Name",
-    dataIndex: "customer_name",
-    responsive: ["lg"],
+    dataIndex: "customerName",
   },
   {
     title: "Design Name",
-    dataIndex: "design_name",
-    responsive: ["lg"],
+    dataIndex: "designName",
   },
   {
     title: "Size/Type",
-    dataIndex: "size_type",
-    responsive: ["lg"],
+    dataIndex: "size",
+    render: (_, record) => {
+      return record.design_sizes.map((item) => item.size).join(", ");
+    },
+  },
+  {
+    title: "Amount",
+    dataIndex: "totalPrize",
+    render: (_, record) => {
+      return (
+        <p>{`${
+          record.currency === "Euro"
+            ? "€"
+            : record.currency === "USD"
+            ? "$"
+            : record.currency === "CAD"
+            ? "CA$"
+            : "$"
+        }${record.totalPrize}`}</p>
+      );
+    },
+  },
+  {
+    title: "Payment Status",
+    dataIndex: "paymentStatus",
+    render: (record) => {
+      const color = getColor(record);
+      return (
+        <Tag
+          className="rounded-4 w-[109px] h-32 px-[70px] flex text-14 items-center justify-center"
+          color={color}
+        >
+          {record}
+        </Tag>
+      );
+    },
   },
 
   {
     title: "Order Status",
-    dataIndex: "order_status",
-    responsive: ["lg"],
+    dataIndex: "orderStatus",
     render: (record) => {
       const color = getColor(record);
       return (
-        <Tag className="rounded-[10px]" color={color}>
-          {record.toUpperCase()}
+        <Tag
+          className="rounded-4 px-[70px] w-[109px] h-32 flex text-14 items-center justify-center"
+          color={color}
+        >
+          {record}
+        </Tag>
+      );
+    },
+  },
+  {
+    title: "Delivery Status",
+    dataIndex: "deliveryStatus",
+    render: (record) => {
+      const color = getColor(record);
+      return (
+        <Tag
+          className="rounded-4 px-[70px] w-[109px] h-32 flex text-14 items-center justify-center"
+          color={color}
+        >
+          {record}
         </Tag>
       );
     },
@@ -445,7 +623,7 @@ export const companyColumnsNonEditable = [
     dataIndex: "emailAddress",
   },
 ];
-export const companyColumnsForSalesAgent = (viewHandler) => {
+export const companyColumnsForUserDetails = (viewHandler) => {
   return [
     {
       title: "Company Id",

@@ -16,7 +16,7 @@ import { useQueryClient } from "react-query";
 import { useOutletContext } from "react-router-dom";
 import { usePostCompanyDetails, useUpdateCompany } from "../../hooks";
 
-const NewCompanyForm = ({ visible, onCancel, data, editable }) => {
+const NewCompanyForm = ({ visible, onCancel, data, role = "", editable }) => {
   const { tokenData } = useOutletContext();
   const queryClient = useQueryClient();
   const [form] = Form.useForm();
@@ -29,8 +29,8 @@ const NewCompanyForm = ({ visible, onCancel, data, editable }) => {
   };
   const onCompanyUpdateSuccess = () => {
     onCancel();
-    queryClient.invalidateQueries("company-add-query");
-    queryClient.invalidateQueries("company-byrole-query");
+      queryClient.invalidateQueries("company-add-query");
+
     message.success("Company Updated Successfully");
   };
   useEffect(() => {
@@ -67,7 +67,7 @@ const NewCompanyForm = ({ visible, onCancel, data, editable }) => {
       onCancel={onCancel}
       confirmLoading={isUpdateLoading || isAddLoading}
       width={1000}
-      okButtonProps={{type:"primary" ,danger:true}}
+      okButtonProps={{ type: "primary", danger: true }}
       onOk={() => {
         form
           .validateFields()
@@ -85,6 +85,7 @@ const NewCompanyForm = ({ visible, onCancel, data, editable }) => {
         <Form
           form={form}
           // initialvalue={{...companyDataByID?.company,sizes:companyDataByID?.company.design_sizes}}
+          initialValues={!editable && { sizes: [""] }}
           layout="vertical"
           name="form_in_modal"
         >

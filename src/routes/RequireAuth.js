@@ -1,12 +1,18 @@
-import React from 'react'
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useUserData } from '../pages/Login/userContext'
 
 const RequireAuth = ({role,children}) => {
+  let location = useLocation();
   const {isLoggedIn,role:userRole}=useUserData()
-  return isLoggedIn && role===userRole
-  ? children
-  : <Navigate to="/login" replace   />
+  console.log(role,userRole,'sadad')
+  if(!isLoggedIn){
+      return <Navigate to="/login" state={{ from: location }} />;
+  }
+   if(isLoggedIn && role!==userRole){
+    return' No User Found'
+
+   }
+   return children
 }
 
 export default RequireAuth

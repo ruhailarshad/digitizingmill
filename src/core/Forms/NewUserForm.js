@@ -19,40 +19,39 @@ const NewUserForm = ({
   id,
 }) => {
   const queryClient = useQueryClient();
-  const [showEditImage, setShowEditImage] = useState({
-    profilePic: false,
-    cnicFrontPic: false,
-    cnicBackPic: false,
-  });
+  // const [showEditImage, setShowEditImage] = useState({
+  //   profilePic: false,
+  //   cnicFrontPic: false,
+  //   cnicBackPic: false,
+  // });
 
-  const toggleImageDisplayHandler = (imageType) => {
-    debugger;
-    setShowEditImage((prev) => ({
-      ...prev,
-      [imageType]: !prev[imageType],
-    }));
-  };
+  // const toggleImageDisplayHandler = (imageType) => {
+  //   setShowEditImage((prev) => ({
+  //     ...prev,
+  //     [imageType]: !prev[imageType],
+  //   }));
+  // };
 
-  const renderUserImageWithToggle = (imageType) => {
-    return (
-      <div style={{ width: "80px", height: "80px", display: "flex" }}>
-        <img
-          src={`http://localhost:4000/user/image/${data[imageType]}`}
-          height="80px"
-          width="80px"
-          alt="user-media"
-        />
-        <button
-          type="input"
-          onClick={(e) => {
-            toggleImageDisplayHandler(imageType);
-          }}
-        >
-          Change Image
-        </button>
-      </div>
-    );
-  };
+  // const renderUserImageWithToggle = (imageType) => {
+  //   return (
+  //     <div style={{ width: "80px", height: "80px", display: "flex" }}>
+  //       <img
+  //         src={`http://localhost:4000/user/image/${data[imageType]}`}
+  //         height="80px"
+  //         width="80px"
+  //         alt="user-media"
+  //       />
+  //       <button
+  //         type="input"
+  //         onClick={(e) => {
+  //           toggleImageDisplayHandler(imageType);
+  //         }}
+  //       >
+  //         Change Image
+  //       </button>
+  //     </div>
+  //   );
+  // };
 
   const [form] = Form.useForm();
   useEffect(() => {
@@ -83,9 +82,11 @@ const NewUserForm = ({
       onSuccess("ok");
     }, 0);
   };
-  const renderTogglerForImage = (imageType) => {
-    return <div onClick={() => toggleImageDisplayHandler(imageType)}>Show Image</div>;
-  };
+  // const renderTogglerForImage = (imageType) => {
+  //   return (
+  //     <div onClick={() => toggleImageDisplayHandler(imageType)}>Show Image</div>
+  //   );
+  // };
 
   return (
     <Modal
@@ -97,6 +98,7 @@ const NewUserForm = ({
       width={800}
       onOk={() => {
         form.validateFields().then((values) => {
+          console.log(values,'asasd')
           const profilePic = values?.profilePic?.originFileObj;
           const cnicBackPic = values?.cnicBackPic?.originFileObj;
           const cnicFrontPic = values?.cnicFrontPic?.originFileObj;
@@ -111,7 +113,6 @@ const NewUserForm = ({
             cnicBackPic,
             cnicFrontPic,
           };
-
           const formData = new FormData();
 
           Object.keys(uploadData).forEach((key) => {
@@ -142,9 +143,6 @@ const NewUserForm = ({
         >
           <Row gutter={20}>
             <Col span={24}>
-              {editable && data?.profilePic && !showEditImage["profilePic"] ? (
-                renderUserImageWithToggle("profilePic")
-              ) : (
                 <>
                   <Form.Item
                     name="profilePic"
@@ -153,6 +151,14 @@ const NewUserForm = ({
                   >
                     <ImgCrop rotate>
                       <Upload
+                        defaultFileList={data?.profilePic &&[
+                          {
+                            uid: "1",
+                            name: data?.profilePic,
+                            status: "done",
+                            url: `http://localhost:4000/user/image/${data?.profilePic}`,
+                          },
+                        ]}
                         customRequest={dummyRequest}
                         listType="picture-card"
                         maxCount={1}
@@ -164,9 +170,7 @@ const NewUserForm = ({
                       </Upload>
                     </ImgCrop>
                   </Form.Item>
-                  {renderTogglerForImage("profilePic")}
                 </>
-              )}
             </Col>
             <Col xl={12} md={24} xs={24}>
               <Form.Item
@@ -260,9 +264,7 @@ const NewUserForm = ({
               </Form.Item>
             </Col>
             <Col span={12}>
-              {editable && data?.cnicFrontPic && !showEditImage["cnicFrontPic"] ? (
-                renderUserImageWithToggle("cnicFrontPic")
-              ) : (
+           
                 <>
                   <Form.Item
                     name="cnicFrontPic"
@@ -274,22 +276,26 @@ const NewUserForm = ({
                         customRequest={dummyRequest}
                         listType="picture-card"
                         maxCount={1}
+                        defaultFileList={data?.cnicFrontPic &&[
+                          {
+                            uid: "1",
+                            name: data?.cnicFrontPic,
+                            status: "done",
+                            url: `http://localhost:4000/user/image/${data?.cnicFrontPic}`,
+                          },
+                        ]}
                         onChange={(e) =>
                           form.setFieldsValue({ cnicFrontPic: e.file })
                         }
                       >
-                        Upload CNIC FRONT PIC
+                        Upload 
                       </Upload>
                     </ImgCrop>
                   </Form.Item>
-                  {renderTogglerForImage("cnicFrontPic")}
                 </>
-              )}
             </Col>
             <Col span={12}>
-              {editable && data?.cnicBackPic && !showEditImage["cnicBackPic"] ? (
-                renderUserImageWithToggle("cnicBackPic")
-              ) : (
+            
                 <>
                   <Form.Item
                     name="cnicBackPic"
@@ -301,17 +307,23 @@ const NewUserForm = ({
                         customRequest={dummyRequest}
                         listType="picture-card"
                         maxCount={1}
+                        defaultFileList={data?.cnicBackPic &&[
+                          {
+                            uid: "1",
+                            name: data?.cnicBackPic,
+                            status: "done",
+                            url: `http://localhost:4000/user/image/${data?.cnicBackPic}`,
+                          },
+                        ]}
                         onChange={(e) =>
                           form.setFieldsValue({ cnicBackPic: e.file })
                         }
                       >
-                        Upload CNIC BACK PIC
+                        Upload
                       </Upload>
                     </ImgCrop>
                   </Form.Item>
-                  {renderTogglerForImage("cnicBackPic")}
                 </>
-              )}
             </Col>
           </Row>
         </Form>

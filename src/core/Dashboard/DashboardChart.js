@@ -11,55 +11,56 @@ const DashboardChart = () => {
   const data = [
     {
       type: "January",
-      sales: 38,
+      sales: 0,
     },
     {
       type: "February",
-      sales: 52,
+      sales: 0,
     },
     {
       type: "March",
-      sales: 61,
+      sales: 0,
     },
     {
       type: "April",
-      sales: 145,
+      sales: 0,
     },
     {
       type: "May",
-      sales: 48,
+      sales: 0,
     },
     {
       type: "June",
-      sales: 38,
+      sales: 0,
     },
     {
       type: "July",
-      sales: 38,
+      sales: 0,
     },
     {
       type: "August",
-      sales: 38,
+      sales: 0,
     },
     {
       type: "September",
-      sales: 38,
+      sales: 0,
     },
     {
       type: "October",
-      sales: 38,
+      sales: 0,
     },
     {
       type: "November",
-      sales: 38,
+      sales: 0,
     },
     {
       type: "December",
-      sales: 38,
+      sales: 0,
     },
   ];
   const config = {
-    data,
+    data:currencyData?.sales || data,
+    loadimg:isLoading,
     xField: "type",
     yField: "sales",
     color: "#f5222d",

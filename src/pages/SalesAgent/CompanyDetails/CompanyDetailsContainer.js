@@ -1,12 +1,12 @@
 import { Form } from "antd";
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import {  companyColumnsForSalesAgent } from "../../../constants/tableColumns";
+import {  companyColumnsForUserDetails } from "../../../constants/tableColumns";
 import { CustomTable } from "../../../core";
 import NewCompanyForm from "../../../core/Forms/NewCompanyForm";
 import HeadAndContent from "../../../core/HeadAndContent";
 import {
-  useGetCompanyByRole,
+  useGetAllCompany,
 } from "../../../hooks";
 
 const CompanyDetailsContainer = () => {
@@ -14,10 +14,9 @@ const CompanyDetailsContainer = () => {
   const [data, setData] = useState([]);
   const [visible, setVisible] = useState(false);
   const [editModal, setEditModal] = useState(false);
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [form] = Form.useForm();
   const { data: AllCompany, isLoading: isAllCompanyLoading } =
-  useGetCompanyByRole({role:"sales-agent",id:tokenData.userId});
+  useGetAllCompany({role:"sales-agent",id:tokenData.userId});
  
   const viewHandler = (values) => {
     setData(values);
@@ -25,7 +24,7 @@ const CompanyDetailsContainer = () => {
   };
  
 
-  const columns = companyColumnsForSalesAgent(
+  const columns = companyColumnsForUserDetails(
     viewHandler,
   );
  
@@ -41,8 +40,6 @@ const CompanyDetailsContainer = () => {
           loading={isAllCompanyLoading}
           data={AllCompany?.companies}
           form={form}
-          selectedRowKeys={selectedRowKeys}
-         
         />
       </HeadAndContent>
       {editModal && (
@@ -51,6 +48,8 @@ const CompanyDetailsContainer = () => {
           data={data}
           visible={editModal}
           onCancel={() => setEditModal(false)}
+         role='sales-agent'
+
         />
       )}
       {visible && (

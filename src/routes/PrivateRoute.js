@@ -26,6 +26,7 @@ const Roles = {
   admin: "admin",
 };
 const routes = () => [
+  { path: "/login", element: <LoginFormConfig /> },
   {
     path: RouteNames.admin,
     element: (
@@ -60,7 +61,7 @@ const routes = () => [
   {
     path: RouteNames.salesAgent,
     element: (
-      <RequireAuth role={Roles.salesAgent}>
+      <RequireAuth role={Roles.sales}>
         <SalesAgentPanelConfig />
       </RequireAuth>
     ),
@@ -101,7 +102,6 @@ const routes = () => [
       },
     ],
   },
-  { path: "/login", element: <LoginFormConfig /> },
 ];
 
 export default routes;

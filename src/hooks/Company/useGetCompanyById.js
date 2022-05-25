@@ -5,5 +5,5 @@ const fetchCompanyDetailsById = (id) => {
 }
 
 export const useGetCompanyById = ( {id ,skip,onSuccess}) => {
-    return useQuery( ['company-byid-query'+id],()=>fetchCompanyDetailsById(id),{enabled:skip,onSuccess})
+    return useQuery( ['company-byid-query',id],()=>fetchCompanyDetailsById(id),{enabled:skip,onSuccess})
 }

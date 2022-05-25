@@ -12,8 +12,6 @@ function UserProvider({children}) {
 }
 function useUserData() {
     const context = React.useContext(UserContext)
-  
     return {isLoggedIn:!!context?.userData?.data,role:context?.userData?.data?.role,setUserData:context.setUserData,userData:context.userData?.data}
   }
-
 export {UserProvider,useUserData}

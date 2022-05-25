@@ -5,7 +5,7 @@ const deleteOrderAPI = (data) => {
     return instance.delete(`api/order/bulk/delete`,data);
 }
 
-export const useBulkDeleteOrder = () => {
+export const useBulkDeleteOrders = () => {
     const queryClient=useQueryClient()
     return useMutation(deleteOrderAPI, {  
         mutatioKey: 'order-bulk-delete-mutation',
