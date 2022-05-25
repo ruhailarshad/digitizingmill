@@ -11,7 +11,7 @@ import StatsCard from "../StatsCard";
 import CustomTable from "../Table/Table";
 import DashboardChart from "./DashboardChart";
 import UserCard from "./UserCard";
-const Dashboard = ({ id ,role}) => {
+const Dashboard = () => {
   const isLaptop = useMediaQuery({ query: "(max-width: 900px)" });
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -23,8 +23,8 @@ const Dashboard = ({ id ,role}) => {
   const { data: ordersData, isLoading: orderLoading } = useGetOrders({
     page: 1,
     limit: 20,
-    id,
-    role,
+    id:tokenData.role!=='admin' ? tokenData.userId : '',
+    role:tokenData.role!=='admin' ? tokenData.role : '',
   });
   const DashboardStats = (
     <Row gutter={[10, 10]}>

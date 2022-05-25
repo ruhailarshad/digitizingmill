@@ -13,7 +13,7 @@ import {
   Upload,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import { normFile, onPreview } from "./utils";
+import { normFile, onPreview, RolesForm } from "./utils";
 import { MinusCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import {
@@ -24,9 +24,16 @@ import {
 } from "../../hooks";
 import { useQueryClient } from "react-query";
 let index = 0;
-const NewOrderForm = ({ visible, onCancel, companies, editable, data }) => {
+const NewOrderForm = ({
+  visible,
+  onCancel,
+  companies,
+  editable,
+  data,
+  role,
+  roleData={id:'',name:''},
+}) => {
   const [companyId, setCompanyId] = useState("");
-
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
   const { data: companyById, isLoading: isCompanyByIdLoading } =
@@ -35,8 +42,9 @@ const NewOrderForm = ({ visible, onCancel, companies, editable, data }) => {
     role: "digitizer",
   });
 
-  const { isLoading: isAdminLoading, data: adminData } = useGetUserByRole({});
-  console.log(data, "Data");
+  const { isLoading: isAdminLoading, data: adminData } = useGetUserByRole({
+    skip: !role,
+  });
   useEffect(() => {
     if (!isCompanyByIdLoading && companyById !== undefined && companyId) {
       form.resetFields(["sizes"]);
@@ -55,11 +63,18 @@ const NewOrderForm = ({ visible, onCancel, companies, editable, data }) => {
       form.resetFields();
       form.setFieldsValue({
         ...data,
-        orderHistory:data?.orderHistory ? data?.orderHistory.toString() : '',
+        orderHistory: data?.orderHistory ? data?.orderHistory.toString() : "",
         sizes: data?.design_sizes,
       });
     }
   }, [data, form, editable]);
+  useEffect(() => {
+    if (roleData?.id) {
+      form.setFieldsValue({
+        salesAgentId: roleData?.id,
+      });
+    }
+  }, [form, roleData?.id]);
 
   const onOrderSubmitSuccess = () => {
     form.resetFields();
@@ -109,12 +124,11 @@ const NewOrderForm = ({ visible, onCancel, companies, editable, data }) => {
                   `Size-${y[key][i].size}`
                 ] = `${y[key][i].prize} to ${x[key][i].prize}`;
             });
-            return
+            return;
           }
-          if(x[key]==='sizes') return
+          if (x[key] === "sizes") return;
 
-          if (x[key] !== y[key])
-            data[key] = `${y[key]} to ${x[key]}`;
+          if (x[key] !== y[key]) data[key] = `${y[key]} to ${x[key]}`;
           return;
         });
         return data;
@@ -269,18 +283,25 @@ const NewOrderForm = ({ visible, onCancel, companies, editable, data }) => {
                     }
                     getPopupContainer={(trigger) => trigger.parentNode}
                     size="large"
-                    loading={isAdminLoading}
+                    loading={isAdminLoading || false}
+                  disabled={role===RolesForm.salesAgent}
                   >
-                    {adminData
-                      ?.filter(
-                        (item) =>
-                          item.role === "admin" || item.role === "sales-agent"
-                      )
-                      ?.map((item) => (
-                        <Select.Option value={item?.userId} key={item.userId}>
-                          {item?.name}
-                        </Select.Option>
-                      ))}
+                    {role === RolesForm.salesAgent ? (
+                      <Select.Option disabled value={roleData?.id}>
+                        {roleData?.name}
+                      </Select.Option>
+                    ) : (
+                      adminData
+                        ?.filter(
+                          (item) =>
+                            item.role === "admin" || item.role === "sales-agent"
+                        )
+                        ?.map((item) => (
+                          <Select.Option value={item?.userId} key={item.userId}>
+                            {item?.name}
+                          </Select.Option>
+                        ))
+                    )}
                   </Select>
                 </Form.Item>
               </Col>

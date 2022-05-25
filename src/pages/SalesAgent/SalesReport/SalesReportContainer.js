@@ -6,7 +6,6 @@ import { CustomTable } from "../../../core";
 import NewOrderForm from "../../../core/Forms/NewOrderForm";
 import HeadAndContent from "../../../core/HeadAndContent";
 import StatsCard from "../../../core/StatsCard";
-import { data } from "../OrderDetails/utils";
 
 const OrderDetailsContainer = () => {
   const [visible, setVisible] = useState(false);
@@ -23,7 +22,7 @@ const OrderDetailsContainer = () => {
     <>
       <HeadAndContent heading="Sales Report">
         {orderStats}
-        <CustomTable column={orderColumns} data={data} />
+        {/* <CustomTable column={orderColumns} data={data} /> */}
       </HeadAndContent>
       <NewOrderForm visible={visible} onCancel={() => setVisible(false)} />
     </>

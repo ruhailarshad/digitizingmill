@@ -7,11 +7,14 @@ const fetchUserByRole = async ( role) => {
 
 export const useGetUserByRole = ({
     role='',
+    skip=true,
     onSucess = () => {},
     onError = () => {}
 }={}) => {
     return useQuery(['user-byrole' + role],() => fetchUserByRole(role), {
         onSucess,
-        onError
-    });
+        onError,
+        enabled:skip
+    },
+    );
 }

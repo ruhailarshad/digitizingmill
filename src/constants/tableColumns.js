@@ -317,7 +317,7 @@ export const orderColumns = [
     title: "Size/Type",
     dataIndex: "size",
     render: (_, record) => {
-      return record.design_sizes.map((item) => item.size).join(", ");
+      return record?.design_sizes?.map((item) => item.size).join(", ");
     },
   },
   {

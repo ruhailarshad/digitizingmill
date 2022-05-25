@@ -19,3 +19,8 @@ export const onPreview = async (file) => {
     }
     return e && e.fileList;
   };
+  export const RolesForm={
+    salesAgent:'sales-agent',
+    digitizer:'digitizer',
+    admin:'adming'
+  }

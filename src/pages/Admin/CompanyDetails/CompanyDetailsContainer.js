@@ -30,7 +30,6 @@ const CompanyDetailsContainer = () => {
   const [dateParam, setDateParam] = useState([]);
   const [companyPageLimit, setCompanyPageLimit] = useState(10);
 
-  console.log(selectedRows, "selectedRowKeys");
   const [form] = Form.useForm();
   const [page, setPage] = useState(1);
 
