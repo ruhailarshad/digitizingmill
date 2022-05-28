@@ -2,7 +2,7 @@ import { useMutation } from "react-query";
 import instance from "../../services/AxiosConfig";
 
 const updateSalesAgent = (data) => {
-    return instance.put('/api/user', data);
+    return instance.put('/api/user', data, {contentType: 'multipart/form-data'});
 }
 
 export const useUpdateUser = (onSuccess = () => {}) => {

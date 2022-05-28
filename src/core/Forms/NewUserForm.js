@@ -88,6 +88,7 @@ const NewUserForm = ({
   };
 
   const onRemoveHandler = (file, fileType) => {
+    if(!data) return;
     const removeImageData = {userId: id, imageType: fileType};
     deleteUserImage(removeImageData);
   }
@@ -103,7 +104,6 @@ const NewUserForm = ({
       width={800}
       onOk={() => {
         form.validateFields().then((values) => {
-          console.log(values,'asasd')
           const profilePic = values?.profilePic?.originFileObj;
           const cnicBackPic = values?.cnicBackPic?.originFileObj;
           const cnicFrontPic = values?.cnicFrontPic?.originFileObj;
