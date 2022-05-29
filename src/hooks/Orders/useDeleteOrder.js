@@ -17,3 +17,19 @@ export const useDeleteOrder = () => {
     })
 }
 
+const deleteOrderMediaAPI = (filePath) => {
+    return instance.delete(`/api/order/order-media/delete/${filePath}`);
+}
+
+export const useDeleteOrderMedia = () => {
+    const queryClient=useQueryClient()
+    return useMutation(deleteOrderMediaAPI, {  
+        mutatioKey: 'order-delete-mutation',
+        onSuccess:()=>{
+            message.success("Company Deleted Successfully")
+            queryClient.invalidateQueries("order-get-query");
+
+        },
+    })
+}
+

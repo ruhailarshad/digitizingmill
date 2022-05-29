@@ -21,9 +21,9 @@ import {
   useUpdateOrder,
   useGetCompanyById,
   useGetUserByRole,
+  useDeleteOrderMedia,
 } from "../../hooks";
 import { useQueryClient } from "react-query";
-let index = 0;
 const NewOrderForm = ({
   visible,
   onCancel,
@@ -36,6 +36,7 @@ const NewOrderForm = ({
   const [companyId, setCompanyId] = useState("");
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
+  const { isLoading: isDeletingOrderMedia, mutate: deleteOrderMedia } = useDeleteOrderMedia();
   const { data: companyById, isLoading: isCompanyByIdLoading } =
     useGetCompanyById({ id: companyId, skip: !!companyId });
   const { data: digitizerData } = useGetUserByRole({
@@ -99,12 +100,6 @@ const NewOrderForm = ({
       });
   };
 
-  const dummyRequest = ({ file, onSuccess }) => {
-    setTimeout(() => {
-      onSuccess("ok");
-    }, 0);
-  };
-
   const onCreate = (values) => {
     // Transforming Values for order upload
     let { customer_files, digitizer_files, ...rest } = values;
@@ -147,7 +142,7 @@ const NewOrderForm = ({
       function getDifference(x, y) {
         let data = {};
         Object.entries(x).forEach(function ([key]) {
-          if (Array.isArray(x[key]) && Array.isArray(y[key])) {
+          if (Array.isArray(x[key]) && Array.isArray(y[key]) && key === 'design_sizes') {
             x[key].forEach((_, i) => {
               if (x[key][i].prize !== y[key][i].prize)
                 data[
@@ -156,6 +151,9 @@ const NewOrderForm = ({
             });
             return;
           }
+          // This work is for images
+          if (key === 'customer_files' || key === 'digitizer_files') return;
+            
           if (x[key] === "sizes") return;
 
           if (x[key] !== y[key]) data[key] = `${y[key]} to ${x[key]}`;
@@ -176,6 +174,26 @@ const NewOrderForm = ({
     
     orderSubmit(orderForm);
   };
+
+  const defaultFileListForCustomer = data && data?.orderMedia?.filter(({ fileType }) => fileType === 'customer')?.map(orderMedia => ({
+    uid: "1",
+    name: orderMedia?.filePath,
+    status: "done",
+    url: `http://localhost:4000/order/media/${orderMedia?.filePath}`,
+  }));
+  const defaultFileListForDigitizer = data && data?.orderMedia?.filter(({ fileType }) => fileType === 'digitizer')?.map(orderMedia => ({
+    uid: "1",
+    name: orderMedia?.filePath,
+    status: "done",
+    url: `http://localhost:4000/order/media/${orderMedia?.filePath}`,
+  }));
+
+  const onRemove = ({name}, arg2) => {
+    // TODO:
+    // On pressing delete icon all images are deleted - See what we can do
+    deleteOrderMedia(name);
+  }
+
   return (
     <Modal
       visible={visible}
@@ -511,6 +529,8 @@ const NewOrderForm = ({
                   getValueFromEvent={normFile}
                 >
                   <Upload
+                    defaultFileList={defaultFileListForCustomer}
+                    onRemove={onRemove}
                     accept=".mysql,.xd,.doc,.csv,.jepg,jpg,png"
                     onPreview={onPreview}
                     action='http://localhost:4000/api/noop'
@@ -531,7 +551,9 @@ const NewOrderForm = ({
                   getValueFromEvent={normFile}
                 >
                   <Upload
+                    defaultFileList={defaultFileListForDigitizer}
                     maxCount={6}
+                    onRemove={onRemove}
                     onPreview={onPreview}
                     action='http://localhost:4000/api/noop'
                     onChange={(e) =>

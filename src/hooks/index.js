@@ -14,7 +14,7 @@ import { useBulkUpdateSalesAgent } from "./Company/useBulkUpdateSalesAgent";
 import { usePostOrder } from "./Orders/usePostOrder";
 import { useUpdateOrder } from "./Orders/useUpdateOrder";
 import { useGetOrders } from "./Orders/useGetOrders";
-import { useDeleteOrder } from "./Orders/useDeleteOrder";
+import { useDeleteOrder, useDeleteOrderMedia } from "./Orders/useDeleteOrder";
 import { useBulkDeleteOrders } from "./Orders/useBulkDeleteOrder";
 export {
   useDeleteCompany,
@@ -30,6 +30,7 @@ export {
   useUpdateUser,
   useUserDataSearchTerm,
   useBulkDeleteOrders,
+  useDeleteOrderMedia,
   useBulkUpdateSalesAgent,
   useGetOrders,
   usePostOrder,
