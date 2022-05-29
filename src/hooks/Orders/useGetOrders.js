@@ -26,6 +26,8 @@ const formattedOrderList = (orderList) =>
     ),
   }));
 
+
+
 const fetchAllOrder = ({ limit, page, search, dateParam, id,role ,showAll}) => {
   const checkRole=id && role && !showAll ? `/by-${role}/${id}` : ''
   const checkId = id && role && showAll? `/by-${role}-userId/${id}` : "";
@@ -65,8 +67,8 @@ export const useGetOrders = ({
       }),
     {
       select: (data) => {
-         const newData = data?.orderList.map((item) => {
-          return { ...item, key: item?.orderId };
+        const newData = data?.orderList.map((item, i) => {
+          return { ...item, key: item?.orderId, orderMedia: Array.isArray(data?.orderMedia) ? data?.orderMedia[i] : [] };
         });
         return { ...data, orderList: formattedOrderList(newData || []) };
       },

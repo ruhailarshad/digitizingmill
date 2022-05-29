@@ -8,6 +8,8 @@ import { useQueryClient } from "react-query";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { usePostUser, useUpdateUser } from "../../hooks";
 import axios from "axios";
+import { useDeleteUserImage } from "../../hooks/User/usePostUser";
+import { useParams } from "react-router-dom";
 
 const NewUserForm = ({
   visible,
@@ -76,17 +78,21 @@ const NewUserForm = ({
   const { isLoading: isCreatingUser, mutate: addUser } = usePostUser(onSuccess);
   const { isLoading: isAddingUser, mutate: updateUser } =
     useUpdateUser(onUserUpdateSuccess);
+  // User Image Delete Request
+  const { isLoading: isDeletingUserImage, mutate: deleteUserImage } = useDeleteUserImage(() => {});
 
   const dummyRequest = ({ file, onSuccess }) => {
     setTimeout(() => {
       onSuccess("ok");
     }, 0);
   };
-  // const renderTogglerForImage = (imageType) => {
-  //   return (
-  //     <div onClick={() => toggleImageDisplayHandler(imageType)}>Show Image</div>
-  //   );
-  // };
+
+  const onRemoveHandler = (file, fileType) => {
+    if(!data) return;
+    const removeImageData = {userId: id, imageType: fileType};
+    deleteUserImage(removeImageData);
+  }
+  
 
   return (
     <Modal
@@ -98,7 +104,6 @@ const NewUserForm = ({
       width={800}
       onOk={() => {
         form.validateFields().then((values) => {
-          console.log(values,'asasd')
           const profilePic = values?.profilePic?.originFileObj;
           const cnicBackPic = values?.cnicBackPic?.originFileObj;
           const cnicFrontPic = values?.cnicFrontPic?.originFileObj;
@@ -159,6 +164,7 @@ const NewUserForm = ({
                             url: `http://localhost:4000/user/image/${data?.profilePic}`,
                           },
                         ]}
+                        onRemove={(file) => onRemoveHandler(file, 'profilePic')}
                         customRequest={dummyRequest}
                         listType="picture-card"
                         maxCount={1}
@@ -275,6 +281,7 @@ const NewUserForm = ({
                       <Upload
                         customRequest={dummyRequest}
                         listType="picture-card"
+                        onRemove={(file) => onRemoveHandler(file, 'cnicFrontPic')}
                         maxCount={1}
                         defaultFileList={data?.cnicFrontPic &&[
                           {
@@ -305,6 +312,7 @@ const NewUserForm = ({
                     <ImgCrop rotate>
                       <Upload
                         customRequest={dummyRequest}
+                        onRemove={(file) => onRemoveHandler(file, 'cnicBackPic')}
                         listType="picture-card"
                         maxCount={1}
                         defaultFileList={data?.cnicBackPic &&[

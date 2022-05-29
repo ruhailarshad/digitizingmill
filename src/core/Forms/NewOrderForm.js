@@ -21,9 +21,9 @@ import {
   useUpdateOrder,
   useGetCompanyById,
   useGetUserByRole,
+  useDeleteOrderMedia,
 } from "../../hooks";
 import { useQueryClient } from "react-query";
-let index = 0;
 const NewOrderForm = ({
   visible,
   onCancel,
@@ -36,6 +36,7 @@ const NewOrderForm = ({
   const [companyId, setCompanyId] = useState("");
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
+  const { isLoading: isDeletingOrderMedia, mutate: deleteOrderMedia } = useDeleteOrderMedia();
   const { data: companyById, isLoading: isCompanyByIdLoading } =
     useGetCompanyById({ id: companyId, skip: !!companyId });
   const { data: digitizerData } = useGetUserByRole({
@@ -100,7 +101,31 @@ const NewOrderForm = ({
         totalPrize: allValues.sizes.reduce((acc, prev) => acc + prev.prize, 0),
       });
   };
+
   const onCreate = (values) => {
+    // Transforming Values for order upload
+    let { customer_files, digitizer_files, ...rest } = values;
+    const orderForm = new FormData();
+    digitizer_files?.forEach((file, i) => {
+      orderForm.append(`digitizer_files_${i}`,file.originFileObj);
+    });
+    customer_files?.forEach((file, i) => {
+        orderForm.append(`customer_files_${i}`,file.originFileObj);
+      });
+    Object.entries({...rest }).forEach(([key, value]) => {
+      if(key === 'bonus') value = 0;
+      if(Array.isArray(value)) {
+        value.forEach((size, i) => {
+          Object.entries(size).map(([k, v]) => {
+            orderForm.append(`${key}[${i}][${k}]`, v);
+          })
+        })
+      }
+      else {
+        orderForm.append(key, value);
+      }
+    });
+
     if (editable) {
       const newData = JSON.parse(
         JSON.stringify({ ...data, sizes: data?.design_sizes })
@@ -119,7 +144,7 @@ const NewOrderForm = ({
       function getDifference(x, y) {
         let data = {};
         Object.entries(x).forEach(function ([key]) {
-          if (Array.isArray(x[key]) && Array.isArray(y[key])) {
+          if (Array.isArray(x[key]) && Array.isArray(y[key]) && key === 'design_sizes') {
             x[key].forEach((_, i) => {
               if (x[key][i].prize !== y[key][i].prize)
                 data[
@@ -128,6 +153,9 @@ const NewOrderForm = ({
             });
             return;
           }
+          // This work is for images
+          if (key === 'customer_files' || key === 'digitizer_files') return;
+            
           if (x[key] === "sizes") return;
 
           if (x[key] !== y[key]) data[key] = `${y[key]} to ${x[key]}`;
@@ -136,12 +164,38 @@ const NewOrderForm = ({
         return data;
       }
       const orderHistory = getDifference(newValues, newData);
-      orderUpdate({ ...values, orderId: data.orderId, orderHistory });
+      // Appending order History
+      Object.entries(orderHistory).forEach(([k, v]) => {
+        orderForm.append(`orderHistory[${k}]`, v);
+      });
+      orderForm.append('orderId', data.orderId);
+      // Updating order
+      orderUpdate(orderForm);
       return;
     }
-
-    orderSubmit(values);
+    
+    orderSubmit(orderForm);
   };
+
+  const defaultFileListForCustomer = data && data?.orderMedia?.filter(({ fileType }) => fileType === 'customer')?.map(orderMedia => ({
+    uid: "1",
+    name: orderMedia?.filePath,
+    status: "done",
+    url: `http://localhost:4000/order/media/${orderMedia?.filePath}`,
+  }));
+  const defaultFileListForDigitizer = data && data?.orderMedia?.filter(({ fileType }) => fileType === 'digitizer')?.map(orderMedia => ({
+    uid: "1",
+    name: orderMedia?.filePath,
+    status: "done",
+    url: `http://localhost:4000/order/media/${orderMedia?.filePath}`,
+  }));
+
+  const onRemove = ({name}, arg2) => {
+    // TODO:
+    // On pressing delete icon all images are deleted - See what we can do
+    deleteOrderMedia(name);
+  }
+
   return (
     <Modal
       visible={visible}
@@ -159,10 +213,11 @@ const NewOrderForm = ({
         form
           .validateFields()
           .then((values) => {
+            
             onCreate(values);
           })
           .catch((info) => {
-            console.log("Validate Failed:", info);
+            // console.log("Validate Failed:", info);
           });
       }}
     >
@@ -470,15 +525,18 @@ const NewOrderForm = ({
             <Row>
               <Col xl={8} md={12} xs={12}>
                 <Form.Item
-                  name="customer_file"
+                  name="customer_files"
                   label="Customer File"
                   valuePropName="fileList"
                   getValueFromEvent={normFile}
                 >
                   <Upload
+                    defaultFileList={defaultFileListForCustomer}
+                    onRemove={onRemove}
+                    accept=".mysql,.xd,.doc,.csv,.jepg,jpg,png"
                     onPreview={onPreview}
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                    listType="picture"
+                    action='http://localhost:4000/api/noop'
+                    listType="any"
                     name="logo"
                   >
                     <Button danger size="medium" icon={<UploadOutlined />}>
@@ -495,8 +553,14 @@ const NewOrderForm = ({
                   getValueFromEvent={normFile}
                 >
                   <Upload
+                    defaultFileList={defaultFileListForDigitizer}
+                    maxCount={6}
+                    onRemove={onRemove}
                     onPreview={onPreview}
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    action='http://localhost:4000/api/noop'
+                    onChange={(e) =>
+                      form.setFieldsValue({ digitizer_files: e.file })
+                    }
                     listType="picture"
                     name="logo"
                   >
@@ -564,7 +628,7 @@ const NewOrderForm = ({
                 </Form.Item>
               </Col>
               <Col xl={9} lg={9} md={9} xs={9}>
-                <Form.Item name="bonus" label="Bonus">
+                <Form.Item initialValue={0} name="bonus" label="Bonus">
                   <Input size="large" />
                 </Form.Item>
               </Col>
