@@ -232,6 +232,17 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
       },
     },
     {
+      title: "Sales Agent",
+      dataIndex: "salesAgentId",
+      render: (_, record) => {
+        return (
+          <p >
+            {record.SalesAgent.name}
+          </p>
+        );
+      },
+    },
+    {
       title: "Payment Status",
       dataIndex: "paymentStatus",
       render: (record) => {

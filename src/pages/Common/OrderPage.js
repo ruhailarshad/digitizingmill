@@ -35,9 +35,9 @@ const OrderPage = ({role}) => {
   const { data: AllCompany } = useGetAllCompany({
     role:role,
     id: tokenData.userId,
-    skip:role==='digitizer'
+    skip:!role==='digitizer'
   });
-
+console.log(ordersData,'ordersData')
   const orderStats = (
     <Row gutter={[5, 10]}>
       {orderDetailStats(
