@@ -104,7 +104,7 @@ const NewOrderForm = ({
 
   const onCreate = (values) => {
     // Transforming Values for order upload
-    let { customer_files, digitizer_files, ...rest } = values;
+    let { customer_files, digitizer_files, orderHistory, ...rest } = values;
     const orderForm = new FormData();
     digitizer_files?.forEach((file, i) => {
       orderForm.append(`digitizer_files_${i}`,file.originFileObj);
@@ -143,8 +143,10 @@ const NewOrderForm = ({
 
       function getDifference(x, y) {
         let data = {};
-        Object.entries(x).forEach(function ([key]) {
-          if (Array.isArray(x[key]) && Array.isArray(y[key]) && key === 'design_sizes') {
+        const orderData = Object.entries(x);
+        debugger
+        orderData.forEach(function ([key]) {
+          if (Array.isArray(x[key]) && Array.isArray(y[key]) && key === 'sizes') {
             x[key].forEach((_, i) => {
               if (x[key][i].prize !== y[key][i].prize)
                 data[
@@ -156,7 +158,7 @@ const NewOrderForm = ({
           // This work is for images
           if (key === 'customer_files' || key === 'digitizer_files') return;
             
-          if (x[key] === "sizes") return;
+          if (x[key] === "sizes" || key === 'sizes') return;
 
           if (x[key] !== y[key]) data[key] = `${y[key]} to ${x[key]}`;
           return;
