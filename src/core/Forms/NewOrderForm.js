@@ -194,11 +194,11 @@ const NewOrderForm = ({
       });
       orderForm.append("orderId", data.orderId);
       // Updating order
-      // orderUpdate(orderForm);
+      orderUpdate(orderForm);
       return;
     }
 
-    // orderSubmit(orderForm);
+    orderSubmit(orderForm);
   };
 
   const defaultFileListForCustomer =
