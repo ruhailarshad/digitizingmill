@@ -21,39 +21,7 @@ const NewUserForm = ({
   id,
 }) => {
   const queryClient = useQueryClient();
-  // const [showEditImage, setShowEditImage] = useState({
-  //   profilePic: false,
-  //   cnicFrontPic: false,
-  //   cnicBackPic: false,
-  // });
 
-  // const toggleImageDisplayHandler = (imageType) => {
-  //   setShowEditImage((prev) => ({
-  //     ...prev,
-  //     [imageType]: !prev[imageType],
-  //   }));
-  // };
-
-  // const renderUserImageWithToggle = (imageType) => {
-  //   return (
-  //     <div style={{ width: "80px", height: "80px", display: "flex" }}>
-  //       <img
-  //         src={`http://localhost:4000/user/image/${data[imageType]}`}
-  //         height="80px"
-  //         width="80px"
-  //         alt="user-media"
-  //       />
-  //       <button
-  //         type="input"
-  //         onClick={(e) => {
-  //           toggleImageDisplayHandler(imageType);
-  //         }}
-  //       >
-  //         Change Image
-  //       </button>
-  //     </div>
-  //   );
-  // };
 
   const [form] = Form.useForm();
   useEffect(() => {
@@ -227,7 +195,11 @@ const NewUserForm = ({
                 rules={[
                   {
                     required: true,
-                    message: "Please input the title of collection!",
+                    message: "Email is Required",
+                  },
+                  {
+                    type: 'email',
+                    message: 'The input is not valid E-mail!',
                   },
                 ]}
               >
@@ -241,7 +213,7 @@ const NewUserForm = ({
                 rules={[
                   {
                     required: true,
-                    message: "Please input the title of collection!",
+                    message: "Password is Required",
                   },
                 ]}
               >

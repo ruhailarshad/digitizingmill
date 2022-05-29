@@ -1,19 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Dropdown, Menu, Space } from "antd";
+import { Dropdown, Menu, Space, Spin } from "antd";
 import React from "react";
 import { DownOutlined } from "@ant-design/icons";
 
-
-const StatsCard = ({ data,handler }) => {
+const StatsCard = ({ data, handler,isLoading }) => {
   const menu = (
     <Menu>
-      <Menu.Item onClick={()=>handler('totalSalesDollar')}>
+      <Menu.Item onClick={() => handler("totalSalesDollar")}>
         <p>USD</p>
       </Menu.Item>
-      <Menu.Item onClick={()=>handler('totalSalesEuro')}>
+      <Menu.Item onClick={() => handler("totalSalesEuro")}>
         <p>Euro</p>
       </Menu.Item>
-      <Menu.Item onClick={()=>handler('totalSalesCanadian')}>
+      <Menu.Item onClick={() => handler("totalSalesCanadian")}>
         <p>CAD</p>
       </Menu.Item>
     </Menu>
@@ -35,14 +34,20 @@ const StatsCard = ({ data,handler }) => {
           <h6 className=" h6-bold flex text-gray-40 whitespace-nowrap">
             {data.heading}
           </h6>
-         {data.heading.toLowerCase()==='total sales' && <Dropdown overlay={menu} arrow>
-            <Space>
-              <DownOutlined />
-            </Space>
-          </Dropdown>}
+          {data.heading.toLowerCase() === "total sales" && (
+            <Dropdown overlay={menu} arrow>
+              <Space>
+                <DownOutlined />
+              </Space>
+            </Dropdown>
+          )}
         </div>
 
-        <h4 className=" h4-bold text-gray-80 ml-4">{data.stats}</h4>
+        {isLoading ? (
+          <Spin className="mt-10 w-10" />
+        ) : (
+          <h4 className=" h4-bold text-gray-80 ml-4">{data.stats}</h4>
+        )}
       </div>
     </div>
   );

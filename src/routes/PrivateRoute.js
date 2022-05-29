@@ -1,4 +1,3 @@
-import { Navigate } from "react-router-dom";
 import { AdminPanelConfig } from "../pages/Admin";
 import { CompanyDetailsConfig } from "../pages/Admin/CompanyDetails";
 import { AdminDashboardConfig } from "../pages/Admin/Dashboard";
@@ -26,7 +25,7 @@ const Roles = {
   admin: "admin",
 };
 const routes = () => [
-  { path: "/login", element: <LoginFormConfig /> },
+  { path: "", element: <LoginFormConfig /> },
   {
     path: RouteNames.admin,
     element: (

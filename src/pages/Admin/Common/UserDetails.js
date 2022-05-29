@@ -17,7 +17,7 @@ import { useGetAllCompany, useGetOrders } from "../../../hooks";
 import NewCompanyForm from "../../../core/Forms/NewCompanyForm";
 import NewOrderForm from "../../../core/Forms/NewOrderForm";
 
-const UserDetails = ({ data = { src: "" }, stats, onModalShow, role }) => {
+const UserDetails = ({ data = { src: "" }, stats, onModalShow, role,isLoading }) => {
   const { id } = useParams();
 
   const [companyFormData, setCompanyFormData] = useState([]);
@@ -63,7 +63,7 @@ const UserDetails = ({ data = { src: "" }, stats, onModalShow, role }) => {
     <Row gutter={[10, 10]}>
       {stats.map((item, i) => (
         <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-          <StatsCard key={i} data={item} />
+          <StatsCard isLoading={isLoading} key={i} data={item} />
         </Col>
       ))}
     </Row>

@@ -26,7 +26,7 @@ const SideNav = ({ data, Body, indexRoute }) => {
 
   const onLogout = () => {
     localStorage.removeItem(accessTokenKey);
-    navigate(RouteNames.login);
+    navigate('/');
     setUserData("");
   };
 

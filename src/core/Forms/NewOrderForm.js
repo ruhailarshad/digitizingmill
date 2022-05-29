@@ -254,7 +254,7 @@ const NewOrderForm = ({
                   rules={[
                     {
                       required: true,
-                      message: "Compant Name is Required",
+                      message: "Company Name is Required",
                     },
                   ]}
                 >
@@ -283,7 +283,7 @@ const NewOrderForm = ({
                   rules={[
                     {
                       required: true,
-                      message: "Address is Required",
+                      message: "Customer Name is Required",
                     },
                   ]}
                 >

@@ -1,17 +1,15 @@
 import { Col, Row } from "antd";
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { exceOrderrHeader } from "../../../constants/execelHeader";
-import { orderDetailStats } from "../../../constants/stats";
-import {
-  editableOrderColumnsUserDetails,
-} from "../../../constants/tableColumns";
-import { CustomTable } from "../../../core";
-import NewOrderForm from "../../../core/Forms/NewOrderForm";
-import HeadAndContent from "../../../core/HeadAndContent";
-import StatsCard from "../../../core/StatsCard";
-import { useGetAllCompany, useGetOrders } from "../../../hooks";
 import moment from "moment";
+import { useGetAllCompany, useGetOrders } from "../../hooks";
+import { orderDetailStats } from "../../constants/stats";
+import StatsCard from "../../core/StatsCard";
+import HeadAndContent from "../../core/HeadAndContent";
+import { CustomTable } from "../../core";
+import { exceOrderrHeader } from "../../constants/execelHeader";
+import NewOrderForm from "../../core/Forms/NewOrderForm";
+import { editableOrderColumnsUserDetails } from "../../constants/tableColumns";
 
 const OrderPage = ({role}) => {
   const { tokenData } = useOutletContext();
@@ -37,6 +35,7 @@ const OrderPage = ({role}) => {
   const { data: AllCompany } = useGetAllCompany({
     role:role,
     id: tokenData.userId,
+    skip:role==='digitizer'
   });
 
   const orderStats = (
@@ -50,7 +49,7 @@ const OrderPage = ({role}) => {
         ordersData?.totalOrders
       ).map((item, i) => (
         <Col xxl={4} xl={6} lg={8} md={10} xs={24} key={i}>
-          <StatsCard data={item} />
+          <StatsCard isLoading={orderLoading} data={item} />
         </Col>
       ))}
     </Row>

@@ -30,7 +30,6 @@ const LoginForm = () => {
 
   const {mutate, isLoading} = useGetAccessToken(onSuccess, onError);
   const onFinish = (values) => {
-    console.log(values);
     mutate(values);
   };
   return (

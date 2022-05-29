@@ -12,7 +12,7 @@ const RouteNames = {
   salesAgentSalesReport:'sales-report',
   digitizer:'/digitizer',
   digitizerOrderDetail:'order-details',
-  login:'/login',
+  login:'',
 };
 
 export default RouteNames;

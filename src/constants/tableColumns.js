@@ -88,13 +88,24 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
       },
     },
     {
+      title: "Sales Agent",
+      dataIndex: "salesAgentId",
+      render: (_, record) => {
+        return (
+          <p >
+            {record.SalesAgent.name}
+          </p>
+        );
+      },
+    },
+    {
       title: "Payment Status",
       dataIndex: "paymentStatus",
       render: (record) => {
         const color = getColor(record);
         return (
           <Tag
-            className="rounded-4 w-[109px] px-[70px] h-32 flex text-14 items-center justify-center"
+            className="rounded-4 px-[10px] h-32 flex text-14 items-center justify-center"
             color={color}
           >
             {record}
@@ -110,7 +121,7 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
         const color = getColor(record);
         return (
           <Tag
-            className="rounded-4 w-[109px] h-32 px-[70px] flex text-14 items-center justify-center"
+            className="rounded-4 h-32 px-[10px] flex text-14 items-center justify-center"
             color={color}
           >
             {record}
@@ -125,7 +136,7 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
         const color = getColor(record);
         return (
           <Tag
-            className="rounded-4 w-[109px] h-32 px-[70px] flex text-14 items-center justify-center"
+            className="rounded-4 h-32 px-[10px] flex text-14 items-center justify-center"
             color={color}
           >
             {record}

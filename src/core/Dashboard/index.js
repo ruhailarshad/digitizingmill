@@ -44,9 +44,10 @@ console.log(userData,'userData')
         userData?.completedSales
       ).map((item, i) => (
         <Col xxl={6} xl={8} lg={12} md={11} sm={24} key={i}>
-          <StatsCard data={item} handler={(values)=>setSales(values)} />
+          <StatsCard isLoading={isLoading} data={item} handler={(values)=>setSales(values)} />
         </Col>
       ))}
+      
     </Row>
   );
   return (
@@ -70,6 +71,7 @@ console.log(userData,'userData')
                 src: userData?.userData[0]?.profilePic,
               }}
               btnHandler={() => setIsModalVisible(true)}
+              isLoading={isLoading}
             />
           </Col>
         </Row>
