@@ -31,12 +31,13 @@ const NewOrderForm = ({
   editable,
   data,
   role,
-  roleData={id:'',name:''},
+  roleData = { id: "", name: "" },
 }) => {
   const [companyId, setCompanyId] = useState("");
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
-  const { isLoading: isDeletingOrderMedia, mutate: deleteOrderMedia } = useDeleteOrderMedia();
+  const { isLoading: isDeletingOrderMedia, mutate: deleteOrderMedia } =
+    useDeleteOrderMedia();
   const { data: companyById, isLoading: isCompanyByIdLoading } =
     useGetCompanyById({ id: companyId, skip: !!companyId });
   const { data: digitizerData } = useGetUserByRole({
@@ -53,8 +54,8 @@ const NewOrderForm = ({
         companyInstruction: companyById?.company?.companyInstruction,
         sizes: companyById?.company?.design_sizes,
         currency: companyById?.company?.design_sizes[0]?.currency,
-        address:companyById?.company?.address,
-        customerName:companyById?.company?.companyName,
+        address: companyById?.company?.address,
+        customerName: companyById?.company?.companyName,
         totalPrize: companyById?.company?.design_sizes.reduce((prev, acc) => {
           return prev + acc.prize;
         }, 0),
@@ -107,21 +108,20 @@ const NewOrderForm = ({
     let { customer_files, digitizer_files, ...rest } = values;
     const orderForm = new FormData();
     digitizer_files?.forEach((file, i) => {
-      orderForm.append(`digitizer_files_${i}`,file.originFileObj);
+      orderForm.append(`digitizer_files_${i}`, file.originFileObj);
     });
     customer_files?.forEach((file, i) => {
-        orderForm.append(`customer_files_${i}`,file.originFileObj);
-      });
-    Object.entries({...rest }).forEach(([key, value]) => {
-      if(key === 'bonus') value = 0;
-      if(Array.isArray(value)) {
+      orderForm.append(`customer_files_${i}`, file.originFileObj);
+    });
+    Object.entries({ ...rest }).forEach(([key, value]) => {
+      if (key === "bonus") value = 0;
+      if (Array.isArray(value)) {
         value.forEach((size, i) => {
           Object.entries(size).map(([k, v]) => {
             orderForm.append(`${key}[${i}][${k}]`, v);
-          })
-        })
-      }
-      else {
+          });
+        });
+      } else {
         orderForm.append(key, value);
       }
     });
@@ -137,14 +137,17 @@ const NewOrderForm = ({
       delete newData["isDeleted"];
       delete newData["updatedAt"];
       delete newData["orderHistory"];
-      delete newValues["customer_file"];
       delete newValues["order_date"];
       delete newValues["orderHistory"];
 
       function getDifference(x, y) {
         let data = {};
         Object.entries(x).forEach(function ([key]) {
-          if (Array.isArray(x[key]) && Array.isArray(y[key]) && key === 'design_sizes') {
+          if (
+            Array.isArray(x[key]) &&
+            Array.isArray(y[key]) &&
+            key === "sizes"
+          ) {
             x[key].forEach((_, i) => {
               if (x[key][i].prize !== y[key][i].prize)
                 data[
@@ -153,9 +156,29 @@ const NewOrderForm = ({
             });
             return;
           }
+          if (key === "salesAgentId" && x[key] !== y[key]) {
+            const oldVal = adminData?.find(
+              (item) => item.userId === newValues.salesAgentId
+            ).name;
+            const newVal = adminData?.find(
+              (item) => item.userId === newData.salesAgentId
+            ).name;
+            data[key] = `${newVal} to ${oldVal}`;
+            return;
+          }
+          if (key === "digitizerId" && x[key] !== y[key]) {
+            const oldVal = adminData?.find(
+              (item) => item.userId === newValues.digitizerId
+            ).name;
+            const newVal = adminData?.find(
+              (item) => item.userId === newData.digitizerId
+            ).name;
+            data[key] = `${newVal} to ${oldVal}`;
+            return;
+          }
           // This work is for images
-          if (key === 'customer_files' || key === 'digitizer_files') return;
-            
+          if (key === "customer_files" || key === "digitizer_files") return;
+
           if (x[key] === "sizes") return;
 
           if (x[key] !== y[key]) data[key] = `${y[key]} to ${x[key]}`;
@@ -164,37 +187,46 @@ const NewOrderForm = ({
         return data;
       }
       const orderHistory = getDifference(newValues, newData);
+      console.log(orderHistory, "orderHistory");
       // Appending order History
       Object.entries(orderHistory).forEach(([k, v]) => {
         orderForm.append(`orderHistory[${k}]`, v);
       });
-      orderForm.append('orderId', data.orderId);
+      orderForm.append("orderId", data.orderId);
       // Updating order
-      orderUpdate(orderForm);
+      // orderUpdate(orderForm);
       return;
     }
-    
-    orderSubmit(orderForm);
+
+    // orderSubmit(orderForm);
   };
 
-  const defaultFileListForCustomer = data && data?.orderMedia?.filter(({ fileType }) => fileType === 'customer')?.map(orderMedia => ({
-    uid: "1",
-    name: orderMedia?.filePath,
-    status: "done",
-    url: `http://localhost:4000/order/media/${orderMedia?.filePath}`,
-  }));
-  const defaultFileListForDigitizer = data && data?.orderMedia?.filter(({ fileType }) => fileType === 'digitizer')?.map(orderMedia => ({
-    uid: "1",
-    name: orderMedia?.filePath,
-    status: "done",
-    url: `http://localhost:4000/order/media/${orderMedia?.filePath}`,
-  }));
+  const defaultFileListForCustomer =
+    data &&
+    data?.orderMedia
+      ?.filter(({ fileType }) => fileType === "customer")
+      ?.map((orderMedia) => ({
+        uid: "1",
+        name: orderMedia?.filePath,
+        status: "done",
+        url: `http://localhost:4000/order/media/${orderMedia?.filePath}`,
+      }));
+  const defaultFileListForDigitizer =
+    data &&
+    data?.orderMedia
+      ?.filter(({ fileType }) => fileType === "digitizer")
+      ?.map((orderMedia) => ({
+        uid: "1",
+        name: orderMedia?.filePath,
+        status: "done",
+        url: `http://localhost:4000/order/media/${orderMedia?.filePath}`,
+      }));
 
-  const onRemove = ({name}, arg2) => {
+  const onRemove = ({ name }, arg2) => {
     // TODO:
     // On pressing delete icon all images are deleted - See what we can do
     deleteOrderMedia(name);
-  }
+  };
 
   return (
     <Modal
@@ -213,7 +245,6 @@ const NewOrderForm = ({
         form
           .validateFields()
           .then((values) => {
-            
             onCreate(values);
           })
           .catch((info) => {
@@ -340,7 +371,7 @@ const NewOrderForm = ({
                     getPopupContainer={(trigger) => trigger.parentNode}
                     size="large"
                     loading={isAdminLoading || false}
-                  disabled={role===RolesForm.salesAgent}
+                    disabled={role === RolesForm.salesAgent}
                   >
                     {role === RolesForm.salesAgent ? (
                       <Select.Option disabled value={roleData?.id}>
@@ -396,11 +427,16 @@ const NewOrderForm = ({
                     getPopupContainer={(trigger) => trigger.parentNode}
                     size="large"
                   >
-                    {digitizerData?.map((item) => (
-                      <Select.Option value={item?.userId}>
-                        {item?.name}
-                      </Select.Option>
-                    ))}
+                    {adminData
+                      ?.filter(
+                        (item) =>
+                         item.role === "digitizer"
+                      )
+                      ?.map((item) => (
+                        <Select.Option value={item?.userId}>
+                          {item?.name}
+                        </Select.Option>
+                      ))}
                   </Select>
                 </Form.Item>
               </Col>
@@ -535,7 +571,7 @@ const NewOrderForm = ({
                     onRemove={onRemove}
                     accept=".mysql,.xd,.doc,.csv,.jepg,jpg,png"
                     onPreview={onPreview}
-                    action='http://localhost:4000/api/noop'
+                    action="http://localhost:4000/api/noop"
                     listType="any"
                     name="logo"
                   >
@@ -557,7 +593,7 @@ const NewOrderForm = ({
                     maxCount={6}
                     onRemove={onRemove}
                     onPreview={onPreview}
-                    action='http://localhost:4000/api/noop'
+                    action="http://localhost:4000/api/noop"
                     onChange={(e) =>
                       form.setFieldsValue({ digitizer_files: e.file })
                     }
