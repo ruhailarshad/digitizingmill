@@ -28,7 +28,7 @@ const UserCard = ({ data, btnHandler, isLoading }) => {
         ) : (
           <Text
             type={`${isMobile ? "h4" : "h3"}`}
-            tyles={`text-gray-80 ${isMobile ? "h4-med" : "h3-med"} `}
+            styles={`text-gray-80 max-w-[260px] text-ellipsis overflow-hidden ${isMobile ? "h4-med" : "h3-med"} `}
           >
             {data.name}
           </Text>
@@ -60,7 +60,7 @@ const UserCard = ({ data, btnHandler, isLoading }) => {
             <>
               <GrMail size={18} color="#606472" />
 
-              <Text type="h6" styles={`text-gray-30 h6-med `}>
+              <Text type="h6" styles={`  max-w-[280px] text-ellipsis overflow-hidden whitespace-nowrap  text-gray-30 h6-med `}>
                 {data.email}
               </Text>
             </>
@@ -77,7 +77,7 @@ const UserCard = ({ data, btnHandler, isLoading }) => {
           ) : (
             <>
               <IoMdCall size={18} color="#606472" />
-              <Text type="h6" styles={`text-gray-30 h6-med `}>
+              <Text type="h6" styles={`text-gray-30  max-w-[280px] text-ellipsis  whitespace-nowrap  overflow-hidden h6-med `}>
                 {data.number}
               </Text>
             </>
@@ -94,7 +94,7 @@ const UserCard = ({ data, btnHandler, isLoading }) => {
           ) : (
             <>
               <BsFillHouseDoorFill size={18} color="#606472" />
-              <Text type="h6" styles={`text-gray-30 h6-med`}>
+              <Text type="h6" styles={`text-gray-30  max-w-[280px] text-ellipsis whitespace-nowrap overflow-hidden h6-med`}>
                 {data.address}
               </Text>
             </>

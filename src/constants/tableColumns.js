@@ -44,8 +44,6 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
         );
       },
       sorter: (a, b) => a.orderId - b.orderId,
-      width: "15%",
-      responsive: ["md"],
     },
     {
       title: "Order Date",
@@ -188,8 +186,6 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
         );
       },
       sorter: (a, b) => a.orderId - b.orderId,
-      width: "15%",
-      responsive: ["md"],
     },
     {
       title: "Order Date",
@@ -249,7 +245,7 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
         const color = getColor(record);
         return (
           <Tag
-            className="rounded-4 w-[109px] px-[70px] h-32 flex text-14 items-center justify-center"
+            className="rounded-4 px-[10px] h-32 flex text-14 items-center justify-center"
             color={color}
           >
             {record}
@@ -265,7 +261,7 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
         const color = getColor(record);
         return (
           <Tag
-            className="rounded-4 w-[109px] h-32 px-[70px] flex text-14 items-center justify-center"
+            className="rounded-4 h-32 px-[10px] flex text-14 items-center justify-center"
             color={color}
           >
             {record}
@@ -280,7 +276,7 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
         const color = getColor(record);
         return (
           <Tag
-            className="rounded-4 w-[109px] h-32 px-[70px] flex text-14 items-center justify-center"
+            className="rounded-4 h-32 px-[10px] flex text-14 items-center justify-center"
             color={color}
           >
             {record}
@@ -304,6 +300,91 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
     },
   ];
 };
+export const editableOrderColumnsDigitizer = (viewHandler) => {
+  return [
+    {
+      title: "Order Id",
+      dataIndex: "orderId",
+      render: (_, record) => {
+        return (
+          <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">
+            {record.orderId}
+          </p>
+        );
+      },
+      sorter: (a, b) => a.orderId - b.orderId,
+    },
+    {
+      title: "Order Date",
+      dataIndex: "orderDate",
+      sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+      render: (_, record) => {
+        return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+      },
+    },
+   
+    {
+      title: "Design Name",
+      dataIndex: "designName",
+    },
+    {
+      title: "Size/Type",
+      dataIndex: "size",
+      render: (_, record) => {
+        return record.design_sizes.map((item) => item.size).join(", ");
+      },
+    },
+   
+   
+ 
+
+    {
+      title: "Order Status",
+      dataIndex: "orderStatus",
+      render: (record) => {
+        const color = getColor(record);
+        return (
+          <Tag
+            className="rounded-4 h-32 px-[10px] flex text-14 items-center justify-center"
+            color={color}
+          >
+            {record}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: "Delivery Status",
+      dataIndex: "deliveryStatus",
+      render: (record) => {
+        const color = getColor(record);
+        return (
+          <Tag
+            className="rounded-4 h-32 px-[10px] flex text-14 items-center justify-center"
+            color={color}
+          >
+            {record}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "x",
+      render: (record) => {
+        return (
+          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+           <div onClick={() => viewHandler(record)}>
+          <AiFillEye size={22} color={"#9999"} />
+        </div>
+          </div>
+        );
+      },
+    },
+  ];
+};
+
 export const orderColumns = [
   {
     title: "Order Id",
@@ -316,8 +397,6 @@ export const orderColumns = [
       );
     },
     sorter: (a, b) => a.orderId - b.orderId,
-    width: "15%",
-    responsive: ["md"],
   },
   {
     title: "Order Date",
@@ -360,13 +439,24 @@ export const orderColumns = [
     },
   },
   {
+    title: "Sales Agent",
+    dataIndex: "salesAgentId",
+    render: (_, record) => {
+      return (
+        <p >
+          {record.SalesAgent.name}
+        </p>
+      );
+    },
+  },
+  {
     title: "Payment Status",
     dataIndex: "paymentStatus",
     render: (record) => {
       const color = getColor(record);
       return (
         <Tag
-          className="rounded-4 w-[109px] h-32 px-[70px] flex text-14 items-center justify-center"
+          className="rounded-4 h-32 px-[10px] flex text-14 items-center justify-center"
           color={color}
         >
           {record}
@@ -382,7 +472,7 @@ export const orderColumns = [
       const color = getColor(record);
       return (
         <Tag
-          className="rounded-4 px-[70px] w-[109px] h-32 flex text-14 items-center justify-center"
+          className="rounded-4 px-[10px] h-32 flex text-14 items-center justify-center"
           color={color}
         >
           {record}
@@ -397,7 +487,7 @@ export const orderColumns = [
       const color = getColor(record);
       return (
         <Tag
-          className="rounded-4 px-[70px] w-[109px] h-32 flex text-14 items-center justify-center"
+          className="rounded-4 px-[10px] h-32 flex text-14 items-center justify-center"
           color={color}
         >
           {record}
@@ -419,7 +509,6 @@ export const DigitizerOrderColumns = [
       );
     },
     sorter: (a, b) => a.orderId - b.orderId,
-    width: "15%",
   },
   {
     title: "Order Date",
@@ -450,7 +539,7 @@ export const DigitizerOrderColumns = [
       const color = getColor(record);
       return (
         <Tag
-          className="rounded-4 px-[70px] w-[109px] h-32 flex text-14 items-center justify-center"
+          className="rounded-4 px-[10px] h-32 flex text-14 items-center justify-center"
           color={color}
         >
           {record}
@@ -465,7 +554,7 @@ export const DigitizerOrderColumns = [
       const color = getColor(record);
       return (
         <Tag
-          className="rounded-4 px-[70px] w-[109px] h-32 flex text-14 items-center justify-center"
+          className="rounded-4 px-[10px] h-32 flex text-14 items-center justify-center"
           color={color}
         >
           {record}
@@ -488,14 +577,11 @@ export const companyColumns = (
       dataIndex: "companyId",
       render: (_, record) => {
         return (
-          <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">
+          <p className="max-w-[30px] overflow-hidden whitespace-nowrap text-ellipsis">
             {record.companyId}
           </p>
         );
       },
-      sorter: (a, b) => a.companyId - b.companyId,
-      width: "15%",
-      responsive: ["md"],
     },
     {
       title: "Registration Date",
@@ -504,34 +590,27 @@ export const companyColumns = (
       render: (_, record) => {
         return moment(record.createdAt).format("MMMM Do YYYY h:mm:ss");
       },
-      width: "15%",
-      responsive: ["md"],
     },
     {
       title: "Company Name",
       dataIndex: "companyName",
-      width: "15%",
     },
     {
       title: "Contact No",
       dataIndex: "phone",
-      width: "15%",
     },
     {
       title: "Email Address",
       dataIndex: "emailAddress",
-      width: "15%",
     },
     {
       title: "Sales Agent",
       dataIndex: "salesAgent",
       editable: true,
-      width: "15%",
     },
     {
       title: "Actions",
       dataIndex: "icon",
-      width: "10%",
       render: (_, record) => {
         const confirm = () => {
           Modal.confirm({

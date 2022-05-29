@@ -6,10 +6,10 @@ import {BsCurrencyDollar,BsCurrencyPound} from 'react-icons/bs'
 import {BsBasket,BsShieldFillCheck} from 'react-icons/bs'
 import {GiSandsOfTime} from 'react-icons/gi'
 
-export const dashboardStats = (companies,sales,pending,completed) => {
+export const dashboardStats = (companies,sales,pending,completed,role) => {
     return [
       {
-        heading: "Total Companies",
+        heading: `${role ? 'Total Orders' : 'Total Companies'}`,
         stats: companies,
         icon:<IoIosPeople color="#fff"  size={36}/>
       },

@@ -9,7 +9,7 @@ import HeadAndContent from "../../core/HeadAndContent";
 import { CustomTable } from "../../core";
 import { exceOrderrHeader } from "../../constants/execelHeader";
 import NewOrderForm from "../../core/Forms/NewOrderForm";
-import { editableOrderColumnsUserDetails } from "../../constants/tableColumns";
+import { editableOrderColumnsDigitizer, editableOrderColumnsUserDetails } from "../../constants/tableColumns";
 
 const OrderPage = ({role}) => {
   const { tokenData } = useOutletContext();
@@ -103,7 +103,7 @@ console.log(ordersData,'ordersData')
             setDateParam(value);
             setPage(1);
           }}
-          column={editableOrderColumnsUserDetails(editHandler)}
+          column={role==='digitizer' ? editableOrderColumnsDigitizer(editHandler) :editableOrderColumnsUserDetails(editHandler)}
           data={ordersData?.orderList}
           loading={orderLoading}
           totalRecords={ordersData?.count}
