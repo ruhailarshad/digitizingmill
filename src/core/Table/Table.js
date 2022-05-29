@@ -100,7 +100,7 @@ const CustomTable = ({
           dataSource={formData}
           rowClassName="editable-row"
           scroll={{
-           x:'calc(700px + 50%)', y: 1000,
+           x:1000, y: 1000,
           }}
           pagination={!noPagination &&{
             showSizeChanger: true,

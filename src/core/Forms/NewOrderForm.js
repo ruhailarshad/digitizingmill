@@ -40,12 +40,9 @@ const NewOrderForm = ({
     useDeleteOrderMedia();
   const { data: companyById, isLoading: isCompanyByIdLoading } =
     useGetCompanyById({ id: companyId, skip: !!companyId });
-  const { data: digitizerData } = useGetUserByRole({
-    role: "digitizer",
-  });
 
   const { isLoading: isAdminLoading, data: adminData } = useGetUserByRole({
-    skip: !role,
+    skip: !role || !role === RolesForm.digitizer,
   });
   useEffect(() => {
     if (!isCompanyByIdLoading && companyById !== undefined && companyId) {
@@ -74,12 +71,13 @@ const NewOrderForm = ({
   }, [data, form, editable]);
   useEffect(() => {
     if (roleData?.id) {
-      form.setFieldsValue({
-        salesAgentId: roleData?.id,
-      });
+      role === RolesForm.digitizer
+        ? form.setFieldsValue({ digitizerId: roleData?.id })
+        : form.setFieldsValue({
+            salesAgentId: roleData?.id,
+          });
     }
-  }, [form, roleData?.id]);
-
+  }, [form, role, roleData?.id]);
   const onOrderSubmitSuccess = () => {
     form.resetFields();
     onCancel();
@@ -187,7 +185,6 @@ const NewOrderForm = ({
         return data;
       }
       const orderHistory = getDifference(newValues, newData);
-      console.log(orderHistory, "orderHistory");
       // Appending order History
       Object.entries(orderHistory).forEach(([k, v]) => {
         orderForm.append(`orderHistory[${k}]`, v);
@@ -206,7 +203,7 @@ const NewOrderForm = ({
     data?.orderMedia
       ?.filter(({ fileType }) => fileType === "customer")
       ?.map((orderMedia) => ({
-        uid: "1",
+        uid: orderMedia?.id,
         name: orderMedia?.filePath,
         status: "done",
         url: `http://localhost:4000/order/media/${orderMedia?.filePath}`,
@@ -216,7 +213,7 @@ const NewOrderForm = ({
     data?.orderMedia
       ?.filter(({ fileType }) => fileType === "digitizer")
       ?.map((orderMedia) => ({
-        uid: "1",
+        uid: orderMedia?.id,
         name: orderMedia?.filePath,
         status: "done",
         url: `http://localhost:4000/order/media/${orderMedia?.filePath}`,
@@ -238,7 +235,7 @@ const NewOrderForm = ({
         onCancel();
         setCompanyId("");
       }}
-      width={editable ? 1500 : 1000}
+      width={editable && role!==RolesForm.digitizer ?1500 : 1000}
       okButtonProps={{ type: "primary", danger: true }}
       onOk={() => {
         console.log("onOk");
@@ -260,9 +257,9 @@ const NewOrderForm = ({
       >
         <Row gutter={20}>
           <Col
-            xl={editable ? 16 : 24}
-            lg={editable ? 16 : 24}
-            md={editable ? 14 : 24}
+            xl={editable && role!==RolesForm.digitizer ? 16 : 24}
+            lg={editable && role!==RolesForm.digitizer ? 16 : 24}
+            md={editable && role!==RolesForm.digitizer ? 14 : 24}
             xs={24}
           >
             <Row gutter={[20, 20]}>
@@ -278,64 +275,75 @@ const NewOrderForm = ({
                   />
                 </Form.Item>
               </Col>
-              <Col xl={12} lg={12} md={12} xs={24}>
-                <Form.Item
-                  name="companyId"
-                  label="Company  Name"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Company Name is Required",
-                    },
-                  ]}
-                >
-                  <Select
-                    showSearch
-                    filterOption={(input, option) =>
-                      option.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                    size="large"
+              {role !== RolesForm.digitizer && (
+                <Col xl={12} lg={12} md={12} xs={24}>
+                  <Form.Item
+                    name="companyId"
+                    label="Company  Name"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Company Name is Required",
+                      },
+                    ]}
                   >
-                    {companies?.map((item) => (
-                      <Select.Option value={item?.companyId}>
-                        {item?.companyName}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col xl={24} lg={24} md={24} xs={24}>
-                <Form.Item
-                  name="customerName"
-                  label="Customer Name"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Customer Name is Required",
-                    },
-                  ]}
-                >
-                  <Input size="large" />
-                </Form.Item>
-              </Col>
-              <Col xl={24} lg={24} md={24} xs={24}>
-                <Form.Item
-                  name="address"
-                  label="Address"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Address is Required",
-                    },
-                  ]}
-                >
-                  <Input size="large" />
-                </Form.Item>
-              </Col>
-              <Col xl={16} lg={16} md={24} xs={24}>
+                    <Select
+                      showSearch
+                      filterOption={(input, option) =>
+                        option.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      size="large"
+                    >
+                      {companies?.map((item) => (
+                        <Select.Option value={item?.companyId}>
+                          {item?.companyName}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+              )}
+              {role !== RolesForm.digitizer && (
+                <Col xl={24} lg={24} md={24} xs={24}>
+                  <Form.Item
+                    name="customerName"
+                    label="Customer Name"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Customer Name is Required",
+                      },
+                    ]}
+                  >
+                    <Input size="large" />
+                  </Form.Item>
+                </Col>
+              )}
+              {role !== RolesForm.digitizer && (
+                <Col xl={24} lg={24} md={24} xs={24}>
+                  <Form.Item
+                    name="address"
+                    label="Address"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Address is Required",
+                      },
+                    ]}
+                  >
+                    <Input size="large" />
+                  </Form.Item>
+                </Col>
+              )}
+              <Col
+                xl={role === RolesForm.digitizer ? 12 : 16}
+                lg={role === RolesForm.digitizer ? 12 : 16}
+                md={24}
+                xs={24}
+              >
                 <Form.Item
                   name="companyInstruction"
                   label="Comapny Instruction"
@@ -346,52 +354,58 @@ const NewOrderForm = ({
                     },
                   ]}
                 >
-                  <Input size="large" />
+                  <Input disabled={role === RolesForm.digitizer} size="large" />
                 </Form.Item>
               </Col>
-              <Col xl={8} lg={8} md={24} xs={24}>
-                <Form.Item
-                  name="salesAgentId"
-                  label="Sales Agent"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Sales Agent is Required",
-                    },
-                  ]}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                >
-                  <Select
-                    showSearch
-                    filterOption={(input, option) =>
-                      option.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
+              {role !== RolesForm.digitizer && (
+                <Col xl={8} lg={8} md={24} xs={24}>
+                  <Form.Item
+                    name="salesAgentId"
+                    label="Sales Agent"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Sales Agent is Required",
+                      },
+                    ]}
                     getPopupContainer={(trigger) => trigger.parentNode}
-                    size="large"
-                    loading={isAdminLoading || false}
-                    disabled={role === RolesForm.salesAgent}
                   >
-                    {role === RolesForm.salesAgent ? (
-                      <Select.Option disabled value={roleData?.id}>
-                        {roleData?.name}
-                      </Select.Option>
-                    ) : (
-                      adminData
-                        ?.filter(
-                          (item) =>
-                            item.role === "admin" || item.role === "sales-agent"
-                        )
-                        ?.map((item) => (
-                          <Select.Option value={item?.userId} key={item.userId}>
-                            {item?.name}
-                          </Select.Option>
-                        ))
-                    )}
-                  </Select>
-                </Form.Item>
-              </Col>
+                    <Select
+                      showSearch
+                      filterOption={(input, option) =>
+                        option.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      size="large"
+                      loading={isAdminLoading || false}
+                      disabled={role === RolesForm.salesAgent}
+                    >
+                      {role === RolesForm.salesAgent ? (
+                        <Select.Option disabled value={roleData?.id}>
+                          {roleData?.name}
+                        </Select.Option>
+                      ) : (
+                        adminData
+                          ?.filter(
+                            (item) =>
+                              item.role === "admin" ||
+                              item.role === "sales-agent"
+                          )
+                          ?.map((item) => (
+                            <Select.Option
+                              value={item?.userId}
+                              key={item.userId}
+                            >
+                              {item?.name}
+                            </Select.Option>
+                          ))
+                      )}
+                    </Select>
+                  </Form.Item>
+                </Col>
+              )}
               <Col xl={16} lg={16} md={24} xs={24}>
                 <Form.Item
                   name="orderInstructions"
@@ -403,7 +417,7 @@ const NewOrderForm = ({
                     },
                   ]}
                 >
-                  <Input size="large" />
+                  <Input disabled={role === RolesForm.digitizer} size="large" />
                 </Form.Item>
               </Col>
               <Col xl={8} lg={8} md={24} xs={24}>
@@ -426,17 +440,21 @@ const NewOrderForm = ({
                     }
                     getPopupContainer={(trigger) => trigger.parentNode}
                     size="large"
+                    disabled={role === RolesForm.digitizer}
                   >
-                    {adminData
-                      ?.filter(
-                        (item) =>
-                         item.role === "digitizer"
-                      )
-                      ?.map((item) => (
-                        <Select.Option value={item?.userId}>
-                          {item?.name}
-                        </Select.Option>
-                      ))}
+                    {role === RolesForm.digitizer ? (
+                      <Select.Option value={roleData?.id}>
+                        {roleData?.name}
+                      </Select.Option>
+                    ) : (
+                      adminData
+                        ?.filter((item) => item.role === "digitizer")
+                        ?.map((item) => (
+                          <Select.Option value={item?.userId}>
+                            {item?.name}
+                          </Select.Option>
+                        ))
+                    )}
                   </Select>
                 </Form.Item>
               </Col>
@@ -451,7 +469,7 @@ const NewOrderForm = ({
                     },
                   ]}
                 >
-                  <Input size="large" />
+                  <Input disabled={role === RolesForm.digitizer} size="large" />
                 </Form.Item>
               </Col>
               <Col xl={8} lg={8} md={24} xs={24}>
@@ -465,7 +483,7 @@ const NewOrderForm = ({
                     },
                   ]}
                 >
-                  <Input size="large" />
+                  <Input disabled={role === RolesForm.digitizer} size="large" />
                 </Form.Item>
               </Col>
               <Col xl={8} lg={8} md={24} xs={24}>
@@ -480,36 +498,42 @@ const NewOrderForm = ({
                     },
                   ]}
                 >
-                  <Select
-                    size="large"
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                  >
-                    <Select.Option value="Urgent">Urgent</Select.Option>
-                    <Select.Option value="Normal">Normal</Select.Option>
-                  </Select>
+                  {role === RolesForm.digitizer ? (
+                    <Input disabled size="large" />
+                  ) : (
+                    <Select
+                      size="large"
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                    >
+                      <Select.Option value="Urgent">Urgent</Select.Option>
+                      <Select.Option value="Normal">Normal</Select.Option>
+                    </Select>
+                  )}
                 </Form.Item>
               </Col>
-              <Col xl={8} lg={8} md={24} xs={24}>
-                <Form.Item
-                  name="paymentStatus"
-                  label="Payment Status"
-                  defaultValue="Pending"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Payment Status  is Required",
-                    },
-                  ]}
-                >
-                  <Select
-                    size="large"
-                    getPopupContainer={(trigger) => trigger.parentNode}
+              {role !== RolesForm.digitizer && (
+                <Col xl={8} lg={8} md={24} xs={24}>
+                  <Form.Item
+                    name="paymentStatus"
+                    label="Payment Status"
+                    defaultValue="Pending"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Payment Status  is Required",
+                      },
+                    ]}
                   >
-                    <Select.Option value="Pending">Pending</Select.Option>
-                    <Select.Option value="Paid">Paid</Select.Option>
-                  </Select>
-                </Form.Item>
-              </Col>
+                    <Select
+                      size="large"
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                    >
+                      <Select.Option value="Pending">Pending</Select.Option>
+                      <Select.Option value="Paid">Paid</Select.Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
+              )}
               <Col xl={8} lg={8} md={24} xs={24}>
                 <Form.Item
                   name="orderStatus"
@@ -540,7 +564,7 @@ const NewOrderForm = ({
             </Row>
           </Col>
 
-          {editable && (
+          {editable && role !== RolesForm.digitizer && (
             <Col xl={8} lg={8} md={10} xs={24}>
               <Row>
                 <Col span={24}>
@@ -557,9 +581,9 @@ const NewOrderForm = ({
         </Row>
 
         <Row gutter={[20, 20]}>
-          <Col xl={14} lg={24} md={24} xs={24}>
+          <Col xl={ 14} lg={24} md={24} xs={24}>
             <Row>
-              <Col xl={8} md={12} xs={12}>
+              <Col xl={12} md={12} xs={12}>
                 <Form.Item
                   name="customer_files"
                   label="Customer File"
@@ -581,7 +605,7 @@ const NewOrderForm = ({
                   </Upload>
                 </Form.Item>
               </Col>
-              <Col xl={8} md={12} xs={12}>
+              <Col xl={12} md={12} xs={12}>
                 <Form.Item
                   name="digitizer_files"
                   label="Digitizer Files"
@@ -614,8 +638,8 @@ const NewOrderForm = ({
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name, ...restField }, i) => (
-                    <Row justify="center" align="middle" gutter={5}>
-                      <Col xl={9} lg={9} md={9} xs={9}>
+                    <Row justify="end" align="middle" gutter={5}>
+                      <Col span={role===RolesForm.digitizer ? 20 :9}>
                         <Form.Item
                           {...restField}
                           name={[name, "size"]}
@@ -624,51 +648,52 @@ const NewOrderForm = ({
                           <Input size="large" disabled />
                         </Form.Item>
                       </Col>
-                      <Col xl={8} lg={8} md={8} xs={8}>
-                        <Form.Item
-                          {...restField}
-                          name={[name, "prize"]}
-                          label="Price"
-                        >
-                          <InputNumber className="w-[100%]" size="large" />
-                        </Form.Item>
-                      </Col>
-                      <Col span={4}>
-                        <Form.Item
-                          {...restField}
-                          name={[name, "currency"]}
-                          className="mt-30 ml-[-6px]"
-                        >
-                          <Input disabled size="large" />
-                        </Form.Item>
-                      </Col>
-                      <Col span={2}>
-                        {i >= 1 && (
-                          <MinusCircleOutlined onClick={() => remove(name)} />
-                        )}
-                      </Col>
+                      {role !== RolesForm.digitizer && (
+                        <>
+                          <Col xl={8} lg={8} md={8} xs={8}>
+                            <Form.Item
+                              {...restField}
+                              name={[name, "prize"]}
+                              label="Price"
+                            >
+                              <InputNumber className="w-[100%]" size="large" />
+                            </Form.Item>
+                          </Col>
+                          <Col span={4}>
+                            <Form.Item
+                              {...restField}
+                              name={[name, "currency"]}
+                              className="mt-30 ml-[-6px]"
+                            >
+                              <Input disabled size="large" />
+                            </Form.Item>
+                          </Col>
+                        </>
+                      )}
                     </Row>
                   ))}
                 </>
               )}
             </Form.List>
-            <Row className="mt-20" justify="center" align="middle" gutter={5}>
-              <Col span={9}>
-                <Form.Item name="totalPrize" label={"Total"}>
-                  <Input disabled size="large" />
-                </Form.Item>
-              </Col>
-              <Col span={4}>
-                <Form.Item name="currency" className="mt-30 ml-[-6px]">
-                  <Input disabled size="large" />
-                </Form.Item>
-              </Col>
-              <Col xl={9} lg={9} md={9} xs={9}>
-                <Form.Item initialValue={0} name="bonus" label="Bonus">
-                  <Input size="large" />
-                </Form.Item>
-              </Col>
-            </Row>
+            {role !== RolesForm.digitizer && (
+              <Row className="mt-20" justify="center" align="middle" gutter={5}>
+                <Col span={9}>
+                  <Form.Item name="totalPrize" label={"Total"}>
+                    <Input disabled size="large" />
+                  </Form.Item>
+                </Col>
+                <Col span={4}>
+                  <Form.Item name="currency" className="mt-30 ml-[-6px]">
+                    <Input disabled size="large" />
+                  </Form.Item>
+                </Col>
+                <Col xl={9} lg={9} md={9} xs={9}>
+                  <Form.Item initialValue={0} name="bonus" label="Bonus">
+                    <Input size="large" />
+                  </Form.Item>
+                </Col>
+              </Row>
+            )}
           </Col>
         </Row>
       </Form>

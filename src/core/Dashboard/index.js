@@ -3,7 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import { useOutletContext } from "react-router-dom";
 import { dashboardStats } from "../../constants/stats";
-import { DigitizerOrderColumns, orderColumns } from "../../constants/tableColumns";
+import {
+  DigitizerOrderColumns,
+  orderColumns,
+} from "../../constants/tableColumns";
 import { useGetOrders, useGetUserById } from "../../hooks";
 import NewUserForm from "../Forms/NewUserForm";
 import HeadAndContent from "../HeadAndContent";
@@ -15,39 +18,41 @@ const Dashboard = () => {
   const isLaptop = useMediaQuery({ query: "(max-width: 900px)" });
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [sales, setSales] = useState('totalSalesDollar')
-  const [userData, setUserData] = useState({userData:[]})
+  const [sales, setSales] = useState("totalSalesDollar");
+  const [userData, setUserData] = useState({ userData: [] });
   const { tokenData } = useOutletContext();
   const { data, isLoading } = useGetUserById({
     id: tokenData.userId,
     role: tokenData.role,
   });
-useEffect(() => {
-  if(isLoading) return
-  setUserData(data) 
- 
-}, [data, isLoading])
-console.log(userData,'userData')
+  useEffect(() => {
+    if (isLoading) return;
+    setUserData(data);
+  }, [data, isLoading]);
+  console.log(userData, "userData");
   const { data: ordersData, isLoading: orderLoading } = useGetOrders({
     page: 1,
     limit: 30,
-    id:tokenData.role!=='admin' ? tokenData.userId : '',
-    role:tokenData.role!=='admin' ? tokenData.role : '',
+    id: tokenData.role !== "admin" ? tokenData.userId : "",
+    role: tokenData.role !== "admin" ? tokenData.role : "",
   });
- 
+
   const DashboardStats = (
     <Row gutter={[10, 10]}>
       {dashboardStats(
-        userData?.totalCompanies,
+        tokenData.role === "digitizer" ? userData?.totalOrders : userData?.totalCompanies,
         userData[sales],
         userData?.pendingSales,
-        userData?.completedSales
+        userData?.completedSales,'digitizer'
       ).map((item, i) => (
         <Col xxl={6} xl={8} lg={12} md={11} sm={24} key={i}>
-          <StatsCard isLoading={isLoading} data={item} handler={(values)=>setSales(values)} />
+          <StatsCard
+            isLoading={isLoading}
+            data={item}
+            handler={(values) => setSales(values)}
+          />
         </Col>
       ))}
-      
     </Row>
   );
   return (
@@ -78,7 +83,11 @@ console.log(userData,'userData')
         <CustomTable
           noFilter
           noPagination
-          column={ tokenData.role==='digitizer' ? DigitizerOrderColumns : orderColumns}
+          column={
+            tokenData.role === "digitizer"
+              ? DigitizerOrderColumns
+              : orderColumns
+          }
           data={ordersData?.orderList}
           loading={orderLoading}
         />

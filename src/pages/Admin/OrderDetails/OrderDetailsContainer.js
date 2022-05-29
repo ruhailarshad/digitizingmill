@@ -52,7 +52,7 @@ const OrderDetailsContainer = () => {
         ordersData?.totalOrders
       ).map((item, i) => (
         <Col xxl={4} xl={6} lg={8} md={10} xs={24} key={i}>
-          <StatsCard data={item} />
+          <StatsCard isLoading={orderLoading} data={item} />
         </Col>
       ))}
     </Row>

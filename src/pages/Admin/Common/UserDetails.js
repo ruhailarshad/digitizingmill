@@ -194,7 +194,7 @@ const UserDetails = ({ data = { src: "" }, stats, onModalShow, role,isLoading })
           <CustomTable
             loading={orderLoading}
             column={editableOrderColumnsUserDetails(orderViewHandler)}
-            data={orderData?.orders || []}
+            data={orderData?.orderList || []}
             filterHandler={(value) => {
               setOrderSearchParam(value);
               setOrderPage(1);
