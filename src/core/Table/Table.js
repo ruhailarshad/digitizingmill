@@ -26,7 +26,8 @@ const CustomTable = ({
   filename,
   showActions,
   pageLimit,
-  setPageLimit
+  setPageLimit,
+  noPagination
 }) => {
   const [formData, setFormData] = useState([]);
   useEffect(() => {
@@ -101,7 +102,7 @@ const CustomTable = ({
           scroll={{
            x:'calc(700px + 50%)', y: 1000,
           }}
-          pagination={{
+          pagination={!noPagination &&{
             showSizeChanger: true,
             onShowSizeChange:(current, size)=>setPageLimit(size),
             total: totalRecords,

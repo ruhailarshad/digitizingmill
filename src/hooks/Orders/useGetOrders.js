@@ -52,7 +52,7 @@ export const useGetOrders = ({
   showAll
 } = {}) => {
   return useQuery(
-    ["order-get-query", search, dateParam,id,role],
+    ["order-get-query", search, dateParam,id,role,limit],
     () =>
       fetchAllOrder({
         limit,
@@ -65,7 +65,7 @@ export const useGetOrders = ({
       }),
     {
       select: (data) => {
-        const newData = data?.orderList.map((item) => {
+         const newData = data?.orderList.map((item) => {
           return { ...item, key: item?.orderId };
         });
         return { ...data, orderList: formattedOrderList(newData || []) };

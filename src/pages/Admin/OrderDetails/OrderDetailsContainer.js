@@ -37,7 +37,7 @@ const OrderDetailsContainer = () => {
     dateParam,
   });
 
-  const { mutate: deleteBulkOrder } = useBulkDeleteOrders();
+  const { mutate: deleteBulkOrder } = useBulkDeleteOrders({});
 
   const { data: AllCompany } = useGetAllCompany({});
 

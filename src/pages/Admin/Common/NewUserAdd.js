@@ -2,7 +2,6 @@
 import { Avatar, Col, Empty, Input, List, Row } from "antd";
 import React from "react";
 import HeadAndContent from "../../../core/HeadAndContent";
-import UserCard from "./UserCard";
 import VirtualList from "rc-virtual-list";
 import { Link } from "react-router-dom";
 const { Search } = Input;

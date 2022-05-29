@@ -52,6 +52,8 @@ const NewOrderForm = ({
         companyInstruction: companyById?.company?.companyInstruction,
         sizes: companyById?.company?.design_sizes,
         currency: companyById?.company?.design_sizes[0]?.currency,
+        address:companyById?.company?.address,
+        customerName:companyById?.company?.companyName,
         totalPrize: companyById?.company?.design_sizes.reduce((prev, acc) => {
           return prev + acc.prize;
         }, 0),
@@ -134,7 +136,6 @@ const NewOrderForm = ({
         return data;
       }
       const orderHistory = getDifference(newValues, newData);
-      console.log(orderHistory, "dataaaaaaaaaaaaaaaaaa");
       orderUpdate({ ...values, orderId: data.orderId, orderHistory });
       return;
     }

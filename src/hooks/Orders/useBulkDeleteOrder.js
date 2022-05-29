@@ -11,8 +11,7 @@ export const useBulkDeleteOrders = () => {
         mutatioKey: 'order-bulk-delete-mutation',
         onSuccess:()=>{
             message.success("Companies Deleted Successfully")
-            queryClient.invalidateQueries("order-add-query");
-
+            queryClient.invalidateQueries("order-get-query");
         },
     })
 }

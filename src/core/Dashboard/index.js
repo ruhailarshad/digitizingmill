@@ -1,9 +1,9 @@
 import { Col, Row } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import { useOutletContext } from "react-router-dom";
 import { dashboardStats } from "../../constants/stats";
-import { orderColumns } from "../../constants/tableColumns";
+import { DigitizerOrderColumns, orderColumns } from "../../constants/tableColumns";
 import { useGetOrders, useGetUserById } from "../../hooks";
 import NewUserForm from "../Forms/NewUserForm";
 import HeadAndContent from "../HeadAndContent";
@@ -15,27 +15,36 @@ const Dashboard = () => {
   const isLaptop = useMediaQuery({ query: "(max-width: 900px)" });
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [sales, setSales] = useState('totalSalesDollar')
+  const [userData, setUserData] = useState({userData:[]})
   const { tokenData } = useOutletContext();
-  const { data: userData, isLoading } = useGetUserById({
+  const { data, isLoading } = useGetUserById({
     id: tokenData.userId,
     role: tokenData.role,
   });
+useEffect(() => {
+  if(isLoading) return
+  setUserData(data) 
+ 
+}, [data, isLoading])
+console.log(userData,'userData')
   const { data: ordersData, isLoading: orderLoading } = useGetOrders({
     page: 1,
-    limit: 20,
+    limit: 30,
     id:tokenData.role!=='admin' ? tokenData.userId : '',
     role:tokenData.role!=='admin' ? tokenData.role : '',
   });
+ 
   const DashboardStats = (
     <Row gutter={[10, 10]}>
       {dashboardStats(
         userData?.totalCompanies,
-        userData?.totalSales,
+        userData[sales],
         userData?.pendingSales,
         userData?.completedSales
       ).map((item, i) => (
         <Col xxl={6} xl={8} lg={12} md={11} sm={24} key={i}>
-          <StatsCard data={item} />
+          <StatsCard data={item} handler={(values)=>setSales(values)} />
         </Col>
       ))}
     </Row>
@@ -66,7 +75,8 @@ const Dashboard = () => {
         </Row>
         <CustomTable
           noFilter
-          column={orderColumns}
+          noPagination
+          column={ tokenData.role==='digitizer' ? DigitizerOrderColumns : orderColumns}
           data={ordersData?.orderList}
           loading={orderLoading}
         />

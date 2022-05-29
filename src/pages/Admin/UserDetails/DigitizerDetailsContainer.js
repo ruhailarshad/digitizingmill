@@ -49,9 +49,12 @@ const DigitizerDetailsContainer = () => {
           getCompletedSales
         )}
         role="digitizer"
+        onModalShow={()=>{setIsModalVisible(true)}}
+
       />
       {isModalVisible && (
         <NewUserForm
+        editable
           visible={isModalVisible}
           isLoading={isLoading}
           id={id}

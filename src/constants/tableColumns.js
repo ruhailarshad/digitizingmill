@@ -398,7 +398,6 @@ export const DigitizerOrderColumns = [
     },
     sorter: (a, b) => a.orderId - b.orderId,
     width: "15%",
-    responsive: ["md"],
   },
   {
     title: "Order Date",
@@ -408,10 +407,7 @@ export const DigitizerOrderColumns = [
       return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
     },
   },
-  {
-    title: "Customer Name",
-    dataIndex: "customerName",
-  },
+
   {
     title: "Design Name",
     dataIndex: "designName",
@@ -423,38 +419,7 @@ export const DigitizerOrderColumns = [
       return record.design_sizes.map((item) => item.size).join(", ");
     },
   },
-  {
-    title: "Amount",
-    dataIndex: "totalPrize",
-    render: (_, record) => {
-      return (
-        <p>{`${
-          record.currency === "Euro"
-            ? "€"
-            : record.currency === "USD"
-            ? "$"
-            : record.currency === "CAD"
-            ? "CA$"
-            : "$"
-        }${record.totalPrize}`}</p>
-      );
-    },
-  },
-  {
-    title: "Payment Status",
-    dataIndex: "paymentStatus",
-    render: (record) => {
-      const color = getColor(record);
-      return (
-        <Tag
-          className="rounded-4 w-[109px] h-32 px-[70px] flex text-14 items-center justify-center"
-          color={color}
-        >
-          {record}
-        </Tag>
-      );
-    },
-  },
+
 
   {
     title: "Order Status",
