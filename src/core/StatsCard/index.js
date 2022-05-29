@@ -25,7 +25,7 @@ const StatsCard = ({ data, handler,isLoading }) => {
     //     description={ <h4 className=" h4-bold text-gray-80">{data.stats}</h4>}
     //   />
     // </Card>
-    <div className="shadow-[-7px_10px_12px_-1px_rgba(0,0,0,0.03)]  flex space-x-10 bg-white rounded-20   p-14 ">
+    <div className="max-w-[260px] shadow-[-7px_10px_12px_-1px_rgba(0,0,0,0.03)]  flex space-x-10 bg-white rounded-20   p-14 ">
       <div className="p-14 bg-red-100 flex items-center justify-center rounded-20">
         {data.icon}
       </div>

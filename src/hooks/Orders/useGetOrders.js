@@ -39,7 +39,7 @@ const fetchAllOrder = ({ limit, page, search, dateParam, id,role ,showAll}) => {
           "YYYY-MM-DD"
         )}&orderEndDate=${moment(dateParam[1]?._d).format("YYYY-MM-DD")}`
       : `&orderStartDate=${moment()
-          .subtract(10, "days")
+          .subtract(30, "days")
           .format("YYYY-MM-DD")}&orderEndDate=${moment().format("YYYY-MM-DD")}`;
   return instance.get(`/api/order${checkId}${checkRole}?${queryString}${startEndDate}`);
 };
