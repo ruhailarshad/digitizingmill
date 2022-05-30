@@ -70,7 +70,7 @@ export const useGetOrders = ({
         const newData = data?.orderList.map((item, i) => {
           return { ...item, key: item?.orderId, orderMedia: Array.isArray(data?.orderMedia) ? data?.orderMedia[i] : [] };
         });
-        return { ...data, orderList: formattedOrderList(newData || []) };
+        return { ...data, orderList:role==='digitizer' && !showAll ?newData: formattedOrderList(newData || []) };
       },
     }
   );

@@ -7,6 +7,7 @@ import NewUserForm from "../../../core/Forms/NewUserForm";
 
 const DigitizerDetailsContainer = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [sales, setSales] = useState("totalSalesDollar");
 
   const { id } = useParams();
   const { data, isLoading } = useGetUserById({
@@ -26,7 +27,7 @@ const DigitizerDetailsContainer = () => {
   // const getSalesByUSD = getCurrencyWiseStats("USD");
   // const getSalesByEuro = getCurrencyWiseStats("Euro");
   const getCompanies = data?.totalCompanies || 0;
-  const getTotalSales = data?.totalSales || 0;
+  const getTotalSales = data?.[sales] || 0;
   const getPeningSales = data?.pendingSales || 0;
   const getCompletedSales = data?.completedSales || 0;
 
@@ -50,6 +51,7 @@ const DigitizerDetailsContainer = () => {
         )}
         role="digitizer"
         onModalShow={()=>{setIsModalVisible(true)}}
+        handler={(values) => setSales(values)}
 
       />
       {isModalVisible && (

@@ -132,7 +132,7 @@ const OrderDetailsContainer = () => {
           column={column}
           data={ordersData?.orderList}
           loading={orderLoading}
-          totalRecords={ordersData?.count}
+          totalRecords={ordersData?.totalOrders}
           page={page}
           onPageChange={(page) => {
             setPage(page);

@@ -17,7 +17,7 @@ import { useGetAllCompany, useGetOrders } from "../../../hooks";
 import NewCompanyForm from "../../../core/Forms/NewCompanyForm";
 import NewOrderForm from "../../../core/Forms/NewOrderForm";
 
-const UserDetails = ({ data = { src: "" }, stats, onModalShow, role,isLoading }) => {
+const UserDetails = ({ data = { src: "" }, stats, onModalShow, role,isLoading  ,handler}) => {
   const { id } = useParams();
 
   const [companyFormData, setCompanyFormData] = useState([]);
@@ -62,8 +62,10 @@ const UserDetails = ({ data = { src: "" }, stats, onModalShow, role,isLoading })
   const DashboardStats = (
     <Row gutter={[10, 10]}>
       {stats.map((item, i) => (
-        <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-          <StatsCard isLoading={isLoading} key={i} data={item} />
+        <Col  key={i} xl={12} lg={12} md={12} sm={24} xs={24}>
+          <StatsCard isLoading={isLoading} data={item} 
+            handler={handler}
+           />
         </Col>
       ))}
     </Row>
@@ -98,7 +100,7 @@ const UserDetails = ({ data = { src: "" }, stats, onModalShow, role,isLoading })
                   <Button
                     type="primary"
                     className="rounded-[10px] mt-10"
-                    danger
+                    danger={true}
                     size="large"
                     onClick={onModalShow}
                   >
@@ -160,7 +162,6 @@ const UserDetails = ({ data = { src: "" }, stats, onModalShow, role,isLoading })
         <Col xl={12}>{DashboardStats}</Col>
       </Row>
       <Tabs
-        danger
         type="card"
         defaultActiveKey="1"
         size="large"
@@ -203,6 +204,7 @@ const UserDetails = ({ data = { src: "" }, stats, onModalShow, role,isLoading })
             onPageChange={(page) => {
               setOrderPage(page);
             }}
+            totalRecords={orderData?.totalOrders}
             dateChangeHandler={(value) => {
               setOrderDateParam(value);
               setOrderPage(1);

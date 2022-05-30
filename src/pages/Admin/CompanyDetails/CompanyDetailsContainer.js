@@ -143,6 +143,8 @@ const CompanyDetailsContainer = () => {
           contactNo: item.phone,
           email: item.emailAddress,
           salesAgent: item.salesAgent,
+          design_sizes:item.design_sizes.map((item) => item.size).join(", "),
+
         };
       });
       setSelectedRow(filter);

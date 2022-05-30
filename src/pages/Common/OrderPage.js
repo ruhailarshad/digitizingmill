@@ -7,11 +7,14 @@ import { orderDetailStats } from "../../constants/stats";
 import StatsCard from "../../core/StatsCard";
 import HeadAndContent from "../../core/HeadAndContent";
 import { CustomTable } from "../../core";
-import { exceOrderrHeader } from "../../constants/execelHeader";
+import { exceOrderrHeader, exceOrderrHeaderDigitizer } from "../../constants/execelHeader";
 import NewOrderForm from "../../core/Forms/NewOrderForm";
-import { editableOrderColumnsDigitizer, editableOrderColumnsUserDetails } from "../../constants/tableColumns";
+import {
+  editableOrderColumnsDigitizer,
+  editableOrderColumnsUserDetails,
+} from "../../constants/tableColumns";
 
-const OrderPage = ({role}) => {
+const OrderPage = ({ role }) => {
   const { tokenData } = useOutletContext();
   const [editData, setEditData] = useState("");
   const [page, setPage] = useState(1);
@@ -25,7 +28,7 @@ const OrderPage = ({role}) => {
 
   const [visible, setVisible] = useState(false);
   const { data: ordersData, isLoading: orderLoading } = useGetOrders({
-    role:role,
+    role: role,
     id: tokenData.userId,
     page,
     limit: orderPageLimit,
@@ -33,11 +36,11 @@ const OrderPage = ({role}) => {
     dateParam,
   });
   const { data: AllCompany } = useGetAllCompany({
-    role:role,
+    role: role,
     id: tokenData.userId,
-    skip:!role==='digitizer'
+    skip: !role === "digitizer",
   });
-console.log(ordersData,'ordersData')
+  console.log(ordersData, "ordersData");
   const orderStats = (
     <Row gutter={[5, 10]}>
       {orderDetailStats(
@@ -61,15 +64,24 @@ console.log(ordersData,'ordersData')
   const rowHandler = {
     onChange: (selectedRowKeys, selectedRows) => {
       selectedRows.length >= 1 ? setShowActions(true) : setShowActions(false);
-      setSelectedRowKeys(selectedRowKeys)
-      console.log(selectedRows,'selectedRows')
-      const filter=[...selectedRows].map((item) => {
+      setSelectedRowKeys(selectedRowKeys);
+      console.log(selectedRows, "selectedRows");
+      const filter = [...selectedRows].map((item) => {
+        if (role === "digitizer") {
+          return {
+            orderDate: moment(item.orderDate).format("MMMM Do YYYY,h:mm:ss"),
+            designName: item.designName,
+            size: item.design_sizes.map((item) => item.size).join(", "),
+            orderStatus: item.orderStatus,
+            deliveryStatus: item.deliveryStatus,
+          };
+        }
         return {
           orderId: item.orderId,
-          orderDate:moment(item.orderDate).format("MMMM Do YYYY,h:mm:ss"),
+          orderDate: moment(item.orderDate).format("MMMM Do YYYY,h:mm:ss"),
           customerName: item.customerName,
           designName: item.designName,
-          size:item.design_sizes.map((item) => item.size).join(", "),
+          size: item.design_sizes.map((item) => item.size).join(", "),
           amount: `${
             item.currency === "Euro"
               ? "€"
@@ -91,7 +103,7 @@ console.log(ordersData,'ordersData')
     <>
       <HeadAndContent
         heading="Order Details"
-        btn={{ name: "Add New Order", buttonHandler: () => setVisible(true) }}
+        btn={role !=='digitizer' && { name: "Add New Order", buttonHandler: () => setVisible(true) }}
       >
         {orderStats}
         <CustomTable
@@ -103,19 +115,24 @@ console.log(ordersData,'ordersData')
             setDateParam(value);
             setPage(1);
           }}
-          column={role==='digitizer' ? editableOrderColumnsDigitizer(editHandler) :editableOrderColumnsUserDetails(editHandler)}
+          column={
+            role === "digitizer"
+              ? editableOrderColumnsDigitizer(editHandler)
+              : editableOrderColumnsUserDetails(editHandler)
+          }
           data={ordersData?.orderList}
           loading={orderLoading}
-          totalRecords={ordersData?.count}
+          totalRecords={ordersData?.totalOrders}
           page={page}
           onPageChange={(page) => {
             setPage(page);
           }}
           pageLimit={orderPageLimit}
           setPageLimit={setOrderPageLimit}
+          selection
           rowHandler={rowHandler}
           selectedRowKeys={selectedRowKeys}
-          exportData={{ header: exceOrderrHeader, data: selectedRows }}
+          exportData={{ header:role==='digitizer' ? exceOrderrHeaderDigitizer: exceOrderrHeader, data: selectedRows }}
           showActions={showActions}
         />
       </HeadAndContent>
@@ -125,8 +142,7 @@ console.log(ordersData,'ordersData')
           visible={visible}
           onCancel={() => setVisible(false)}
           role={role}
-          roleData={{name:tokenData.name,id:tokenData.userId}}
-
+          roleData={{ name: tokenData.name, id: tokenData.userId }}
         />
       )}
       {editVisible && (
@@ -137,8 +153,7 @@ console.log(ordersData,'ordersData')
           onCancel={() => setEditVisible(false)}
           editable
           role={role}
-          roleData={{name:tokenData.name,id:tokenData.userId}}
-        
+          roleData={{ name: tokenData.name, id: tokenData.userId }}
         />
       )}
     </>

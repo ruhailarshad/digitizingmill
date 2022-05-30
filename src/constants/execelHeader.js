@@ -5,6 +5,7 @@ export const excelCompanyHeader = [
     { label: "Contact No", key: "contactNo" },
     { label: "Email Address", key: "email" },
     { label: "Sales Agent", key: "salesAgent" },
+    { label: "Sizes", key: "design_sizes" },
   ];
   export const exceOrderrHeader = [
     { label: "Order Id", key: "orderId" },
@@ -13,6 +14,13 @@ export const excelCompanyHeader = [
     { label: "Design Name", key: "designName" },
     { label: "Size/Type", key: "size" },
     { label: "Payment Status", key: "paymentStatus" },
+    { label: "Order Status", key: "orderStatus" },
+    { label: "Delivery Status", key: "deliveryStatus" },
+  ];
+  export const exceOrderrHeaderDigitizer = [
+    { label: "Order Date", key: "orderDate" },
+    { label: "Design Name", key: "designName" },
+    { label: "Size/Type", key: "size" },
     { label: "Order Status", key: "orderStatus" },
     { label: "Delivery Status", key: "deliveryStatus" },
   ];
