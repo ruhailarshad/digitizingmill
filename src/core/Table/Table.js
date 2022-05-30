@@ -111,7 +111,7 @@ const CustomTable = ({
             onChange: (currentPage, pageSize) => {
               if (currentPage !== page) onPageChange(currentPage);
             },
-            pageSizeOptions:[10,20,30,50,100,200,500]
+            pageSizeOptions:[10,20,30,50,100,200]
           }}
         />
       </Form>

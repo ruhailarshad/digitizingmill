@@ -48,8 +48,8 @@ export const useGetOrders = ({
   limit,
   page,
   search,
-  dateParam,
-  id,
+  dateParam=[],
+  id=NaN,
   role='',
   showAll
 } = {}) => {
