@@ -7,6 +7,7 @@ import { useGetUserById } from "../../../hooks/User/useGetUserById";
 
 const UserDetailsContainer = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [sales, setSales] = useState("totalSalesDollar");
 
   const { id } = useParams();
   const { data, isLoading } = useGetUserById({
@@ -15,7 +16,7 @@ const UserDetailsContainer = () => {
   });
 
   const totalCompanies = data?.totalCompanies;
-  const totalSales = data?.totalSales;
+  const totalSales = data?.[sales] || 0;
   const pendingSales = data?.pendingSales;
   const completedSales = data?.completedSales;
 
@@ -40,6 +41,8 @@ const UserDetailsContainer = () => {
           completedSales
         )}
         role="sales-agent"
+        handler={(values) => setSales(values)}
+
       />
       {isModalVisible && (
         

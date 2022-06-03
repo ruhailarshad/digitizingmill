@@ -46,13 +46,13 @@ export const detailsStats = (companies,sales,pending,completed) => {
         icon:<BsCurrencyDollar color="#fff" size={36}/>
       },
       {
-        heading: "Total Pending Sales",
+        heading: "Pending Sales",
         stats: pending,
         icon:<FiLoader color="#fff" size={36}/>
 
       },
       {
-        heading: "Total Completed Sales",
+        heading: "Completed Sales",
         stats: completed,
         icon:<BsCurrencyPound color="#fff" size={36}/>
 
