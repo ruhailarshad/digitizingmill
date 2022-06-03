@@ -1,9 +1,8 @@
 import { Col, Row } from "antd";
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { dashboardStats, orderDetailStats } from "../../../constants/stats";
+import { dashboardStats } from "../../../constants/stats";
 import {
-  editableOrderColumnsUserDetails,
   orderColumns,
 } from "../../../constants/tableColumns";
 import { CustomTable } from "../../../core";
@@ -14,7 +13,7 @@ import { useGetAllCompany, useGetOrders } from "../../../hooks";
 
 const SalesReportContainer = () => {
   const { tokenData } = useOutletContext();
-  const [editData, setEditData] = useState("");
+  const [editData] = useState("");
   const [page, setPage] = useState(1);
   const [searchParam, setSearchParam] = useState("");
   const [dateParam, setDateParam] = useState([]);
@@ -49,10 +48,6 @@ const SalesReportContainer = () => {
       ))}
     </Row>
   );
-  const editHandler = (record) => {
-    setEditVisible(true);
-    setEditData(record);
-  };
   return (
     <>
       <HeadAndContent

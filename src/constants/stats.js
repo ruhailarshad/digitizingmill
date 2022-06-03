@@ -92,7 +92,7 @@ export const detailsStats = (companies,sales,pending,completed) => {
       },
       {
         heading: "Urgent Orders",
-        stats: completed,
+        stats: urgent,
         icon:<TiTick color="#fff" size={36}/>
 
       },
