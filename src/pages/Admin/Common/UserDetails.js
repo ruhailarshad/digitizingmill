@@ -57,7 +57,6 @@ const UserDetails = ({ data = { src: "" }, stats, onModalShow, role,isLoading })
     showAll: true,
     search: orderSearchParam,
   });
-  console.log(companyPageLimit,'companyData?.count')
 
   const DashboardStats = (
     <Row gutter={[10, 10]}>

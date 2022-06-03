@@ -5,12 +5,26 @@ import instance from "../../services/AxiosConfig";
 
 const formatHistory = (orderHistory) => {
   if (!orderHistory?.changedData) return;
-  return Object.entries(JSON.parse(orderHistory.changedData)).reduce(
+  
+  const logTime = moment(orderHistory.updatedAt).format("MMMM Do YYYY, h:mm:ss");
+  const changedBy = orderHistory.username;
+  const parsedOrderHistory = JSON.parse(orderHistory.changedData);
+  
+  const { isOrderMediaLog, isFirstLog, customer_files, digitizer_files } = parsedOrderHistory;
+
+  if(isFirstLog) return `${parsedOrderHistory?.created} at ${logTime}`;
+  if(isOrderMediaLog) {
+    let orderMediaLog =  '';
+    if(!!customer_files) orderMediaLog+=`${changedBy} ${customer_files} \n`
+    if(!!digitizer_files) orderMediaLog+=`${changedBy} ${customer_files} \n`
+    return orderMediaLog;
+  }
+  return Object.entries(parsedOrderHistory).reduce(
     (string, [key, value]) => {
       const newStr = `${string} ${string.length ? "\n" : ""} User ${
-        orderHistory.username
-      } has changed  ${value} at ${moment(orderHistory.updatedAt).format(
-        "MMMM Do YYYY,h:mm:ss"
+        changedBy
+      } has changed ${key} from  ${value} at ${moment(orderHistory.updatedAt).format(
+        "MMMM Do YYYY, h:mm:ss"
       )}`;
       return newStr;
     },
@@ -21,8 +35,8 @@ const formatHistory = (orderHistory) => {
 const formattedOrderList = (orderList) =>
   orderList.map((order) => ({
     ...order,
-    orderHistory: order.Order_Audit_Logs.map((orderHistory) =>
-      formatHistory(orderHistory)
+    orderHistory: order.Order_Audit_Logs.map((orderHistory, index) =>
+      formatHistory(orderHistory, index === 0)
     ),
   }));
 
