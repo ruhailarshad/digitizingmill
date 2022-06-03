@@ -43,7 +43,7 @@ const Dashboard = () => {
         tokenData.role === "digitizer" ? userData?.totalOrders : userData?.totalCompanies,
         userData[sales],
         userData?.pendingSales,
-        userData?.completedSales,'digitizer'
+        userData?.completedSales,tokenData.role ==='digitizer' ? 'digitizer' : ''
       ).map((item, i) => (
         <Col xxl={6} xl={8} lg={12} md={11} sm={24} key={i}>
           <StatsCard

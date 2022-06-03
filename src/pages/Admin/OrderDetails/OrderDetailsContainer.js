@@ -42,7 +42,7 @@ const OrderDetailsContainer = () => {
   const { data: AllCompany } = useGetAllCompany({});
 
   const orderStats = (
-    <Row gutter={[5, 10]}>
+    <Row gutter={[30, 30]}>
       {orderDetailStats(
         ordersData?.totalOrders,
         ordersData?.inProgressOrders,

@@ -42,7 +42,7 @@ const CustomTable = ({
         <Row justify="space-between" className="mb-20" gutter={[20, 10]}>
           <Col xxl={14} xl={17} lg={24} sm={24}>
             <Row gutter={[10, 10]}>
-              <Col lg={8} md={8}>
+              <Col lg={8} md={8} xs={20}>
                 <Input.Search
                   size="large"
                   placeholder="Search Here"
@@ -61,7 +61,7 @@ const CustomTable = ({
             {showActions && (
               <CSVLink filename={filename} data={exportData.data} headers={exportData.header}>
                 <Button
-                  className="rounded-10 px-40 mr-30"
+                  className="rounded-10 px-40 mr-30 max-md:mb-10"
                   size="large"
                   type="primary"
                   danger
@@ -100,7 +100,7 @@ const CustomTable = ({
           dataSource={formData}
           rowClassName="editable-row"
           scroll={{
-           x:1000, y: 1000,
+           x:1100, y: 2000,
           }}
           pagination={!noPagination &&{
             showSizeChanger: true,

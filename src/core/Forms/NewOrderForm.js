@@ -197,7 +197,13 @@ const NewOrderForm = ({
 
     orderSubmit(orderForm);
   };
-
+  const onPreview = async (file) => {
+    if (file.key) {
+      // eslint-disable-next-line no-undef
+      const url = await fileService.downloadFile(file.url);
+      window.open(url, "_self");
+    }
+  };
   const defaultFileListForCustomer =
     data &&
     data?.orderMedia
@@ -235,7 +241,7 @@ const NewOrderForm = ({
         onCancel();
         setCompanyId("");
       }}
-      width={editable && role!==RolesForm.digitizer ?1500 : 1000}
+      width={editable && role !== RolesForm.digitizer ? 1500 : 1000}
       okButtonProps={{ type: "primary", danger: true }}
       onOk={() => {
         console.log("onOk");
@@ -257,9 +263,9 @@ const NewOrderForm = ({
       >
         <Row gutter={20}>
           <Col
-            xl={editable && role!==RolesForm.digitizer ? 16 : 24}
-            lg={editable && role!==RolesForm.digitizer ? 16 : 24}
-            md={editable && role!==RolesForm.digitizer ? 14 : 24}
+            xl={editable && role !== RolesForm.digitizer ? 16 : 24}
+            lg={editable && role !== RolesForm.digitizer ? 16 : 24}
+            md={editable && role !== RolesForm.digitizer ? 14 : 24}
             xs={24}
           >
             <Row gutter={[20, 20]}>
@@ -571,6 +577,7 @@ const NewOrderForm = ({
                   <Form.Item name="orderHistory" label="Order History">
                     <Input.TextArea
                       disabled
+                      className="text-16"
                       autoSize={{ minRows: 33, maxRows: 33 }}
                     />
                   </Form.Item>
@@ -581,7 +588,7 @@ const NewOrderForm = ({
         </Row>
 
         <Row gutter={[20, 20]}>
-          <Col xl={ 14} lg={24} md={24} xs={24}>
+          <Col xl={14} lg={24} md={24} xs={24}>
             <Row>
               <Col xl={12} md={12} xs={12}>
                 <Form.Item
@@ -598,6 +605,9 @@ const NewOrderForm = ({
                     action="http://localhost:4000/api/noop"
                     listType="any"
                     name="logo"
+                    onDownload={(file) => {
+                      console.log(file);
+                    }}
                   >
                     <Button danger size="medium" icon={<UploadOutlined />}>
                       Click to upload
@@ -614,14 +624,14 @@ const NewOrderForm = ({
                 >
                   <Upload
                     defaultFileList={defaultFileListForDigitizer}
+                    onPreview={onPreview}
                     maxCount={6}
                     onRemove={onRemove}
-                    onPreview={onPreview}
                     action="http://localhost:4000/api/noop"
                     onChange={(e) =>
                       form.setFieldsValue({ digitizer_files: e.file })
                     }
-                    listType="picture"
+                    listType="any"
                     name="logo"
                   >
                     <Button danger size="medium" icon={<UploadOutlined />}>
@@ -639,7 +649,7 @@ const NewOrderForm = ({
                 <>
                   {fields.map(({ key, name, ...restField }, i) => (
                     <Row justify="end" align="middle" gutter={5}>
-                      <Col span={role===RolesForm.digitizer ? 20 :9}>
+                      <Col span={role === RolesForm.digitizer ? 20 : 9}>
                         <Form.Item
                           {...restField}
                           name={[name, "size"]}

@@ -36,7 +36,7 @@ const DropdownActions = ({ deleteHandler, updateHandler }) => {
   );
   return (
     <Row gutter={[10, 10]}>
-      <Col xl={10} lg={10} md={9} xs={24}>
+      <Col xl={10} lg={10} md={10} xs={20}>
         <Dropdown className="h-40 w-[100%]" overlay={menu} trigger={["click"]}>
           <Button>
             Filter Action <DownOutlined />
@@ -45,7 +45,7 @@ const DropdownActions = ({ deleteHandler, updateHandler }) => {
       </Col>
       {salesAgentVisible && (
         <>
-          <Col xl={10} lg={10} xs={24}>
+          <Col xl={10} lg={10} md={10} xs={20}>
             <Select
               showSearch
               filterOption={(input, option) =>

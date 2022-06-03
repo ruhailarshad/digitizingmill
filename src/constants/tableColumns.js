@@ -43,23 +43,27 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
           </p>
         );
       },
-      sorter: (a, b) => a.orderId - b.orderId,
+      width: 100,
     },
     {
       title: "Order Date",
       dataIndex: "orderDate",
-      sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+      sorter: (a, b) => moment(a.orderDate).diff(moment(b.orderDate)),
       render: (_, record) => {
-        return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+        return moment(record.orderDate).format("MMMM Do YYYY h:mm:ss");
       },
+      width: 171,
     },
     {
       title: "Customer Name",
       dataIndex: "customerName",
+      width: 150,
+      sorter: (a, b) => a.customerName.localeCompare(b.customerName),
     },
     {
       title: "Design Name",
       dataIndex: "designName",
+      width: 150,
     },
     {
       title: "Size/Type",
@@ -67,6 +71,7 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
       render: (_, record) => {
         return record.design_sizes.map((item) => item.size).join(", ");
       },
+      width: 100,
     },
     {
       title: "Amount",
@@ -84,17 +89,15 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
           }${record.totalPrize}`}</p>
         );
       },
+      width: 100,
     },
     {
       title: "Sales Agent",
       dataIndex: "salesAgentId",
       render: (_, record) => {
-        return (
-          <p >
-            {record.SalesAgent.name}
-          </p>
-        );
+        return <p>{record.SalesAgent.name}</p>;
       },
+      width: 150,
     },
     {
       title: "Payment Status",
@@ -110,6 +113,7 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
           </Tag>
         );
       },
+      width: 150,
     },
 
     {
@@ -126,6 +130,7 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
           </Tag>
         );
       },
+      width: 150,
     },
     {
       title: "Delivery Status",
@@ -141,6 +146,7 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
           </Tag>
         );
       },
+      width: 150,
     },
     {
       title: "Action",
@@ -170,6 +176,7 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
           </div>
         );
       },
+      width: 100,
     },
   ];
 };
@@ -185,23 +192,29 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
           </p>
         );
       },
-      sorter: (a, b) => a.orderId - b.orderId,
+      width: 100,
     },
     {
       title: "Order Date",
       dataIndex: "orderDate",
-      sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+      sorter: (a, b) => moment(a.orderDate).diff(moment(b.orderDate)),
       render: (_, record) => {
-        return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+        return moment(record.orderDate).format("MMMM Do YYYY h:mm:ss");
       },
+      width: 171,
+      
     },
     {
       title: "Customer Name",
       dataIndex: "customerName",
+      width: 150,
+
     },
     {
       title: "Design Name",
       dataIndex: "designName",
+      width: 150,
+
     },
     {
       title: "Size/Type",
@@ -209,6 +222,8 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
       render: (_, record) => {
         return record.design_sizes.map((item) => item.size).join(", ");
       },
+      width: 100,
+
     },
     {
       title: "Amount",
@@ -226,17 +241,17 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
           }${record.totalPrize}`}</p>
         );
       },
+      width: 100,
+
     },
     {
       title: "Sales Agent",
       dataIndex: "salesAgentId",
       render: (_, record) => {
-        return (
-          <p >
-            {record.SalesAgent.name}
-          </p>
-        );
+        return <p>{record.SalesAgent.name}</p>;
       },
+      width: 150,
+
     },
     {
       title: "Payment Status",
@@ -252,6 +267,8 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
           </Tag>
         );
       },
+      width: 150,
+
     },
 
     {
@@ -268,6 +285,8 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
           </Tag>
         );
       },
+      width: 150,
+
     },
     {
       title: "Delivery Status",
@@ -283,6 +302,8 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
           </Tag>
         );
       },
+      width: 150,
+
     },
     {
       title: "Action",
@@ -291,12 +312,14 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
       render: (record) => {
         return (
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-           <div onClick={() => viewHandler(record)}>
-          <AiFillEye size={22} color={"#9999"} />
-        </div>
+            <div onClick={() => viewHandler(record)}>
+              <AiFillEye size={22} color={"#9999"} />
+            </div>
           </div>
         );
       },
+      width: 80,
+
     },
   ];
 };
@@ -312,20 +335,24 @@ export const editableOrderColumnsDigitizer = (viewHandler) => {
           </p>
         );
       },
-      sorter: (a, b) => a.orderId - b.orderId,
+      width: 100,
     },
     {
       title: "Order Date",
       dataIndex: "orderDate",
-      sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+      sorter: (a, b) => moment(a.orderDate).diff(moment(b.orderDate)),
       render: (_, record) => {
-        return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+        return moment(record.orderDate).format("MMMM Do YYYY h:mm:ss");
       },
+      width: 171,
+      
     },
-   
+
     {
       title: "Design Name",
       dataIndex: "designName",
+      width: 150,
+
     },
     {
       title: "Size/Type",
@@ -333,10 +360,9 @@ export const editableOrderColumnsDigitizer = (viewHandler) => {
       render: (_, record) => {
         return record.design_sizes.map((item) => item.size).join(", ");
       },
+      width: 100,
+
     },
-   
-   
- 
 
     {
       title: "Order Status",
@@ -352,6 +378,8 @@ export const editableOrderColumnsDigitizer = (viewHandler) => {
           </Tag>
         );
       },
+      width: 150,
+
     },
     {
       title: "Delivery Status",
@@ -367,6 +395,8 @@ export const editableOrderColumnsDigitizer = (viewHandler) => {
           </Tag>
         );
       },
+      width: 150,
+
     },
     {
       title: "Action",
@@ -375,12 +405,14 @@ export const editableOrderColumnsDigitizer = (viewHandler) => {
       render: (record) => {
         return (
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-           <div onClick={() => viewHandler(record)}>
-          <AiFillEye size={22} color={"#9999"} />
-        </div>
+            <div onClick={() => viewHandler(record)}>
+              <AiFillEye size={22} color={"#9999"} />
+            </div>
           </div>
         );
       },
+      width: 80,
+
     },
   ];
 };
@@ -396,23 +428,27 @@ export const orderColumns = [
         </p>
       );
     },
-    sorter: (a, b) => a.orderId - b.orderId,
+    width: 100,
   },
   {
     title: "Order Date",
     dataIndex: "orderDate",
-    sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+    sorter: (a, b) => moment(a.orderDate).diff(moment(b.orderDate)),
     render: (_, record) => {
-      return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+      return moment(record.orderDate).format("MMMM Do YYYY h:mm:ss");
     },
+    width: 171,
   },
   {
     title: "Customer Name",
     dataIndex: "customerName",
+    width: 150,
+    sorter: (a, b) => a.customerName.localeCompare(b.customerName),
   },
   {
     title: "Design Name",
     dataIndex: "designName",
+    width: 150,
   },
   {
     title: "Size/Type",
@@ -420,6 +456,7 @@ export const orderColumns = [
     render: (_, record) => {
       return record?.design_sizes?.map((item) => item.size).join(", ");
     },
+    width: 100,
   },
   {
     title: "Amount",
@@ -437,17 +474,15 @@ export const orderColumns = [
         }${record.totalPrize}`}</p>
       );
     },
+    width: 100,
   },
   {
     title: "Sales Agent",
     dataIndex: "salesAgentId",
     render: (_, record) => {
-      return (
-        <p >
-          {record.SalesAgent.name}
-        </p>
-      );
+      return <p className="whitespace-nowrap">{record.SalesAgent.name}</p>;
     },
+    width: 150,
   },
   {
     title: "Payment Status",
@@ -463,6 +498,7 @@ export const orderColumns = [
         </Tag>
       );
     },
+    width: 150,
   },
 
   {
@@ -479,6 +515,7 @@ export const orderColumns = [
         </Tag>
       );
     },
+    width: 150,
   },
   {
     title: "Delivery Status",
@@ -494,6 +531,7 @@ export const orderColumns = [
         </Tag>
       );
     },
+    width: 150,
   },
 ];
 
@@ -508,20 +546,25 @@ export const DigitizerOrderColumns = [
         </p>
       );
     },
-    sorter: (a, b) => a.orderId - b.orderId,
+    width: 100,
+
   },
   {
     title: "Order Date",
     dataIndex: "orderDate",
-    sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+    sorter: (a, b) => moment(a.orderDate).diff(moment(b.orderDate)),
     render: (_, record) => {
-      return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+      return moment(record.orderDate).format("MMMM Do YYYY h:mm:ss");
     },
+    width: 171,
+
   },
 
   {
     title: "Design Name",
     dataIndex: "designName",
+    width: 150,
+
   },
   {
     title: "Size/Type",
@@ -529,8 +572,10 @@ export const DigitizerOrderColumns = [
     render: (_, record) => {
       return record.design_sizes.map((item) => item.size).join(", ");
     },
-  },
+    sorter: (a, b) => a.customerName.localeCompare(b.customerName),
+    width: 100,
 
+  },
 
   {
     title: "Order Status",
@@ -546,6 +591,8 @@ export const DigitizerOrderColumns = [
         </Tag>
       );
     },
+    width: 150,
+
   },
   {
     title: "Delivery Status",
@@ -561,6 +608,8 @@ export const DigitizerOrderColumns = [
         </Tag>
       );
     },
+    width: 150,
+
   },
 ];
 export const companyColumns = (
@@ -577,36 +626,48 @@ export const companyColumns = (
       dataIndex: "companyId",
       render: (_, record) => {
         return (
-          <p className="max-w-[30px] overflow-hidden whitespace-nowrap text-ellipsis">
+          <p className="max-w-[150px] overflow-hidden whitespace-nowrap text-ellipsis">
             {record.companyId}
           </p>
         );
       },
+      width: 150
     },
     {
       title: "Registration Date",
-      dataIndex: "createdAt",
-      sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+      dataIndex: "orderDate",
+      sorter: (a, b) => moment(a.orderDate).diff(moment(b.orderDate)),
       render: (_, record) => {
-        return moment(record.createdAt).format("MMMM Do YYYY h:mm:ss");
+        return moment(record.orderDate).format("MMMM Do YYYY h:mm:ss");
       },
+      width: 180
+      
     },
     {
       title: "Company Name",
       dataIndex: "companyName",
+    sorter: (a, b) => a.companyName.localeCompare(b.companyName),
+    width: 150
+
     },
     {
       title: "Contact No",
       dataIndex: "phone",
+      width: 150
+
     },
     {
       title: "Email Address",
       dataIndex: "emailAddress",
+      width: 200
+
     },
     {
       title: "Sales Agent",
       dataIndex: "salesAgent",
       editable: true,
+      width: 150
+
     },
     {
       title: "Actions",
@@ -658,6 +719,8 @@ export const companyColumns = (
           </div>
         ) : null;
       },
+      width: 150
+
     },
   ];
 };
@@ -666,27 +729,43 @@ export const companyColumnsNonEditable = [
   {
     title: "Company Id",
     dataIndex: "companyId",
-    sorter: (a, b) => a.companyId - b.companyId,
+    render: (_, record) => {
+      return (
+        <p className="max-w-[150px] overflow-hidden whitespace-nowrap text-ellipsis">
+          {record.companyId}
+        </p>
+      );
+    },
+    width: 150
   },
   {
     title: "Registration Date",
-    dataIndex: "createdAt",
-    sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+    dataIndex: "orderDate",
+    sorter: (a, b) => moment(a.orderDate).diff(moment(b.orderDate)),
     render: (_, record) => {
-      return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+      return moment(record.orderDate).format("MMMM Do YYYY,h:mm:ss");
     },
+    width: 180
+
   },
   {
     title: "Company Name",
     dataIndex: "companyName",
+    sorter: (a, b) => a.companyName.localeCompare(b.companyName),
+    width: 150
+
   },
   {
     title: "Contact No",
     dataIndex: "phone",
+    width: 150
+
   },
   {
     title: "Email Address",
     dataIndex: "emailAddress",
+    width: 200
+
   },
 ];
 export const companyColumnsForUserDetails = (viewHandler) => {
@@ -694,26 +773,42 @@ export const companyColumnsForUserDetails = (viewHandler) => {
     {
       title: "Company Id",
       dataIndex: "companyId",
+      render: (_, record) => {
+        return (
+          <p className="max-w-[150px] overflow-hidden whitespace-nowrap text-ellipsis">
+            {record.companyId}
+          </p>
+        );
+      },
+      width: 150
     },
     {
       title: "Registration Date",
-      dataIndex: "createdAt",
-      sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
+      dataIndex: "orderDate",
+      sorter: (a, b) => moment(a.orderDate).diff(moment(b.orderDate)),
       render: (_, record) => {
-        return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
+        return moment(record.orderDate).format("MMMM Do YYYY,h:mm:ss");
       },
+    width: 180
+
     },
     {
       title: "Company Name",
       dataIndex: "companyName",
+    width: 150
+
     },
     {
       title: "Contact No",
       dataIndex: "phone",
+    width: 150
+
     },
     {
       title: "Email Address",
       dataIndex: "emailAddress",
+    width: 200
+
     },
     {
       title: "Action",
@@ -723,6 +818,8 @@ export const companyColumnsForUserDetails = (viewHandler) => {
           <AiFillEye size={22} color={"#9999"} />
         </div>
       ),
+    width: 80
+
     },
   ];
 };

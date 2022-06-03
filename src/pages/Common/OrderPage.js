@@ -42,7 +42,7 @@ const OrderPage = ({ role }) => {
   });
   console.log(ordersData, "ordersData");
   const orderStats = (
-    <Row gutter={[5, 10]}>
+    <Row gutter={[30, 30]}>
       {orderDetailStats(
         ordersData?.totalOrders,
         ordersData?.inProgressOrders,

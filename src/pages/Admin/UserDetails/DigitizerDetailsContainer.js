@@ -49,6 +49,7 @@ const DigitizerDetailsContainer = () => {
           getPeningSales,
           getCompletedSales
         )}
+        isLoading={isLoading}
         role="digitizer"
         onModalShow={()=>{setIsModalVisible(true)}}
         handler={(values) => setSales(values)}
