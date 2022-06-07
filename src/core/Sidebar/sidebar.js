@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Layout, Menu } from "antd";
 
 import Logo from "../../assets/finallogodm.png";
@@ -10,14 +10,15 @@ import RouteNames from "../../routes/RouteNames";
 import { accessTokenKey } from "../../constants/localStorageKeys";
 import { useUserData } from "../../pages/Login/userContext";
 import { BiLogOut } from "react-icons/bi";
-import { RiMenuUnfoldFill, RiMenuFoldFill } from "react-icons/ri";
+import {IoMdClose} from 'react-icons/io'
+import { FiMenu } from "react-icons/fi";
 const { Sider } = Layout;
 
 const SideNav = ({ data, Body, indexRoute }) => {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const [collapsed, setCollapsed] = useState(true);
   let location = useLocation();
-
+const ref=useRef()
   const [current, setCurrent] = useState(indexRoute);
   console.log(current, "initial");
   const { userData,setUserData } = useUserData();
@@ -29,7 +30,21 @@ const SideNav = ({ data, Body, indexRoute }) => {
     navigate('/');
     setUserData("");
   };
-
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+       
+        ref.current &&
+        !ref.current.contains(event.target)
+      ) {
+        setCollapsed(true)
+      }
+    }
+    document.addEventListener('click', handleClickOutside, true)
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true)
+    }
+  }, [ref])
   useEffect(() => {
     if (location) {
       const loc = location.pathname.split("/");
@@ -50,6 +65,7 @@ const SideNav = ({ data, Body, indexRoute }) => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
+      ref={ref}
         className="slderhover"
         onMouseEnter={() => {
           if (collapsed && !isTabletOrMobile) {
@@ -78,14 +94,10 @@ const SideNav = ({ data, Body, indexRoute }) => {
       >
         {isTabletOrMobile && (
           <div
-            className="bg-light absolute right-[-25px]  "
-            onClick={() => setCollapsed(!collapsed)}
+            className="absolute right-10 top-10 "
+            onClick={() => setCollapsed(true)}
           >
-            {collapsed ? (
-              <RiMenuUnfoldFill size={26} />
-            ) : (
-              <RiMenuFoldFill size={26} />
-            )}
+              <IoMdClose size={26} color={'#A5ADBA'} />
           </div>
         )}
         <div className="logo my-20 mb-40 flex justify-center">
@@ -121,6 +133,14 @@ const SideNav = ({ data, Body, indexRoute }) => {
       </Sider>
 
       <Content className="container">
+      {isTabletOrMobile && (
+          <div
+            className="  absolute left-10 top-10 "
+            onClick={() => setCollapsed(false)}
+          >
+              <FiMenu size={26} />
+          </div>
+        )}
         <Outlet context={{ tokenData: userData }} />
       </Content>
     </Layout>

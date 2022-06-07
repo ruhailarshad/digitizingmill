@@ -4,7 +4,6 @@ import { useUserData } from '../pages/Login/userContext'
 const RequireAuth = ({role,children}) => {
   let location = useLocation();
   const {isLoggedIn,role:userRole}=useUserData()
-  console.log(role,userRole,'sadad')
   if(!isLoggedIn){
       return <Navigate to="/login" state={{ from: location }} />;
   }

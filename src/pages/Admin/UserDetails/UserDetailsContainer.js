@@ -38,7 +38,14 @@ const UserDetailsContainer = () => {
           totalCompanies,
           totalSales,
           pendingSales,
-          completedSales
+          completedSales,
+          sales === "totalSalesDollar"
+          ? "$"
+          : sales === "totalSalesCanadian"
+          ? "CA$"
+          : sales === "totalSalesEuro"
+          ? "€"
+          : "$"
         )}
         role="sales-agent"
         handler={(values) => setSales(values)}

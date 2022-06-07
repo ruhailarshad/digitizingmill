@@ -22,7 +22,7 @@ const UserDetails = ({
   stats,
   onModalShow,
   role,
-isLoading,
+  isLoading,
   handler,
 }) => {
   const { id } = useParams();
@@ -47,7 +47,7 @@ isLoading,
     setOrderFormData(values);
     setOrderEditModal(true);
   };
-  const { data: companyData,isLoading: companyLoading } = useGetAllCompany({
+  const { data: companyData, isLoading: companyLoading } = useGetAllCompany({
     page: companyPage,
     id,
     limit: companyPageLimit,
@@ -55,7 +55,7 @@ isLoading,
     search: companySearchParam,
     skip: role !== "digitizer",
   });
-  const { data: orderData,isLoading: orderLoading } = useGetOrders({
+  const { data: orderData, isLoading: orderLoading } = useGetOrders({
     page: orderPage,
     id,
     role,
@@ -68,7 +68,7 @@ isLoading,
   const DashboardStats = (
     <Row gutter={[10, 10]}>
       {stats.map((item, i) => (
-        <Col key={i} xl={12} lg={12} md={12} sm={24} xs={24}>
+        <Col key={i} xl={12} lg={12} md={12} sm={12} xs={24}>
           <StatsCard isLoading={isLoading} data={item} handler={handler} />
         </Col>
       ))}
@@ -76,20 +76,27 @@ isLoading,
   );
 
   return (
-    <div className="p-40  ml-20  max-md:p-0 max-md:ml-0 ">
-      <Row gutter={[20, 20]} className="bg-white rounded-20 p-20">
-        <Col xl={12}>
-          <Row align="middle" gutter={20}>
-            <Col xl={7} lg={7} md={24}>
-              <Avatar
-                src={`http://localhost:4000/user/image/${data?.profilePic}`}
-                size={180}
-                icon={<UserOutlined />}
-              />
+    <div className="pl-[88px] pr-15 py-30 w-full  flex flex-col space-y-40  max-md:px-10 max-sm:px-10   max-md:ml-0">
+      <Row
+        gutter={[20, 20]}
+        justify="center"
+        className="bg-white rounded-20 p-20"
+      >
+        <Col xl={13} lg={24}>
+          <Row gutter={[20,14]}>
+            <Col xl={8} lg={7} md={7} xs={24} sm={24}>
+              <Row justify="center"  className="max-md:justify-start max-sm:!justify-center">
+                <Avatar
+                  src={`http://localhost:4000/user/image/${data?.profilePic}`}
+                  size={180}
+                  icon={<UserOutlined />}
+                />
+              </Row>
             </Col>
-            <Col xl={16} lg={16} md={24}>
-              <Row gutter={20}>
-                <Col>
+            <Col xl={16} lg={16} md={16} xs={24} sm={24}>
+              <Row  gutter={[14, 10]}>
+                <Col className="max-sm:w-full max-sm:flex max-sm:flex-col max-sm:items-center">
+
                   {isLoading ? (
                     <Skeleton.Input
                       size="small"
@@ -98,8 +105,8 @@ isLoading,
                     />
                   ) : (
                     <Text
-                      type="h2"
-                      styles="text-gray-80 h2-med max-w-[380px] text-ellipsis overflow-hidden whitespace-nowrap "
+                      type="h3"
+                      styles="text-gray-80 h3-med max-w-[380px] text-ellipsis overflow-hidden whitespace-nowrap "
                     >
                       {data.name}
                     </Text>
@@ -115,14 +122,14 @@ isLoading,
                       {data.role}
                     </Text>
                   )}
+
                 </Col>
-                <Col>
+                <Col className="max-sm:w-full max-sm:flex max-sm:flex-col max-sm:items-center">
+
                   {!isLoading && (
-                   
-                 
                     <Button
                       type="primary"
-                      className="rounded-[10px] mt-10"
+                      className="rounded-[10px] "
                       danger={true}
                       size="large"
                       onClick={onModalShow}
@@ -131,87 +138,70 @@ isLoading,
                     </Button>
                   )}
                 </Col>
-              </Row>
-              <Row>
                 <Col span={24}>
-                  <Row gutter={10}>
+                  <Row gutter={[10,14]}>
                     <Col xl={12} lg={24} md={24} xs={24} sm={24}>
-                      <Row align="middle" gutter={10}>
-                        {isLoading ? (
-                          <Skeleton.Input
-                            size="small"
-                            active={true}
-                            className="rounded-10 w-full mt-4 "
-                          />
-                        ) : (
-                          <>
-                            <Col span={2}>
-                              <GrMail size={22} color="#606472" />
-                            </Col>
-                            <Col span={22}>
-                              <Text
-                                type="h5"
-                                styles="text-gray-30 ml-10 h5-med  max-w-[350px] text-ellipsis overflow-hidden"
-                              >
-                                {data.email}
-                              </Text>
-                            </Col>
-                          </>
-                        )}
-                      </Row>
-                    </Col>
-                    <Col xl={12} lg={24} md={24}  xs={24} sm={24}>
-                      <Row align="middle" gutter={10}>
-                        {isLoading ? (
-                          <Skeleton.Input
+                      {isLoading ? (
+                        <Skeleton.Input
                           size="small"
-                            active={true}
-                            className="rounded-10 w-full mt-4 "
-                          />
-                        ) : (
-                          <>
-                            <Col>
-                              <IoMdCall size={22} color="#606472" />
-                            </Col>
-                            <Col>
-                              <Text
-                                type="h5"
-                                styles=" ml-10 text-gray-30 h5-med"
-                              >
-                                {data.contactNo}
-                              </Text>
-                            </Col>
-                          </>
-                        )}
-                      </Row>
+                          active={true}
+                          className="rounded-10 w-full mt-4 "
+                        />
+                      ) : (
+                        <div className="flex items-center">
+                          <GrMail size={22} color="#606472" />
+                          <Text
+                            type="h5"
+                            styles="text-gray-30 ml-10 h5-med  max-w-[350px] text-ellipsis overflow-hidden"
+                          >
+                            {data.email}
+                          </Text>
+                        </div>
+                      )}
+                    </Col>
+                    <Col xl={12} lg={24} md={24} xs={24} sm={24}>
+                      {isLoading ? (
+                        <Skeleton.Input
+                          size="small"
+                          active={true}
+                          className="rounded-10 w-full mt-4 "
+                        />
+                      ) : (
+                        <div className="flex items-center">
+                          <IoMdCall size={22} color="#606472" />
+                          <Text type="h5" styles=" ml-10 text-gray-30 h5-med">
+                            {data.contactNo}
+                          </Text>
+                        </div>
+                      )}
                     </Col>
                   </Row>
                 </Col>
                 <Col span={24}>
-                  <Row align="middle" gutter={10}>
                   {isLoading ? (
-                          <Skeleton.Input
-                            size="small"
-                            active={true}
-                            className="rounded-10 w-full mt-4 "
-                          />
-                        ) : (  <><Col>
-                        <BsFillHouseDoorFill size={22} color="#606472" />
-                      </Col><Col>
-                          <Text
-                            type="h5"
-                            styles=" ml-10 text-gray-30 h5-med  max-w-[480px] text-ellipsis overflow-hidden whitespace-nowrap"
-                          >
-                            {data.address}
-                          </Text>
-                        </Col></>)}
-                  </Row>
+                    <Skeleton.Input
+                      size="small"
+                      active={true}
+                      className="rounded-10 w-full mt-4 "
+                    />
+                  ) : (
+                    <div className="flex items-center">
+                      <BsFillHouseDoorFill size={22} color="#606472" />
+
+                      <Text
+                        type="h5"
+                        styles=" ml-10 text-gray-30 h5-med  max-w-[480px] text-ellipsis overflow-hidden whitespace-nowrap"
+                      >
+                        {data.address}
+                      </Text>
+                    </div>
+                  )}
                 </Col>
               </Row>
             </Col>
           </Row>
         </Col>
-        <Col xl={12}>{DashboardStats}</Col>
+        <Col xl={11}>{DashboardStats}</Col>
       </Row>
       <Tabs type="card" defaultActiveKey="1" size="large" className="mt-20">
         {role !== "digitizer" && (

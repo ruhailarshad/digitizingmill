@@ -34,11 +34,13 @@ const NewUserForm = ({
     form.resetFields();
     onCancel();
     queryClient.invalidateQueries("user-byid");
+    queryClient.invalidateQueries("api/user");
     message.success("User Added Successfully");
   };
   const onUserUpdateSuccess = () => {
     onCancel();
     queryClient.invalidateQueries("user-byid");
+    queryClient.invalidateQueries("api/user");
     message.success("User Updated Successfully");
   };
 

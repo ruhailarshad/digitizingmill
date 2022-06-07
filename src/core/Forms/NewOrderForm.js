@@ -347,7 +347,7 @@ const NewOrderForm = ({
               <Col
                 xl={role === RolesForm.digitizer ? 12 : 16}
                 lg={role === RolesForm.digitizer ? 12 : 16}
-                md={24}
+                md={role === RolesForm.digitizer ? 12 : 16}
                 xs={24}
               >
                 <Form.Item
@@ -364,7 +364,7 @@ const NewOrderForm = ({
                 </Form.Item>
               </Col>
               {role !== RolesForm.digitizer && (
-                <Col xl={8} lg={8} md={24} xs={24}>
+                <Col xl={8} lg={8} md={8} xs={24}>
                   <Form.Item
                     name="salesAgentId"
                     label="Sales Agent"
@@ -588,9 +588,9 @@ const NewOrderForm = ({
         </Row>
 
         <Row gutter={[20, 20]}>
-          <Col xl={14} lg={24} md={24} xs={24}>
+          <Col xl={14} lg={14} md={14} sm={14} xs={24}>
             <Row>
-              <Col xl={12} md={12} xs={12}>
+              <Col xl={12} md={12} sm={12} xs={24}>
                 <Form.Item
                   name="customer_files"
                   label="Customer File"
@@ -608,6 +608,7 @@ const NewOrderForm = ({
                     onDownload={(file) => {
                       console.log(file);
                     }}
+                    onPreview={onPreview}
                   >
                     <Button danger size="medium" icon={<UploadOutlined />}>
                       Click to upload
@@ -615,7 +616,7 @@ const NewOrderForm = ({
                   </Upload>
                 </Form.Item>
               </Col>
-              <Col xl={12} md={12} xs={12}>
+              <Col xl={12} md={12} sm={12} xs={24}>
                 <Form.Item
                   name="digitizer_files"
                   label="Digitizer Files"
@@ -643,13 +644,13 @@ const NewOrderForm = ({
             </Row>
           </Col>
 
-          <Col xl={10} lg={24} md={24} xs={24}>
+          <Col xl={10} lg={10} md={10} sm={10} xs={24}>
             <Form.List name="sizes">
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name, ...restField }, i) => (
                     <Row justify="end" align="middle" gutter={5}>
-                      <Col span={role === RolesForm.digitizer ? 20 : 9}>
+                      <Col span={role === RolesForm.digitizer ? 20 : 10}>
                         <Form.Item
                           {...restField}
                           name={[name, "size"]}
@@ -660,7 +661,7 @@ const NewOrderForm = ({
                       </Col>
                       {role !== RolesForm.digitizer && (
                         <>
-                          <Col xl={8} lg={8} md={8} xs={8}>
+                          <Col span={8}>
                             <Form.Item
                               {...restField}
                               name={[name, "prize"]}
@@ -677,6 +678,13 @@ const NewOrderForm = ({
                             >
                               <Input disabled size="large" />
                             </Form.Item>
+                          </Col>
+                          <Col span={2}>
+                            {form.getFieldValue("sizes").length > 1 && (
+                              <MinusCircleOutlined
+                                onClick={() => remove(name)}
+                              />
+                            )}
                           </Col>
                         </>
                       )}

@@ -6,16 +6,16 @@ import {BsCurrencyDollar,BsCurrencyPound} from 'react-icons/bs'
 import {BsBasket,BsShieldFillCheck} from 'react-icons/bs'
 import {GiSandsOfTime} from 'react-icons/gi'
 
-export const dashboardStats = (companies,sales,pending,completed,role) => {
+export const dashboardStats = (companies,sales,pending,completed,role,currency) => {
     return [
       {
         heading: `${role ? 'Total Orders' : 'Total Companies'}`,
-        stats: companies,
+        stats:companies,
         icon:<IoIosPeople color="#fff"  size={36}/>
       },
       {
         heading: "Total Sales",
-        stats: sales,
+        stats: `${currency} ${sales}`,
         icon:<BsCurrencyDollar color="#fff" size={36}/>
       },
       {
@@ -33,7 +33,7 @@ export const dashboardStats = (companies,sales,pending,completed,role) => {
     ];
   };
   
-export const detailsStats = (companies,sales,pending,completed) => {
+export const detailsStats = (companies,sales,pending,completed,currency) => {
     return [
       {
         heading: "Total Companies",
@@ -42,17 +42,17 @@ export const detailsStats = (companies,sales,pending,completed) => {
       },
       {
         heading: "Total Sales",
-        stats: sales,
+        stats:` ${currency} ${sales}`,
         icon:<BsCurrencyDollar color="#fff" size={36}/>
       },
       {
-        heading: "Pending Sales",
+        heading: "Pending Oder",
         stats: pending,
         icon:<FiLoader color="#fff" size={36}/>
 
       },
       {
-        heading: "Completed Sales",
+        heading: "Completed Orders",
         stats: completed,
         icon:<BsCurrencyPound color="#fff" size={36}/>
 

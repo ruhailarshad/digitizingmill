@@ -10,7 +10,7 @@ const UserCard = ({ data, btnHandler, isLoading }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 756px)" });
   console.log(data, "daataaa");
   return (
-    <div className="px-20  rounded-20 py-[70px] bg-white flex flex-col items-center space-y-30">
+    <div className="px-20 min-w-[350px] rounded-20 py-[70px] bg-white flex flex-col items-center space-y-30">
       <div className="flex flex-col items-center justify-center">
         <Avatar
           src={`http://localhost:4000/user/image/${data?.src}`}
@@ -28,7 +28,7 @@ const UserCard = ({ data, btnHandler, isLoading }) => {
         ) : (
           <Text
             type={`${isMobile ? "h4" : "h3"}`}
-            styles={`text-gray-80 max-w-[260px] text-ellipsis overflow-hidden ${isMobile ? "h4-med" : "h3-med"} `}
+            styles={`text-gray-80 max-w-[220px] text-ellipsis overflow-hidden ${isMobile ? "h4-med" : "h3-med"} `}
           >
             {data.name}
           </Text>
@@ -60,7 +60,7 @@ const UserCard = ({ data, btnHandler, isLoading }) => {
             <>
               <GrMail size={18} color="#606472" />
 
-              <Text type="h6" styles={`  max-w-[280px] text-ellipsis overflow-hidden whitespace-nowrap  text-gray-30 h6-med `}>
+              <Text type="h6" styles={`  max-w-[220px] text-ellipsis overflow-hidden whitespace-nowrap  text-gray-30 h6-med `}>
                 {data.email}
               </Text>
             </>
@@ -77,7 +77,7 @@ const UserCard = ({ data, btnHandler, isLoading }) => {
           ) : (
             <>
               <IoMdCall size={18} color="#606472" />
-              <Text type="h6" styles={`text-gray-30  max-w-[280px] text-ellipsis  whitespace-nowrap  overflow-hidden h6-med `}>
+              <Text type="h6" styles={`text-gray-30  max-w-[220px] text-ellipsis  whitespace-nowrap  overflow-hidden h6-med `}>
                 {data.number}
               </Text>
             </>

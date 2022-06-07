@@ -47,9 +47,16 @@ const DigitizerDetailsContainer = () => {
           getCompanies,
           getTotalSales,
           getPeningSales,
-          getCompletedSales
+          getCompletedSales,
+          sales === "totalSalesDollar"
+          ? "$"
+          : sales === "totalSalesCanadian"
+          ? "CA$"
+          : sales === "totalSalesEuro"
+          ? "€"
+          : "$"
         )}
-        isLoading={isLoading}
+        
         role="digitizer"
         onModalShow={()=>{setIsModalVisible(true)}}
         handler={(values) => setSales(values)}
