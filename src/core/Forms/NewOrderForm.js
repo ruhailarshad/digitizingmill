@@ -601,7 +601,6 @@ const NewOrderForm = ({
                     defaultFileList={defaultFileListForCustomer}
                     onRemove={onRemove}
                     accept=".mysql,.xd,.doc,.csv,.jepg,jpg,png"
-                    onPreview={onPreview}
                     action="http://localhost:4000/api/noop"
                     listType="any"
                     name="logo"
@@ -610,7 +609,7 @@ const NewOrderForm = ({
                     }}
                     onPreview={onPreview}
                   >
-                    <Button danger size="medium" icon={<UploadOutlined />}>
+                    <Button target="_blank" danger size="medium" icon={<UploadOutlined />}>
                       Click to upload
                     </Button>
                   </Upload>
@@ -635,7 +634,7 @@ const NewOrderForm = ({
                     listType="any"
                     name="logo"
                   >
-                    <Button danger size="medium" icon={<UploadOutlined />}>
+                    <Button target="_blank" danger size="medium" icon={<UploadOutlined />}>
                       Click to upload
                     </Button>
                   </Upload>
