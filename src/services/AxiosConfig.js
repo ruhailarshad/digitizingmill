@@ -3,7 +3,7 @@ import { openErrorNotification } from "../alerts/commonAlert";
 import { accessTokenKey } from "../constants/localStorageKeys";
 
 const instance = axios.create({
-    baseURL:"http://localhost:4000",
+    baseURL:process.env.REACT_APP_API_URL,
     headers: {
       "Content-Type": "application/json",
     },
@@ -26,7 +26,7 @@ instance.interceptors.response.use(function (response) {
   // Do something with response data
   return response.data.data;
 }, function (error) {
-  openErrorNotification(error.response);
+  openErrorNotification(error?.response || error?.data);
   return Promise.reject(error);
 });
 export default instance;

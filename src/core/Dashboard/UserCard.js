@@ -13,7 +13,7 @@ const UserCard = ({ data, btnHandler, isLoading }) => {
     <div className="px-20 min-w-[350px] rounded-20 py-[70px] bg-white flex flex-col items-center space-y-30">
       <div className="flex flex-col items-center justify-center">
         <Avatar
-          src={`http://localhost:4000/user/image/${data?.src}`}
+          src={`${process.env.REACT_APP_API_URL}/user/image/${data?.src}`}
           size={{ xs: 100, sm: 100, md: 150, lg: 150, xl: 150, xxl: 150 }}
           icon={<UserOutlined />}
         />

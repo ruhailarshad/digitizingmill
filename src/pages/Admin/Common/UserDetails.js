@@ -87,7 +87,7 @@ const UserDetails = ({
             <Col xl={8} lg={7} md={7} xs={24} sm={24}>
               <Row justify="center"  className="max-md:justify-start max-sm:!justify-center">
                 <Avatar
-                  src={`http://localhost:4000/user/image/${data?.profilePic}`}
+                  src={`${process.env.REACT_APP_API_URL}/user/image/${data?.profilePic}`}
                   size={180}
                   icon={<UserOutlined />}
                 />

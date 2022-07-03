@@ -1,5 +1,6 @@
 {
   "name": "digitizingmill",
+  "homepage": "http://manage.digitizingmill.com",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -22,7 +23,7 @@
     "rc-virtual-list": "^3.4.6",
     "react": "^17.0.2",
     "react-csv": "^2.2.2",
-    "react-dom": "^17.0.2",
+  "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
     "react-query": "^3.34.16",
     "react-responsive": "^9.0.0-beta.6",

@@ -22,13 +22,8 @@ const LoginForm = () => {
     navigate(getRedirectLinkForLogin(role));
   }
 
-  const onError = (err) => {
-    openErrorNotification(err.response, () => {
-      // do something here
-    })
-  }
 
-  const {mutate, isLoading} = useGetAccessToken(onSuccess, onError);
+  const {mutate, isLoading} = useGetAccessToken(onSuccess);
   const onFinish = (values) => {
     mutate(values);
   };

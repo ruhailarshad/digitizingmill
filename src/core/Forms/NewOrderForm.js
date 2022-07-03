@@ -212,7 +212,7 @@ const NewOrderForm = ({
         uid: orderMedia?.id,
         name: orderMedia?.filePath,
         status: "done",
-        url: `http://localhost:4000/order/media/${orderMedia?.filePath}`,
+        url: `${process.env.REACT_APP_API_URL}/order/media/${orderMedia?.filePath}`,
       }));
   const defaultFileListForDigitizer =
     data &&
@@ -222,7 +222,7 @@ const NewOrderForm = ({
         uid: orderMedia?.id,
         name: orderMedia?.filePath,
         status: "done",
-        url: `http://localhost:4000/order/media/${orderMedia?.filePath}`,
+        url: `${process.env.REACT_APP_API_URL}/order/media/${orderMedia?.filePath}`,
       }));
 
   const onRemove = ({ name }, arg2) => {
@@ -601,7 +601,7 @@ const NewOrderForm = ({
                     defaultFileList={defaultFileListForCustomer}
                     onRemove={onRemove}
                     accept=".mysql,.xd,.doc,.csv,.jepg,jpg,png"
-                    action="http://localhost:4000/api/noop"
+                    action="${process.env.REACT_APP_API_URL}/api/noop"
                     listType="any"
                     name="logo"
                     onDownload={(file) => {
@@ -627,7 +627,7 @@ const NewOrderForm = ({
                     onPreview={onPreview}
                     maxCount={6}
                     onRemove={onRemove}
-                    action="http://localhost:4000/api/noop"
+                    action="${process.env.REACT_APP_API_URL}/api/noop"
                     onChange={(e) =>
                       form.setFieldsValue({ digitizer_files: e.file })
                     }

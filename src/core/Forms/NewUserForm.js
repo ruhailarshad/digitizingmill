@@ -131,7 +131,7 @@ const NewUserForm = ({
                             uid: "1",
                             name: data?.profilePic,
                             status: "done",
-                            url: `http://localhost:4000/user/image/${data?.profilePic}`,
+                            url: `${process.env.REACT_APP_API_URL}/user/image/${data?.profilePic}`,
                           },
                         ]}
                         onRemove={(file) => onRemoveHandler(file, 'profilePic')}
@@ -262,7 +262,7 @@ const NewUserForm = ({
                             uid: "1",
                             name: data?.cnicFrontPic,
                             status: "done",
-                            url: `http://localhost:4000/user/image/${data?.cnicFrontPic}`,
+                            url: `${process.env.REACT_APP_API_URL}/user/image/${data?.cnicFrontPic}`,
                           },
                         ]}
                         onChange={(e) =>
@@ -294,7 +294,7 @@ const NewUserForm = ({
                             uid: "1",
                             name: data?.cnicBackPic,
                             status: "done",
-                            url: `http://localhost:4000/user/image/${data?.cnicBackPic}`,
+                            url: `${process.env.REACT_APP_API_URL}/user/image/${data?.cnicBackPic}`,
                           },
                         ]}
                         onChange={(e) =>
