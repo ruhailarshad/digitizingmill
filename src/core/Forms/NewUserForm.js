@@ -168,6 +168,11 @@ const NewUserForm = ({
                 label="Contact No"
                 rules={[
                   {
+                    pattern: new RegExp(/^[+?0-9]*$/) ,
+                    message:
+                      "Contact Number is not valid",
+                  },
+                  {
                     required: true,
                     message: "Contact No is Required",
                   },
@@ -234,9 +239,13 @@ const NewUserForm = ({
                 label="CNIC No"
                 rules={[
                   {
-                    required: { match: /\d{5}-\d{4}-\d{3}-\d{1}/ },
+                    pattern: new RegExp(/^[0-9]{5}-[0-9]{7}-[0-9]$/) ,
                     message:
-                      "CNIC Number should be formatted like, XXXXX-XXXX-XXX-X",
+                      "CNIC Number should be formatted like, XXXXX-XXXXXXX-X",
+                  },
+                  {
+                    required: true,
+                    message: "CNIC is Required",
                   },
                 ]}
               >

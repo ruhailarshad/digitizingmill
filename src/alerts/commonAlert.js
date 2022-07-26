@@ -10,8 +10,9 @@ const errorMessageParser = (error) => {
 
 export const openErrorNotification = (error, onClose) => {
     const {message, description} = errorMessageParser(error);
+    console.log(message,description,'error')
     notification.error({
-        message:message ==="SequelizeUniqueConstraintError" ? 'Validation Error' : message,
+      message,
         description,
         onClose: onClose,
     })

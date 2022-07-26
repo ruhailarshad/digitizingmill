@@ -42,7 +42,7 @@ const NewOrderForm = ({
     useGetCompanyById({ id: companyId, skip: !!companyId });
 
   const { isLoading: isAdminLoading, data: adminData } = useGetUserByRole({
-    skip: !role || !role === RolesForm.digitizer,
+    skip: !role || role !== RolesForm.digitizer,
   });
   useEffect(() => {
     if (!isCompanyByIdLoading && companyById !== undefined && companyId) {
@@ -66,6 +66,7 @@ const NewOrderForm = ({
         ...data,
         orderHistory: data?.orderHistory ? data?.orderHistory.toString() : "",
         sizes: data?.design_sizes,
+        companyInstruction:role===RolesForm.digitizer ? data?.company?.companyInstruction :data?.companyInstruction,
       });
     }
   }, [data, form, editable]);
@@ -423,7 +424,18 @@ const NewOrderForm = ({
                     },
                   ]}
                 >
-                  <Input disabled={role === RolesForm.digitizer} size="large" />
+                  {role === RolesForm.digitizer ? (
+                    <Input.TextArea
+                      disabled={role === RolesForm.digitizer}
+                      size="large"
+                      autoSize={{ minRows: 1, maxRows: 2 }}
+                    />
+                  ) : (
+                    <Input
+                      disabled={role === RolesForm.digitizer}
+                      size="large"
+                    ></Input>
+                  )}
                 </Form.Item>
               </Col>
               <Col xl={8} lg={8} md={24} xs={24}>
@@ -609,7 +621,12 @@ const NewOrderForm = ({
                     }}
                     onPreview={onPreview}
                   >
-                    <Button target="_blank" danger size="medium" icon={<UploadOutlined />}>
+                    <Button
+                      target="_blank"
+                      danger
+                      size="medium"
+                      icon={<UploadOutlined />}
+                    >
                       Click to upload
                     </Button>
                   </Upload>
@@ -634,7 +651,12 @@ const NewOrderForm = ({
                     listType="any"
                     name="logo"
                   >
-                    <Button target="_blank" danger size="medium" icon={<UploadOutlined />}>
+                    <Button
+                      target="_blank"
+                      danger
+                      size="medium"
+                      icon={<UploadOutlined />}
+                    >
                       Click to upload
                     </Button>
                   </Upload>

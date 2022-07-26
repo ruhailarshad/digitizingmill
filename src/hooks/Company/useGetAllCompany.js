@@ -6,6 +6,7 @@ import moment from "moment";
 const fetchAllCompany = ({ limit, page, search, role, id, dateParam }) => {
   const checkRole = id && role ? `/by-${role}/${id}` : "";
   const checkId = id && !role ? `/by-userId/${id}` : "";
+  console.log(checkId,checkRole,'AllCompany')
   const startEndDate =
     !dateParam?.length < 1
       ? `&companyStartDate=${moment(dateParam[0]?._d).format(

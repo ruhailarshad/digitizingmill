@@ -19,6 +19,7 @@ const SalesReportContainer = () => {
   const [dateParam, setDateParam] = useState([]);
   const [orderPageLimit, setOrderPageLimit] = useState(10);
   const [editVisible, setEditVisible] = useState(false);
+  const [sales, setSales] = useState("totalSalesDollar");
 
   const { data: ordersData, isLoading: orderLoading } = useGetOrders({
     role: "sales-agent",
@@ -34,16 +35,25 @@ const SalesReportContainer = () => {
   });
 
   const orderStats = (
-    <Row gutter={[5, 10]}>
+    <Row gutter={[20, 20]}>
       {dashboardStats(
         ordersData?.totalOrders,
         ordersData?.inProgressOrders,
         ordersData?.pendingOrders,
         ordersData?.completedOrders,
-        'sales-agent'
+        'sales-agent',
+        sales === "totalSalesDollar"
+        ? "$"
+        : sales === "totalSalesCanadian"
+        ? "CA$"
+        : sales === "totalSalesEuro"
+        ? "€"
+        : "$"
       ).map((item, i) => (
         <Col xxl={4} xl={6} lg={8} md={10} xs={24} key={i}>
-          <StatsCard isLoading={orderLoading}data={item} />
+          <StatsCard isLoading={orderLoading }data={item} 
+            handler={(values) => setSales(values)}
+            />
         </Col>
       ))}
     </Row>
