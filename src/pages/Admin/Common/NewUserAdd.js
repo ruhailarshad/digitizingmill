@@ -36,13 +36,15 @@ const NewUserAdd = ({ name, data, isLoading, btnHandler, onSearchChange }) => {
   // };
   const renderUsersList = (data) => {
 
-    if(!data || data.length === 0) {
-      return 'No users to show!!';
+    if( isLoading) {
+      return <div className="w-full h-[80vh] flex items-center justify-center"><Spin size="large" /></div>;
     }
-
+if(data.length === 0){
+  return <Empty /> 
+}
     const users = data?.map(user => (
-      <Col xl={6} xs={24} md={12} sm={24} lg={8}>
-          <UserCard userId={user?.userId} email={user?.email} name={user?.name} />
+      <Col xxl={6} xl={8} xs={24} md={14} sm={24} lg={12}>
+          <UserCard userId={user?.userId} role={user?.userRole} email={user?.email} name={user?.name} />
         </Col>
     ));
 

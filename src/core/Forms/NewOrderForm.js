@@ -622,7 +622,7 @@ const NewOrderForm = ({
                     defaultFileList={defaultFileListForCustomer}
                     onRemove={onRemove}
                     accept=".mysql,.xd,.doc,.csv,.jepg,jpg,png"
-                    action="${process.env.REACT_APP_API_URL}/api/noop"
+                    action={`${process.env.REACT_APP_API_URL}/api/noop`}
                     listType="any"
                     name="logo"
                     onDownload={(file) => {
