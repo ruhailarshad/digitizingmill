@@ -226,6 +226,12 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
 
     },
     {
+      title: "Bonus",
+      dataIndex: "bonus",
+      width: 100,
+
+    },
+    {
       title: "Amount",
       dataIndex: "totalPrize",
       render: (_, record) => {
@@ -457,6 +463,12 @@ export const orderColumns = [
       return record?.design_sizes?.map((item) => item.size).join(", ");
     },
     width: 100,
+  },
+  {
+    title: "Bonus",
+    dataIndex: "bonus",
+    width: 100,
+
   },
   {
     title: "Amount",

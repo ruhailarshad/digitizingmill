@@ -130,7 +130,7 @@ const NewCompanyForm = ({ visible, onCancel, data, role = "", editable }) => {
             <Col xl={12} lg={12} md={12} xs={24}>
               <Form.Item
                 name="companyInstruction"
-                label="Comapny Instruction"
+                label="Company Instruction"
                 rules={[
                   {
                     required: true,

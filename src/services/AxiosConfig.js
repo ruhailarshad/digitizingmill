@@ -26,8 +26,8 @@ instance.interceptors.response.use(function (response) {
   // Do something with response data
   return response.data.data || {};
 }, function (error) {
-  console.log(error.response,'error4')
-  openErrorNotification(error.response);
+  console.log(error.response,error.data,'errorrrrr')
+  openErrorNotification( error.response || error.data);
   return Promise.reject(error);
 });
 export default instance;

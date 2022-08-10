@@ -40,7 +40,6 @@ const OrderPage = ({ role }) => {
     id: tokenData.userId,
     skip: role !== "digitizer",
   });
-  console.log(AllCompany, "AllCompany");
   const orderStats = (
     <Row gutter={[30, 30]}>
       {orderDetailStats(
@@ -65,7 +64,6 @@ const OrderPage = ({ role }) => {
     onChange: (selectedRowKeys, selectedRows) => {
       selectedRows.length >= 1 ? setShowActions(true) : setShowActions(false);
       setSelectedRowKeys(selectedRowKeys);
-      console.log(selectedRows, "selectedRows");
       const filter = [...selectedRows].map((item) => {
         if (role === "digitizer") {
           return {
@@ -92,6 +90,7 @@ const OrderPage = ({ role }) => {
               : "$"
           }${item.totalPrize}`,
           paymentStatus: item.paymentStatus,
+          bonus:item.bonus,
           orderStatus: item.orderStatus,
           deliveryStatus: item.deliveryStatus,
         };

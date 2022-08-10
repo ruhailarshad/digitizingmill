@@ -3,12 +3,21 @@ import instance from "../../services/AxiosConfig";
 import qs from "qs";
 import moment from "moment";
 
-const fetchAllCompany = ({ limit, page, search, role, id, dateParam }) => {
+const fetchAllCompany = ({
+  limit,
+  page,
+  search,
+  role,
+  id,
+  dateParam,
+  noDateParam = false,
+}) => {
   const checkRole = id && role ? `/by-${role}/${id}` : "";
   const checkId = id && !role ? `/by-userId/${id}` : "";
-  console.log(checkId,checkRole,'AllCompany')
+  console.log(checkId, checkRole, "AllCompany");
   const startEndDate =
-    !dateParam?.length < 1
+    !noDateParam ?
+    (!dateParam?.length < 1
       ? `&companyStartDate=${moment(dateParam[0]?._d).format(
           "YYYY-MM-DD"
         )}&companyEndDate=${moment(dateParam[1]?._d).format("YYYY-MM-DD")}`
@@ -16,7 +25,8 @@ const fetchAllCompany = ({ limit, page, search, role, id, dateParam }) => {
           .subtract(30, "days")
           .format("YYYY-MM-DD")}&companyEndDate=${moment().format(
           "YYYY-MM-DD"
-        )}`;
+        )}`) : 
+        '';
   const queryString =
     limit && page ? qs.stringify({ limit, page, search }) : "";
   return instance.get(
@@ -31,6 +41,7 @@ export const useGetAllCompany = ({
   role = "",
   id = "",
   dateParam,
+  noDateParam,
   skip = true,
 } = {}) => {
   return useQuery(
@@ -43,6 +54,7 @@ export const useGetAllCompany = ({
         id,
         role,
         dateParam,
+        noDateParam,
       }),
     {
       select: (data) => {

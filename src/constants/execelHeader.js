@@ -16,6 +16,8 @@ export const excelCompanyHeader = [
     { label: "Payment Status", key: "paymentStatus" },
     { label: "Order Status", key: "orderStatus" },
     { label: "Delivery Status", key: "deliveryStatus" },
+    { label: "Bonus", key: "bonus" },
+
   ];
   export const exceOrderrHeaderDigitizer = [
     { label: "Order Date", key: "orderDate" },

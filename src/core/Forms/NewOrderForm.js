@@ -32,6 +32,7 @@ const NewOrderForm = ({
   data,
   role,
   roleData = { id: "", name: "" },
+  setCompanyUser,
 }) => {
   const [companyId, setCompanyId] = useState("");
   const [form] = Form.useForm();
@@ -40,7 +41,6 @@ const NewOrderForm = ({
     useDeleteOrderMedia();
   const { data: companyById, isLoading: isCompanyByIdLoading } =
     useGetCompanyById({ id: companyId, skip: !!companyId });
-
   const { isLoading: isAdminLoading, data: adminData } = useGetUserByRole({
     skip: !role || role !== RolesForm.digitizer,
   });
@@ -48,6 +48,7 @@ const NewOrderForm = ({
     if (!isCompanyByIdLoading && companyById !== undefined && companyId) {
       form.resetFields(["sizes"]);
       form.setFieldsValue({
+        companyId: companyById?.company?.companyName,
         companyInstruction: companyById?.company?.companyInstruction,
         sizes: companyById?.company?.design_sizes,
         currency: companyById?.company?.design_sizes[0]?.currency,
@@ -66,10 +67,13 @@ const NewOrderForm = ({
         ...data,
         orderHistory: data?.orderHistory ? data?.orderHistory.toString() : "",
         sizes: data?.design_sizes,
-        companyInstruction:role===RolesForm.digitizer ? data?.company?.companyInstruction :data?.companyInstruction,
+        companyInstruction:
+          role === RolesForm.digitizer
+            ? data?.company?.companyInstruction
+            : data?.companyInstruction,
       });
     }
-  }, [data, form, editable]);
+  }, [data, form, editable, role]);
   useEffect(() => {
     if (roleData?.id) {
       role === RolesForm.digitizer
@@ -95,6 +99,11 @@ const NewOrderForm = ({
   const { mutate: orderUpdate } = useUpdateOrder(onOrderUpdateSuccess);
 
   const formValueChangeHandler = (changedValues, allValues) => {
+    changedValues.salesAgentId &&
+      setCompanyUser(
+        adminData.find((item) => item.userId === changedValues.salesAgentId)
+      );
+      !editable &&  changedValues.salesAgentId && form.resetFields(["sizes","companyId","companyInstruction","currency","address","customerName","totalPrize"])
     changedValues.companyId && setCompanyId(changedValues.companyId);
     allValues.sizes &&
       form.setFieldsValue({
@@ -113,7 +122,7 @@ const NewOrderForm = ({
       orderForm.append(`customer_files_${i}`, file.originFileObj);
     });
     Object.entries({ ...rest }).forEach(([key, value]) => {
-      if (key === "bonus") value = 0;
+      // if (key === "bonus") value = 0;
       if (Array.isArray(value)) {
         value.forEach((size, i) => {
           Object.entries(size).map(([k, v]) => {

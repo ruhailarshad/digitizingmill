@@ -74,7 +74,7 @@ export const useGetOrders = ({
   showAll,
 } = {}) => {
   return useQuery(
-    ["order-get-query", search, dateParam, id, role, limit],
+    ["order-get-query", search, dateParam, id, role, limit,page],
     () =>
       fetchAllOrder({
         limit,

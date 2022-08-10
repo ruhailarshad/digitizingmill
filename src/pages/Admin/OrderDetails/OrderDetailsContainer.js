@@ -17,17 +17,21 @@ import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { exceOrderrHeader } from "../../../constants/execelHeader";
 
 const OrderDetailsContainer = () => {
+  //pagination
   const [page, setPage] = useState(1);
-  const [editData, setEditData] = useState("");
+  const [orderPageLimit, setOrderPageLimit] = useState(10);
+  const [dateParam, setDateParam] = useState([]);
+  const [searchParam, setSearchParam] = useState("");
+
+  //orderform
   const [visible, setVisible] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
-  const [searchParam, setSearchParam] = useState("");
-  const [dateParam, setDateParam] = useState([]);
+  const [editData, setEditData] = useState("");
+
   const [showActions, setShowActions] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [orderPageLimit, setOrderPageLimit] = useState(10);
-
+  const [companyUser, setCompanyUser] = useState("");
   const { mutate: deleteOrder } = useDeleteOrder();
 
   const { data: ordersData, isLoading: orderLoading } = useGetOrders({
@@ -38,9 +42,10 @@ const OrderDetailsContainer = () => {
   });
 
   const { mutate: deleteBulkOrder } = useBulkDeleteOrders({});
-
-  const { data: AllCompany } = useGetAllCompany({});
-
+  const { data: AllCompany } = useGetAllCompany({
+    id: companyUser?.role === "sales-agent" ? companyUser?.userId : "",
+    noDateParam: true,
+  });
   const orderStats = (
     <Row gutter={[30, 30]}>
       {orderDetailStats(
@@ -60,6 +65,7 @@ const OrderDetailsContainer = () => {
   const editHandler = (record) => {
     setEditVisible(true);
     setEditData(record);
+    setCompanyUser(record?.SalesAgent);
   };
   const deleteHandler = (id) => {
     deleteOrder(id);
@@ -68,15 +74,15 @@ const OrderDetailsContainer = () => {
   const rowHandler = {
     onChange: (selectedRowKeys, selectedRows) => {
       selectedRows.length >= 1 ? setShowActions(true) : setShowActions(false);
-      setSelectedRowKeys(selectedRowKeys)
-      console.log(selectedRows,'selectedRows')
-      const filter=[...selectedRows].map((item) => {
+      setSelectedRowKeys(selectedRowKeys);
+      console.log(selectedRows, "selectedRows");
+      const filter = [...selectedRows].map((item) => {
         return {
           orderId: item.orderId,
-          orderDate:moment(item.orderDate).format("MMMM Do YYYY,h:mm:ss"),
+          orderDate: moment(item.orderDate).format("MMMM Do YYYY,h:mm:ss"),
           customerName: item.customerName,
           designName: item.designName,
-          size:item.design_sizes.map((item) => item.size).join(", "),
+          size: item.design_sizes.map((item) => item.size).join(", "),
           amount: `${
             item.currency === "Euro"
               ? "€"
@@ -96,7 +102,7 @@ const OrderDetailsContainer = () => {
   };
   const bulkDeleteHandler = () => {
     const newData = [...selectedRowKeys];
-   
+
     Modal.confirm({
       title: "Confirm",
       icon: <ExclamationCircleOutlined />,
@@ -106,9 +112,9 @@ const OrderDetailsContainer = () => {
       okType: "danger",
       cancelText: "No",
       onOk: () => {
-        deleteBulkOrder({ data:{ids: newData} });
+        deleteBulkOrder({ data: { ids: newData } });
         setShowActions(false);
-        setSelectedRowKeys([])
+        setSelectedRowKeys([]);
       },
     });
   };
@@ -117,7 +123,13 @@ const OrderDetailsContainer = () => {
     <>
       <HeadAndContent
         heading="Order Details"
-        btn={{ name: "Add New Order", buttonHandler: () => setVisible(true) }}
+        btn={{
+          name: "Add New Order",
+          buttonHandler: () => {
+            setCompanyUser({});
+            setVisible(true);
+          },
+        }}
       >
         {orderStats}
         <CustomTable
@@ -141,14 +153,14 @@ const OrderDetailsContainer = () => {
           rowHandler={rowHandler}
           selectedRowKeys={selectedRowKeys}
           DropdownActions={
-              <Button
-                onClick={bulkDeleteHandler}
-                size="large"
-                type="primary"
-                danger
-              >
-                Delete Orders
-              </Button>
+            <Button
+              onClick={bulkDeleteHandler}
+              size="large"
+              type="primary"
+              danger
+            >
+              Delete Orders
+            </Button>
           }
           exportData={{ header: exceOrderrHeader, data: selectedRows }}
           showActions={showActions}
@@ -161,6 +173,7 @@ const OrderDetailsContainer = () => {
           companies={AllCompany?.companies}
           visible={visible}
           onCancel={() => setVisible(false)}
+          setCompanyUser={setCompanyUser}
         />
       )}
       {editVisible && (
@@ -170,6 +183,7 @@ const OrderDetailsContainer = () => {
           visible={editVisible}
           onCancel={() => setEditVisible(false)}
           editable
+          setCompanyUser={setCompanyUser}
         />
       )}
     </>
