@@ -24,6 +24,7 @@ import {
   useDeleteOrderMedia,
 } from "../../hooks";
 import { useQueryClient } from "react-query";
+import { useUserData } from "../../pages/Login/userContext";
 const NewOrderForm = ({
   visible,
   onCancel,
@@ -37,6 +38,7 @@ const NewOrderForm = ({
   const [companyId, setCompanyId] = useState("");
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
+  const { role: userRole, userData } = useUserData();
   const { isLoading: isDeletingOrderMedia, mutate: deleteOrderMedia } =
     useDeleteOrderMedia();
   const { data: companyById, isLoading: isCompanyByIdLoading } =
@@ -48,7 +50,6 @@ const NewOrderForm = ({
     if (!isCompanyByIdLoading && companyById !== undefined && companyId) {
       form.resetFields(["sizes"]);
       form.setFieldsValue({
-        companyId: companyById?.company?.companyName,
         companyInstruction: companyById?.company?.companyInstruction,
         sizes: companyById?.company?.design_sizes,
         currency: companyById?.company?.design_sizes[0]?.currency,
@@ -89,21 +90,37 @@ const NewOrderForm = ({
     queryClient.invalidateQueries("order-get-query");
     message.success("Order Added Successfully");
   };
-  const { mutate: orderSubmit } = usePostOrder(onOrderSubmitSuccess);
+  const { mutate: orderSubmit,isLoading:orderAddLoading } = usePostOrder(onOrderSubmitSuccess);
   const onOrderUpdateSuccess = () => {
     form.resetFields();
     onCancel();
     queryClient.invalidateQueries("order-get-query");
     message.success("Order Updated Successfully");
   };
-  const { mutate: orderUpdate } = useUpdateOrder(onOrderUpdateSuccess);
+  const { mutate: orderUpdate,isLoading:orderUpdateLoading  } = useUpdateOrder(onOrderUpdateSuccess);
 
   const formValueChangeHandler = (changedValues, allValues) => {
     changedValues.salesAgentId &&
       setCompanyUser(
         adminData.find((item) => item.userId === changedValues.salesAgentId)
       );
-      !editable &&  changedValues.salesAgentId && form.resetFields(["sizes","companyId","companyInstruction","currency","address","customerName","totalPrize"])
+    if (
+      !editable &&
+      changedValues.salesAgentId &&
+      !(roleData.id === changedValues.salesAgentId && role === "admin")
+    ) {
+      form.resetFields([
+        "sizes",
+        "companyId",
+        "companyInstruction",
+        "currency",
+        "address",
+        "customerName",
+        "totalPrize",
+      ]);
+      setCompanyId("");
+    }
+
     changedValues.companyId && setCompanyId(changedValues.companyId);
     allValues.sizes &&
       form.setFieldsValue({
@@ -211,7 +228,7 @@ const NewOrderForm = ({
     if (file.key) {
       // eslint-disable-next-line no-undef
       const url = await fileService.downloadFile(file.url);
-      window.open(url, "_self");
+      window.open(url, "_blank");
     }
   };
   const defaultFileListForCustomer =
@@ -222,7 +239,7 @@ const NewOrderForm = ({
         uid: orderMedia?.id,
         name: orderMedia?.filePath,
         status: "done",
-        url: `${process.env.REACT_APP_API_URL}/order/media/${orderMedia?.filePath}`,
+        url: `${process.env.REACT_APP_API_URL}order/media/${orderMedia?.filePath}`,
       }));
   const defaultFileListForDigitizer =
     data &&
@@ -232,7 +249,7 @@ const NewOrderForm = ({
         uid: orderMedia?.id,
         name: orderMedia?.filePath,
         status: "done",
-        url: `${process.env.REACT_APP_API_URL}/order/media/${orderMedia?.filePath}`,
+        url: `${process.env.REACT_APP_API_URL}order/media/${orderMedia?.filePath}`,
       }));
 
   const onRemove = ({ name }, arg2) => {
@@ -252,7 +269,7 @@ const NewOrderForm = ({
         setCompanyId("");
       }}
       width={editable && role !== RolesForm.digitizer ? 1500 : 1000}
-      okButtonProps={{ type: "primary", danger: true }}
+      okButtonProps={{ type: "primary", danger: true ,loading:orderAddLoading || orderUpdateLoading }}
       onOk={() => {
         console.log("onOk");
         form
@@ -622,13 +639,14 @@ const NewOrderForm = ({
                     defaultFileList={defaultFileListForCustomer}
                     onRemove={onRemove}
                     accept=".mysql,.xd,.doc,.csv,.jepg,jpg,png"
-                    action={`${process.env.REACT_APP_API_URL}/api/noop`}
+                    action={`${process.env.REACT_APP_API_URL}api/noop`}
                     listType="any"
                     name="logo"
-                    onDownload={(file) => {
-                      console.log(file);
-                    }}
                     onPreview={onPreview}
+                    showUploadList={{
+                      showDownloadIcon: true,
+                      downloadIcon: "Download",
+                    }}
                   >
                     <Button
                       target="_blank"
@@ -650,10 +668,10 @@ const NewOrderForm = ({
                 >
                   <Upload
                     defaultFileList={defaultFileListForDigitizer}
-                    onPreview={onPreview}
+                    onDownload={onPreview}
                     maxCount={6}
                     onRemove={onRemove}
-                    action="${process.env.REACT_APP_API_URL}/api/noop"
+                    action={`${process.env.REACT_APP_API_URL}api/noop}`}
                     onChange={(e) =>
                       form.setFieldsValue({ digitizer_files: e.file })
                     }
