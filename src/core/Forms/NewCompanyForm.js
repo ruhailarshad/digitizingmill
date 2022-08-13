@@ -118,7 +118,7 @@ const NewCompanyForm = ({ visible, onCancel, data, role = "", editable }) => {
                     message: "Company Name is Required",
                   },
                   {
-                    min: 5,
+                    min: 3,
                     message: "Company Name must be minimum 3 characters.",
                   },
                 ]}
@@ -156,7 +156,7 @@ const NewCompanyForm = ({ visible, onCancel, data, role = "", editable }) => {
                 <Input size="large" />
               </Form.Item>
             </Col>
-            <Col xl={24} lg={24} md={24} xs={24}>
+            <Col xl={12} lg={12} md={12} xs={12}>
               <Form.Item
                 name="address"
                 label="Address"
@@ -170,17 +170,37 @@ const NewCompanyForm = ({ visible, onCancel, data, role = "", editable }) => {
                 <Input size="large" />
               </Form.Item>
             </Col>
+            <Col xl={12} lg={12} md={12} xs={12}>
+              <Form.Item
+                name="customerName"
+                label="Customer Name"
+                rules={[
+                  {
+                    required: true,
+                    message: "Customer Name is Required",
+                  },
+                ]}
+              >
+                <Input size="large" />
+              </Form.Item>
+            </Col>
             <Col xl={10} lg={24} md={24} xs={24}>
-              <Form.List name="sizes">
+              <Form.List name="sizes" >
                 {(fields, { add, remove }) => (
                   <>
-                    {fields.map(({ key, name, ...restField }) => (
+                    {fields.map(({ key, name, ...restField },index) => (
                       <Row justify="center" align="middle" gutter={5}>
                         <Col span={9}>
                           <Form.Item
                             {...restField}
                             name={[name, "size"]}
                             label={"Size"}
+                            rules={index===0 &&[
+                              {
+                                required: true,
+                                message: "",
+                              },
+                            ]}
                           >
                             <Input size="large" />
                           </Form.Item>
@@ -190,6 +210,12 @@ const NewCompanyForm = ({ visible, onCancel, data, role = "", editable }) => {
                             {...restField}
                             name={[name, "prize"]}
                             label="Price"
+                            rules={index===0 &&[
+                              {
+                                required: true,
+                                message: "",
+                              },
+                            ]}
                           >
                             <InputNumber className="w-[100%]" size="large" />
                           </Form.Item>
@@ -199,6 +225,12 @@ const NewCompanyForm = ({ visible, onCancel, data, role = "", editable }) => {
                             {...restField}
                             name={[name, "currency"]}
                             label="Currency"
+                            rules={index===0 &&[
+                              {
+                                required: true,
+                                message: "",
+                              },
+                            ]}
                           >
                             <Select size="large">
                               <Select.Option value="USD">USD</Select.Option>

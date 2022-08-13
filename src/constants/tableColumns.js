@@ -38,12 +38,12 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
       dataIndex: "orderId",
       render: (_, record) => {
         return (
-          <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">
-            {record.orderId}
+          <p className="max-w-[100px] overflow-hidden whitespace-nowrap">
+            {`ODR${moment(record.orderDate).format("DMYY") + record.orderId}`}
           </p>
         );
       },
-      width: 100,
+      width: 110,
     },
     {
       title: "Order Date",
@@ -187,12 +187,12 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
       dataIndex: "orderId",
       render: (_, record) => {
         return (
-          <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">
-            {record.orderId}
+          <p className="max-w-[100px] overflow-hidden whitespace-nowrap">
+            {`ODR${moment(record.orderDate).format("DMYY") + record.orderId}`}
           </p>
         );
       },
-      width: 100,
+      width: 110,
     },
     {
       title: "Order Date",
@@ -202,19 +202,16 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
         return moment(record.orderDate).format("MMMM Do YYYY h:mm:ss");
       },
       width: 171,
-      
     },
     {
       title: "Customer Name",
       dataIndex: "customerName",
       width: 150,
-
     },
     {
       title: "Design Name",
       dataIndex: "designName",
       width: 150,
-
     },
     {
       title: "Size/Type",
@@ -223,13 +220,11 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
         return record.design_sizes.map((item) => item.size).join(", ");
       },
       width: 100,
-
     },
     {
       title: "Bonus",
       dataIndex: "bonus",
       width: 100,
-
     },
     {
       title: "Amount",
@@ -248,7 +243,6 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
         );
       },
       width: 100,
-
     },
     {
       title: "Sales Agent",
@@ -257,7 +251,6 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
         return <p>{record.SalesAgent.name}</p>;
       },
       width: 150,
-
     },
     {
       title: "Payment Status",
@@ -274,7 +267,6 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
         );
       },
       width: 150,
-
     },
 
     {
@@ -292,7 +284,6 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
         );
       },
       width: 150,
-
     },
     {
       title: "Delivery Status",
@@ -309,7 +300,6 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
         );
       },
       width: 150,
-
     },
     {
       title: "Action",
@@ -325,7 +315,6 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
         );
       },
       width: 80,
-
     },
   ];
 };
@@ -336,12 +325,12 @@ export const editableOrderColumnsDigitizer = (viewHandler) => {
       dataIndex: "orderId",
       render: (_, record) => {
         return (
-          <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">
-            {record.orderId}
+          <p className="max-w-[100px] overflow-hidden whitespace-nowrap">
+            {moment(record.orderDate).format("DMYY") + record.orderId}
           </p>
         );
       },
-      width: 100,
+      width: 110,
     },
     {
       title: "Order Date",
@@ -351,14 +340,12 @@ export const editableOrderColumnsDigitizer = (viewHandler) => {
         return moment(record.orderDate).format("MMMM Do YYYY h:mm:ss");
       },
       width: 171,
-      
     },
 
     {
       title: "Design Name",
       dataIndex: "designName",
       width: 150,
-
     },
     {
       title: "Size/Type",
@@ -367,7 +354,6 @@ export const editableOrderColumnsDigitizer = (viewHandler) => {
         return record.design_sizes.map((item) => item.size).join(", ");
       },
       width: 100,
-
     },
 
     {
@@ -385,7 +371,6 @@ export const editableOrderColumnsDigitizer = (viewHandler) => {
         );
       },
       width: 150,
-
     },
     {
       title: "Delivery Status",
@@ -402,7 +387,6 @@ export const editableOrderColumnsDigitizer = (viewHandler) => {
         );
       },
       width: 150,
-
     },
     {
       title: "Action",
@@ -418,7 +402,6 @@ export const editableOrderColumnsDigitizer = (viewHandler) => {
         );
       },
       width: 80,
-
     },
   ];
 };
@@ -429,12 +412,12 @@ export const orderColumns = [
     dataIndex: "orderId",
     render: (_, record) => {
       return (
-        <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">
-          {record.orderId}
+        <p className="max-w-[100px] overflow-hidden whitespace-nowrap">
+          {`ODR${moment(record.orderDate).format("DMYY") + record.orderId}`}
         </p>
       );
     },
-    width: 100,
+    width: 110,
   },
   {
     title: "Order Date",
@@ -468,7 +451,6 @@ export const orderColumns = [
     title: "Bonus",
     dataIndex: "bonus",
     width: 100,
-
   },
   {
     title: "Amount",
@@ -553,13 +535,12 @@ export const DigitizerOrderColumns = [
     dataIndex: "orderId",
     render: (_, record) => {
       return (
-        <p className="max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis">
-          {record.orderId}
+        <p className="max-w-[100px] overflow-hidden whitespace-nowrap">
+          {`ODR${moment(record.orderDate).format("DMYY") + record.orderId}`}
         </p>
       );
     },
-    width: 100,
-
+    width: 110,
   },
   {
     title: "Order Date",
@@ -569,14 +550,12 @@ export const DigitizerOrderColumns = [
       return moment(record.orderDate).format("MMMM Do YYYY h:mm:ss");
     },
     width: 171,
-
   },
 
   {
     title: "Design Name",
     dataIndex: "designName",
     width: 150,
-
   },
   {
     title: "Size/Type",
@@ -586,7 +565,6 @@ export const DigitizerOrderColumns = [
     },
     sorter: (a, b) => a.customerName.localeCompare(b.customerName),
     width: 100,
-
   },
 
   {
@@ -604,7 +582,6 @@ export const DigitizerOrderColumns = [
       );
     },
     width: 150,
-
   },
   {
     title: "Delivery Status",
@@ -621,7 +598,6 @@ export const DigitizerOrderColumns = [
       );
     },
     width: 150,
-
   },
 ];
 export const companyColumns = (
@@ -638,48 +614,51 @@ export const companyColumns = (
       dataIndex: "companyId",
       render: (_, record) => {
         return (
-          <p className="max-w-[150px] overflow-hidden whitespace-nowrap text-ellipsis">
-            {record.companyId}
+          <p className="max-w-[150px] overflow-hidden whitespace-nowrap">
+            {`ODR${
+              moment(record.createdAt).format("DMYY") + record.companyId
+            }`}
           </p>
         );
       },
-      width: 150
+      width: 150,
     },
     {
       title: "Registration Date",
-      dataIndex: "orderDate",
-      sorter: (a, b) => moment(a.orderDate).diff(moment(b.orderDate)),
+      dataIndex: "createdAt",
+      sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
       render: (_, record) => {
-        return moment(record.orderDate).format("MMMM Do YYYY h:mm:ss");
+        return moment(record.createdAt).format("MMMM Do YYYY h:mm:ss");
       },
-      width: 180
-      
+      width: 180,
     },
     {
       title: "Company Name",
       dataIndex: "companyName",
-    sorter: (a, b) => a.companyName.localeCompare(b.companyName),
-    width: 150
-
+      sorter: (a, b) => a.companyName.localeCompare(b.companyName),
+      width: 150,
+    },
+    {
+      title: "Customer Name",
+      dataIndex: "customerName",
+      sorter: (a, b) => a.customerName.localeCompare(b.customerName),
+      width: 150,
     },
     {
       title: "Contact No",
       dataIndex: "phone",
-      width: 150
-
+      width: 150,
     },
     {
       title: "Email Address",
       dataIndex: "emailAddress",
-      width: 200
-
+      width: 200,
     },
     {
       title: "Sales Agent",
       dataIndex: "salesAgent",
       editable: true,
-      width: 150
-
+      width: 150,
     },
     {
       title: "Actions",
@@ -731,8 +710,7 @@ export const companyColumns = (
           </div>
         ) : null;
       },
-      width: 150
-
+      width: 150,
     },
   ];
 };
@@ -743,41 +721,43 @@ export const companyColumnsNonEditable = [
     dataIndex: "companyId",
     render: (_, record) => {
       return (
-        <p className="max-w-[150px] overflow-hidden whitespace-nowrap text-ellipsis">
-          {record.companyId}
+        <p className="max-w-[150px] overflow-hidden whitespace-nowrap">
+          {`ODR${moment(record.createdAt).format("DMYY") + record.companyId}`}
         </p>
       );
     },
-    width: 150
+    width: 150,
   },
   {
     title: "Registration Date",
-    dataIndex: "orderDate",
-    sorter: (a, b) => moment(a.orderDate).diff(moment(b.orderDate)),
+    dataIndex: "createdAt",
+    sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
     render: (_, record) => {
-      return moment(record.orderDate).format("MMMM Do YYYY,h:mm:ss");
+      return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
     },
-    width: 180
-
+    width: 180,
   },
   {
     title: "Company Name",
     dataIndex: "companyName",
     sorter: (a, b) => a.companyName.localeCompare(b.companyName),
-    width: 150
-
+    width: 150,
+  },
+  {
+    title: "Customer Name",
+    dataIndex: "customerName",
+    sorter: (a, b) => a.customerName.localeCompare(b.customerName),
+    width: 150,
   },
   {
     title: "Contact No",
     dataIndex: "phone",
-    width: 150
-
+    width: 150,
   },
   {
     title: "Email Address",
     dataIndex: "emailAddress",
-    width: 200
-
+    width: 200,
   },
 ];
 export const companyColumnsForUserDetails = (viewHandler) => {
@@ -787,40 +767,42 @@ export const companyColumnsForUserDetails = (viewHandler) => {
       dataIndex: "companyId",
       render: (_, record) => {
         return (
-          <p className="max-w-[150px] overflow-hidden whitespace-nowrap text-ellipsis">
-            {record.companyId}
+          <p className="max-w-[150px] overflow-hidden  whitespace-nowrap">
+            {`ODR${moment(record.createdAt).format("DMYY") + record.companyId}`}
           </p>
         );
       },
-      width: 150
+      width: 150,
     },
     {
       title: "Registration Date",
-      dataIndex: "orderDate",
-      sorter: (a, b) => moment(a.orderDate).diff(moment(b.orderDate)),
+      dataIndex: "createdAt",
+      sorter: (a, b) => moment(a.createdAt).diff(moment(b.createdAt)),
       render: (_, record) => {
-        return moment(record.orderDate).format("MMMM Do YYYY,h:mm:ss");
+        return moment(record.createdAt).format("MMMM Do YYYY,h:mm:ss");
       },
-    width: 180
-
+      width: 180,
     },
     {
       title: "Company Name",
       dataIndex: "companyName",
-    width: 150
-
+      width: 150,
+    },
+    {
+      title: "Customer Name",
+      dataIndex: "customerName",
+      sorter: (a, b) => a.customerName.localeCompare(b.customerName),
+      width: 150,
     },
     {
       title: "Contact No",
       dataIndex: "phone",
-    width: 150
-
+      width: 150,
     },
     {
       title: "Email Address",
       dataIndex: "emailAddress",
-    width: 200
-
+      width: 200,
     },
     {
       title: "Action",
@@ -830,8 +812,7 @@ export const companyColumnsForUserDetails = (viewHandler) => {
           <AiFillEye size={22} color={"#9999"} />
         </div>
       ),
-    width: 80
-
+      width: 80,
     },
   ];
 };

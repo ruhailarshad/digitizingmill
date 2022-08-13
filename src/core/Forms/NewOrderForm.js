@@ -379,11 +379,11 @@ const NewOrderForm = ({
               >
                 <Form.Item
                   name="companyInstruction"
-                  label="Comapny Instruction"
+                  label="Company Instruction"
                   rules={[
                     {
                       required: true,
-                      message: "Comapny Instruction is Required",
+                      message: "Company Instruction is Required",
                     },
                   ]}
                 >
