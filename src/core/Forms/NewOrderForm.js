@@ -25,6 +25,10 @@ import {
 } from "../../hooks";
 import { useQueryClient } from "react-query";
 import { useUserData } from "../../pages/Login/userContext";
+import instance from '../../services/AxiosConfig'
+import FileDownload from 'js-file-download';
+
+
 const NewOrderForm = ({
   visible,
   onCancel,
@@ -643,6 +647,22 @@ const NewOrderForm = ({
                     listType="any"
                     name="logo"
                     onPreview={onPreview}
+                    onDownload={async ({ name }) => {
+                      window.alert('Click Ok to continue download');
+                      try{
+                        fetch(`${process.env.REACT_APP_API_URL}order/media/${name}`).then(res => {
+                          res.blob().then(blob => {
+                            FileDownload(blob, name);
+                          })
+                        }).catch(err => {
+                          console.log('error', err);
+                        });
+                      }
+                      catch(err) {
+                        console.log('error', err);
+                        window.alert('Error Occured While downloading file');
+                      }
+                    }}
                     showUploadList={{
                       showDownloadIcon: true,
                       downloadIcon: "Download",
