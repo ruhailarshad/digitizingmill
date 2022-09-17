@@ -87,7 +87,7 @@ const CompanyDetailsContainer = () => {
           selection
           selectedRowKeys={selectedRowKeys}
           exportData={{ header: excelCompanyHeader, data: selectedRows }}
-          filename="company-details"
+          filename="SalesAgentCompanyStats"
           showActions={showActions}
           rowHandler={rowHandler}
 

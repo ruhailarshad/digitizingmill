@@ -8,7 +8,7 @@ import { BsFillHouseDoorFill } from "react-icons/bs";
 import { useMediaQuery } from "react-responsive";
 const UserCard = ({ data, btnHandler, isLoading }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 756px)" });
-  console.log(data, "daataaa");
+  
   return (
     <div className="px-20 min-w-[350px] rounded-20 py-[70px] bg-white flex flex-col items-center space-y-30">
       <div className="flex flex-col items-center justify-center">

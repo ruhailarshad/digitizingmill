@@ -10,7 +10,7 @@ const StatsCard = ({ data, handler,isLoading }) => {
         <p>USD</p>
       </Menu.Item>
       <Menu.Item onClick={() => handler("totalSalesEuro")}>
-        <p>Euro</p>
+        <p>Pound</p>
       </Menu.Item>
       <Menu.Item onClick={() => handler("totalSalesCanadian")}>
         <p>CAD</p>

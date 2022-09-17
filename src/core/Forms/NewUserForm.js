@@ -124,7 +124,6 @@ const NewUserForm = ({
                     label="Profile Picture"
                     valuePropName="file"
                   >
-                    <ImgCrop rotate>
                       <Upload
                         defaultFileList={data?.profilePic &&[
                           {
@@ -144,7 +143,6 @@ const NewUserForm = ({
                       >
                         Upload
                       </Upload>
-                    </ImgCrop>
                   </Form.Item>
                 </>
             </Col>
@@ -167,11 +165,6 @@ const NewUserForm = ({
                 name="contactNo"
                 label="Contact No"
                 rules={[
-                  {
-                    pattern: new RegExp(/^[+?0-9]*$/) ,
-                    message:
-                      "Contact Number is not valid",
-                  },
                   {
                     required: true,
                     message: "Contact No is Required",
@@ -260,7 +253,6 @@ const NewUserForm = ({
                     label="CNIC Front Pic"
                     valuePropName="file"
                   >
-                    <ImgCrop rotate>
                       <Upload
                         customRequest={dummyRequest}
                         listType="picture-card"
@@ -280,7 +272,6 @@ const NewUserForm = ({
                       >
                         Upload 
                       </Upload>
-                    </ImgCrop>
                   </Form.Item>
                 </>
             </Col>
@@ -292,7 +283,6 @@ const NewUserForm = ({
                     label="CNIC Back Pic"
                     valuePropName="file"
                   >
-                    <ImgCrop rotate>
                       <Upload
                         customRequest={dummyRequest}
                         onRemove={(file) => onRemoveHandler(file, 'cnicBackPic')}
@@ -312,7 +302,6 @@ const NewUserForm = ({
                       >
                         Upload
                       </Upload>
-                    </ImgCrop>
                   </Form.Item>
                 </>
             </Col>

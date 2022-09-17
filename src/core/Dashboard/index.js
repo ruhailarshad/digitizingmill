@@ -29,7 +29,7 @@ const Dashboard = () => {
     if (isLoading) return;
     setUserData(data);
   }, [data, isLoading]);
-  console.log(userData, "userData");
+  
   const { data: ordersData, isLoading: orderLoading } = useGetOrders({
     page: 1,
     limit: 30,
@@ -52,7 +52,7 @@ const Dashboard = () => {
           : sales === "totalSalesCanadian"
           ? "CA$"
           : sales === "totalSalesEuro"
-          ? "€"
+          ? "£"
           : "$"
       ).map((item, i) => (
         <Col xxl={6} xl={8} lg={12} md={11} sm={12} xs={24} key={i}>
@@ -123,7 +123,7 @@ const Dashboard = () => {
 
       {isModalVisible && (
         <NewUserForm
-          visible={isModalVisible}
+        visible={isModalVisible}
           data={userData?.userData[0]}
           userRole={tokenData.role}
           id={tokenData.userId}

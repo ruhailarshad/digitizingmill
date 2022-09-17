@@ -7,7 +7,7 @@ const DashboardChart = () => {
   const { data: currencyData, isLoading } = useGetAllSales({
     byCurrency:currency,
   });
-  console.log('currencyData', currencyData);
+  
   const data = [
     {
       type: "January",

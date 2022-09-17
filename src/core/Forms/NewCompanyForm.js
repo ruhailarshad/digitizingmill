@@ -75,7 +75,7 @@ const NewCompanyForm = ({ visible, onCancel, data, role = "", editable }) => {
             onCreate(values);
           })
           .catch((info) => {
-            console.log("Validate Failed:", info);
+            
           });
       }}
     >
@@ -234,7 +234,7 @@ const NewCompanyForm = ({ visible, onCancel, data, role = "", editable }) => {
                           >
                             <Select size="large">
                               <Select.Option value="USD">USD</Select.Option>
-                              <Select.Option value="Euro">Euro</Select.Option>
+                              <Select.Option value="Euro">Pound</Select.Option>
                               <Select.Option value="CAD">CAD</Select.Option>
                             </Select>
                           </Form.Item>

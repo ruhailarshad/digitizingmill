@@ -19,7 +19,7 @@ const DigitizerContainer = () => {
 
   
   const onCreate = (values) => {
-    console.log(values)
+    
     setIsModalVisible(false);
   };
   return (

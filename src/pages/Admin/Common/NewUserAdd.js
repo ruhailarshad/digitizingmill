@@ -43,7 +43,7 @@ if(data.length === 0){
   return <Empty /> 
 }
     const users = data?.map(user => (
-      <Col xxl={6} xl={8} xs={24} md={14} sm={24} lg={12}>
+      <Col key={user?.userId} xxl={6} xl={8} xs={24} md={14} sm={24} lg={12}>
           <UserCard userId={user?.userId} role={user?.userRole} email={user?.email} name={user?.name} />
         </Col>
     ));

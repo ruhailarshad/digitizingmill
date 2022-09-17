@@ -80,7 +80,7 @@ export const editableOrderColumns = (editHandler, deleteHandler) => {
         return (
           <p>{`${
             record.currency === "Euro"
-              ? "€"
+              ? "£"
               : record.currency === "USD"
               ? "$"
               : record.currency === "CAD"
@@ -233,7 +233,7 @@ export const editableOrderColumnsUserDetails = (viewHandler) => {
         return (
           <p>{`${
             record.currency === "Euro"
-              ? "€"
+              ? "£"
               : record.currency === "USD"
               ? "$"
               : record.currency === "CAD"
@@ -326,7 +326,7 @@ export const editableOrderColumnsDigitizer = (viewHandler) => {
       render: (_, record) => {
         return (
           <p className="max-w-[100px] overflow-hidden whitespace-nowrap">
-            {moment(record.orderDate).format("DMYY") + record.orderId}
+            {`ODR${moment(record.orderDate).format("DMYY") + record.orderId}`}
           </p>
         );
       },
@@ -459,7 +459,7 @@ export const orderColumns = [
       return (
         <p>{`${
           record.currency === "Euro"
-            ? "€"
+            ? "£"
             : record.currency === "USD"
             ? "$"
             : record.currency === "CAD"
@@ -615,9 +615,7 @@ export const companyColumns = (
       render: (_, record) => {
         return (
           <p className="max-w-[150px] overflow-hidden whitespace-nowrap">
-            {`ODR${
-              moment(record.createdAt).format("DMYY") + record.companyId
-            }`}
+            {`CMP${moment(record.createdAt).format("DMYY") + record.companyId}`}
           </p>
         );
       },
@@ -722,7 +720,7 @@ export const companyColumnsNonEditable = [
     render: (_, record) => {
       return (
         <p className="max-w-[150px] overflow-hidden whitespace-nowrap">
-          {`ODR${moment(record.createdAt).format("DMYY") + record.companyId}`}
+          {`CMP${moment(record.createdAt).format("DMYY") + record.companyId}`}
         </p>
       );
     },
@@ -768,7 +766,7 @@ export const companyColumnsForUserDetails = (viewHandler) => {
       render: (_, record) => {
         return (
           <p className="max-w-[150px] overflow-hidden  whitespace-nowrap">
-            {`ODR${moment(record.createdAt).format("DMYY") + record.companyId}`}
+            {`CMP${moment(record.createdAt).format("DMYY") + record.companyId}`}
           </p>
         );
       },

@@ -16,6 +16,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { normFile, onPreview, RolesForm } from "./utils";
 import { MinusCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { BiDownload } from "react-icons/bi";
 import {
   usePostOrder,
   useUpdateOrder,
@@ -25,9 +26,8 @@ import {
 } from "../../hooks";
 import { useQueryClient } from "react-query";
 import { useUserData } from "../../pages/Login/userContext";
-import instance from '../../services/AxiosConfig'
-import FileDownload from 'js-file-download';
-
+import instance from "../../services/AxiosConfig";
+import FileDownload from "js-file-download";
 
 const NewOrderForm = ({
   visible,
@@ -58,9 +58,9 @@ const NewOrderForm = ({
         sizes: companyById?.company?.design_sizes,
         currency: companyById?.company?.design_sizes[0]?.currency,
         address: companyById?.company?.address,
-        customerName: companyById?.company?.companyName,
+        customerName: companyById?.company?.customerName,
         totalPrize: companyById?.company?.design_sizes.reduce((prev, acc) => {
-          return prev + acc.prize;
+          return prev + acc?.prize;
         }, 0),
       });
     }
@@ -94,14 +94,16 @@ const NewOrderForm = ({
     queryClient.invalidateQueries("order-get-query");
     message.success("Order Added Successfully");
   };
-  const { mutate: orderSubmit,isLoading:orderAddLoading } = usePostOrder(onOrderSubmitSuccess);
+  const { mutate: orderSubmit, isLoading: orderAddLoading } =
+    usePostOrder(onOrderSubmitSuccess);
   const onOrderUpdateSuccess = () => {
     form.resetFields();
     onCancel();
     queryClient.invalidateQueries("order-get-query");
     message.success("Order Updated Successfully");
   };
-  const { mutate: orderUpdate,isLoading:orderUpdateLoading  } = useUpdateOrder(onOrderUpdateSuccess);
+  const { mutate: orderUpdate, isLoading: orderUpdateLoading } =
+    useUpdateOrder(onOrderUpdateSuccess);
 
   const formValueChangeHandler = (changedValues, allValues) => {
     changedValues.salesAgentId &&
@@ -128,7 +130,7 @@ const NewOrderForm = ({
     changedValues.companyId && setCompanyId(changedValues.companyId);
     allValues.sizes &&
       form.setFieldsValue({
-        totalPrize: allValues.sizes.reduce((acc, prev) => acc + prev.prize, 0),
+        totalPrize: allValues.sizes.reduce((acc, prev) => acc + prev?.prize, 0),
       });
   };
 
@@ -156,10 +158,22 @@ const NewOrderForm = ({
     });
 
     if (editable) {
-      const newData = JSON.parse(
+      let newData = JSON.parse(
         JSON.stringify({ ...data, sizes: data?.design_sizes })
-      );
-      const newValues = JSON.parse(JSON.stringify(values));
+        );
+        const newValues = JSON.parse(JSON.stringify(values));
+      if (RolesForm.digitizer === role) {
+        newData = JSON.parse(
+          JSON.stringify({
+            ...data,
+            sizes: data?.design_sizes,
+            companyInstruction: data?.company?.companyInstruction,
+            digitizerId: data?.Digitizer?.userId,
+          })
+        );
+        delete newData["sizes"];
+        delete newValues["sizes"];
+      }
       delete newData["SalesAgent"];
       delete newData["Digitizer"];
       delete newData["company"];
@@ -178,35 +192,37 @@ const NewOrderForm = ({
             key === "sizes"
           ) {
             x[key].forEach((_, i) => {
-              if (x[key][i].prize !== y[key][i].prize)
-                data[
-                  `Size-${y[key][i].size}`
-                ] = `${y[key][i].prize} to ${x[key][i].prize}`;
+              if (x[key][i]?.prize !== (y[key][i]?.prize || 0))
+                data[`Size-${x[key][i].size}`] = `${y[key][i]?.prize || 0} to ${
+                  x[key][i]?.prize
+                }`;
             });
             return;
           }
-          if (key === "salesAgentId" && x[key] !== y[key]) {
-            const oldVal = adminData?.find(
-              (item) => item.userId === newValues.salesAgentId
-            ).name;
-            const newVal = adminData?.find(
-              (item) => item.userId === newData.salesAgentId
-            ).name;
-            data[key] = `${newVal} to ${oldVal}`;
-            return;
-          }
-          if (key === "digitizerId" && x[key] !== y[key]) {
-            const oldVal = adminData?.find(
-              (item) => item.userId === newValues.digitizerId
-            ).name;
-            const newVal = adminData?.find(
-              (item) => item.userId === newData.digitizerId
-            ).name;
-            data[key] = `${newVal} to ${oldVal}`;
-            return;
+          if (RolesForm.admin === role) {
+            if (key === "salesAgentId" && x[key] !== y[key]) {
+              const oldVal = adminData?.find(
+                (item) => item.userId === newValues.salesAgentId
+              ).name;
+              const newVal = adminData?.find(
+                (item) => item.userId === newData.salesAgentId
+              ).name;
+              data[key] = `${newVal} to ${oldVal}`;
+              return;
+            }
+            if (key === "digitizerId" && x[key] !== y[key]) {
+              const oldVal = adminData?.find(
+                (item) => item.userId === newValues.digitizerId
+              ).name;
+              const newVal = adminData?.find(
+                (item) => item.userId === newData.digitizerId
+              ).name;
+              data[key] = `${newVal} to ${oldVal}`;
+              return;
+            }
           }
           // This work is for images
-          if (key === "customer_files" || key === "digitizer_files") return;
+          if (key === "customer_files" || key === "digitizer_filWes") return;
 
           if (x[key] === "sizes") return;
 
@@ -261,7 +277,23 @@ const NewOrderForm = ({
     // On pressing delete icon all images are deleted - See what we can do
     deleteOrderMedia(name);
   };
-
+  const downloadHandler = async ({ name }) => {
+    window.alert("Click Ok to continue download");
+    try {
+      fetch(`${process.env.REACT_APP_API_URL}order/media/${name}`)
+        .then((res) => {
+          res.blob().then((blob) => {
+            FileDownload(blob, name);
+          });
+        })
+        .catch((err) => {
+          
+        });
+    } catch (err) {
+      
+      window.alert("Error Occured While downloading file");
+    }
+  };
   return (
     <Modal
       visible={visible}
@@ -273,16 +305,20 @@ const NewOrderForm = ({
         setCompanyId("");
       }}
       width={editable && role !== RolesForm.digitizer ? 1500 : 1000}
-      okButtonProps={{ type: "primary", danger: true ,loading:orderAddLoading || orderUpdateLoading }}
+      okButtonProps={{
+        type: "primary",
+        danger: true,
+        loading: orderAddLoading || orderUpdateLoading,
+      }}
       onOk={() => {
-        console.log("onOk");
         form
           .validateFields()
           .then((values) => {
+            
             onCreate(values);
           })
           .catch((info) => {
-            // console.log("Validate Failed:", info);
+            
           });
       }}
     >
@@ -642,30 +678,13 @@ const NewOrderForm = ({
                   <Upload
                     defaultFileList={defaultFileListForCustomer}
                     onRemove={onRemove}
-                    accept=".mysql,.xd,.doc,.csv,.jepg,jpg,png"
                     action={`${process.env.REACT_APP_API_URL}api/noop`}
                     listType="any"
                     name="logo"
-                    onPreview={onPreview}
-                    onDownload={async ({ name }) => {
-                      window.alert('Click Ok to continue download');
-                      try{
-                        fetch(`${process.env.REACT_APP_API_URL}order/media/${name}`).then(res => {
-                          res.blob().then(blob => {
-                            FileDownload(blob, name);
-                          })
-                        }).catch(err => {
-                          console.log('error', err);
-                        });
-                      }
-                      catch(err) {
-                        console.log('error', err);
-                        window.alert('Error Occured While downloading file');
-                      }
-                    }}
+                    onDownload={downloadHandler}
                     showUploadList={{
                       showDownloadIcon: true,
-                      downloadIcon: "Download",
+                      downloadIcon: <BiDownload />,
                     }}
                   >
                     <Button
@@ -688,15 +707,15 @@ const NewOrderForm = ({
                 >
                   <Upload
                     defaultFileList={defaultFileListForDigitizer}
-                    onDownload={onPreview}
-                    maxCount={6}
                     onRemove={onRemove}
-                    action={`${process.env.REACT_APP_API_URL}api/noop}`}
-                    onChange={(e) =>
-                      form.setFieldsValue({ digitizer_files: e.file })
-                    }
+                    action={`${process.env.REACT_APP_API_URL}api/noop`}
                     listType="any"
                     name="logo"
+                    showUploadList={{
+                      showDownloadIcon: true,
+                      downloadIcon: <BiDownload />,
+                    }}
+                    onDownload={downloadHandler}
                   >
                     <Button
                       target="_blank"

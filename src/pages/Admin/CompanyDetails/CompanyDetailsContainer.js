@@ -188,7 +188,7 @@ const CompanyDetailsContainer = () => {
             setPage(page);
           }}
           exportData={{ header: excelCompanyHeader, data: selectedRows }}
-          filename="company-details"
+          filename="AdminCompanyStats"
           showActions={showActions}
           pageLimit={companyPageLimit}
           setPageLimit={setCompanyPageLimit}

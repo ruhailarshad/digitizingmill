@@ -20,7 +20,7 @@ const SideNav = ({ data, Body, indexRoute }) => {
   let location = useLocation();
 const ref=useRef()
   const [current, setCurrent] = useState(indexRoute);
-  console.log(current, "initial");
+  
   const { userData,setUserData } = useUserData();
 
   const navigate = useNavigate();
@@ -48,12 +48,12 @@ const ref=useRef()
   useEffect(() => {
     if (location) {
       const loc = location.pathname.split("/");
-      console.log(loc);
+      
       const path = loc[2] ? loc[2] : loc[1];
 
       if (path !== current) {
-        console.log(path, "path");
-        console.log(current, "current");
+        
+        
         setCurrent(path);
       }
     }

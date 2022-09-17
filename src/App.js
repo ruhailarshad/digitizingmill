@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error) => {
-      console.log("error", error);
+      
     },
   }),
 });

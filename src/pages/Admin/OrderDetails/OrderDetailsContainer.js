@@ -75,7 +75,7 @@ const OrderDetailsContainer = () => {
     onChange: (selectedRowKeys, selectedRows) => {
       selectedRows.length >= 1 ? setShowActions(true) : setShowActions(false);
       setSelectedRowKeys(selectedRowKeys);
-      console.log(selectedRows, "selectedRows");
+      
       const filter = [...selectedRows].map((item) => {
         return {
           orderId: item.orderId,
@@ -163,6 +163,7 @@ const OrderDetailsContainer = () => {
             </Button>
           }
           exportData={{ header: exceOrderrHeader, data: selectedRows }}
+          filename="AdminOrderStats"
           showActions={showActions}
           pageLimit={orderPageLimit}
           setPageLimit={setOrderPageLimit}

@@ -53,7 +53,7 @@ const DigitizerDetailsContainer = () => {
           : sales === "totalSalesCanadian"
           ? "CA$"
           : sales === "totalSalesEuro"
-          ? "€"
+          ? "£"
           : "$"
         )}
         

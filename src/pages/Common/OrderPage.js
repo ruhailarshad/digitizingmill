@@ -132,6 +132,7 @@ const OrderPage = ({ role }) => {
           rowHandler={rowHandler}
           selectedRowKeys={selectedRowKeys}
           exportData={{ header:role==='digitizer' ? exceOrderrHeaderDigitizer: exceOrderrHeader, data: selectedRows }}
+          filename={role==='digitizer' ? 'DigitizerOrderStats' : 'SalesAgentOrderStats'}
           showActions={showActions}
         />
       </HeadAndContent>

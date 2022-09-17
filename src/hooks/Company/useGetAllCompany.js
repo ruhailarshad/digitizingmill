@@ -14,7 +14,7 @@ const fetchAllCompany = ({
 }) => {
   const checkRole = id && role ? `/by-${role}/${id}` : "";
   const checkId = id && !role ? `/by-userId/${id}` : "";
-  console.log(checkId, checkRole, "AllCompany");
+  
   const startEndDate =
     !noDateParam ?
     (!dateParam?.length < 1
