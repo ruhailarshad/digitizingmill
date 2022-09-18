@@ -138,11 +138,23 @@ const NewOrderForm = ({
     // Transforming Values for order upload
     let { customer_files, digitizer_files, orderHistory, ...rest } = values;
     const orderForm = new FormData();
+    console.log(digitizer_files, customer_files);
+    const regexAll = /[^\\]*\.(\w+)$/;
     digitizer_files?.forEach((file, i) => {
-      orderForm.append(`digitizer_files_${i}`, file.originFileObj);
+      if (file.originFileObj) {
+        var total = file.originFileObj.name.match(regexAll);
+        orderForm.append(`digitizer_files_${i}`, file.originFileObj);
+        orderForm.append(`digitizer_files_extension_${i}`, total[1]);
+
+      }
     });
     customer_files?.forEach((file, i) => {
-      orderForm.append(`customer_files_${i}`, file.originFileObj);
+      if (file.originFileObj) {
+        var total = file.originFileObj.name.match(regexAll);
+        orderForm.append(`customer_files_${i}`, file.originFileObj);
+        orderForm.append(`customer_files_extension_${i}`, total[1]);
+
+      }
     });
     Object.entries({ ...rest }).forEach(([key, value]) => {
       // if (key === "bonus") value = 0;
@@ -160,8 +172,8 @@ const NewOrderForm = ({
     if (editable) {
       let newData = JSON.parse(
         JSON.stringify({ ...data, sizes: data?.design_sizes })
-        );
-        const newValues = JSON.parse(JSON.stringify(values));
+      );
+      const newValues = JSON.parse(JSON.stringify(values));
       if (RolesForm.digitizer === role) {
         newData = JSON.parse(
           JSON.stringify({
@@ -286,11 +298,8 @@ const NewOrderForm = ({
             FileDownload(blob, name);
           });
         })
-        .catch((err) => {
-          
-        });
+        .catch((err) => {});
     } catch (err) {
-      
       window.alert("Error Occured While downloading file");
     }
   };
@@ -314,12 +323,9 @@ const NewOrderForm = ({
         form
           .validateFields()
           .then((values) => {
-            
             onCreate(values);
           })
-          .catch((info) => {
-            
-          });
+          .catch((info) => {});
       }}
     >
       <Form
