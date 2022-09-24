@@ -135,6 +135,9 @@ const NewOrderForm = ({
   };
 
   const onCreate = (values) => {
+
+    const extensions = {};
+
     // Transforming Values for order upload
     let { customer_files, digitizer_files, orderHistory, ...rest } = values;
     const orderForm = new FormData();
@@ -142,17 +145,17 @@ const NewOrderForm = ({
     const regexAll = /[^\\]*\.(\w+)$/;
     digitizer_files?.forEach((file, i) => {
       if (file.originFileObj) {
-        var total = file.originFileObj.name.match(regexAll);
+        var [,extension] = file.originFileObj.name.match(regexAll);
         orderForm.append(`digitizer_files_${i}`, file.originFileObj);
-        orderForm.append(`${file.name}_extension_${i}`, total[1]);
+        extensions[`digitizer_files_${i}`] = extension;
 
       }
     });
     customer_files?.forEach((file, i) => {
       if (file.originFileObj) {
-        var total = file.originFileObj.name.match(regexAll);
+        var [,extension] = file.originFileObj.name.match(regexAll);
         orderForm.append(`customer_files_${i}`, file.originFileObj);
-        orderForm.append(`${file.name}_extension_${i}`, total[1]);
+        extensions[`customer_files_${i}`] = extension;
 
       }
     });
@@ -250,11 +253,11 @@ const NewOrderForm = ({
       });
       orderForm.append("orderId", data.orderId);
       // Updating order
-      orderUpdate(orderForm);
+      orderUpdate({orderData: orderForm, extensions});
       return;
     }
 
-    orderSubmit(orderForm);
+    orderSubmit({orderData: orderForm, extensions});
   };
   const onPreview = async (file) => {
     if (file.key) {

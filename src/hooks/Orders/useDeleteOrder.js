@@ -10,7 +10,7 @@ export const useDeleteOrder = () => {
     return useMutation(deleteOrderAPI, {  
         mutatioKey: 'order-delete-mutation',
         onSuccess:()=>{
-            message.success("Company Deleted Successfully")
+            message.success("Order Deleted Successfully")
             queryClient.invalidateQueries("order-get-query");
 
         },
@@ -26,7 +26,7 @@ export const useDeleteOrderMedia = () => {
     return useMutation(deleteOrderMediaAPI, {  
         mutatioKey: 'order-delete-mutation',
         onSuccess:()=>{
-            message.success("Company Deleted Successfully")
+            message.success("Document Deleted Successfully")
             queryClient.invalidateQueries("order-get-query");
 
         },
