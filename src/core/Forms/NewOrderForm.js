@@ -144,7 +144,7 @@ const NewOrderForm = ({
       if (file.originFileObj) {
         var total = file.originFileObj.name.match(regexAll);
         orderForm.append(`digitizer_files_${i}`, file.originFileObj);
-        orderForm.append(`digitizer_files_extension_${i}`, total[1]);
+        orderForm.append(`${file.name}_extension_${i}`, total[1]);
 
       }
     });
@@ -152,7 +152,7 @@ const NewOrderForm = ({
       if (file.originFileObj) {
         var total = file.originFileObj.name.match(regexAll);
         orderForm.append(`customer_files_${i}`, file.originFileObj);
-        orderForm.append(`customer_files_extension_${i}`, total[1]);
+        orderForm.append(`${file.name}_extension_${i}`, total[1]);
 
       }
     });
